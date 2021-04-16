@@ -1,0 +1,16 @@
+<!-- $Header: lms12.html 120.0.12010000.5 2015/10/26 11:08:41 smahanka noship $ -->
+<html>
+<head>
+<script type="text/javascript"src="adapter_lms.js"></script>
+<script type="text/javascript"src="LMSUtil.js"></script>
+<script type="text/javascript"src="LMSElement.js"></script>
+<script type="text/javascript"src="LMSTime.js"></script>
+<script type="text/javascript"src="LMSApplet.js"></script>
+<script type="text/javascript"src="Scorm12Applet.js"></script>
+<script type="text/javascript">
+
+var API=new Scorm12Applet('WebForm1.aspx?lmsUrl='+parent.getLMSUrl()+'&logDebug='+parent.shouldLogDebug(),getSessionId(),parent.getKey1(),parent.getKey2(),parent.getKey3());
+</script>
+</head>
+<body onLoad="doOnLoad()"></body>
+</html>

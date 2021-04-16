@@ -1,0 +1,29 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+    <UserSecretsId>411a9613-fe95-4ee7-8aec-57fae6204a77</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="wwwroot\content\**" />
+    <Compile Remove="wwwroot\JSAdapter12_aspnet\**" />
+    <Content Remove="wwwroot\content\**" />
+    <Content Remove="wwwroot\JSAdapter12_aspnet\**" />
+    <EmbeddedResource Remove="wwwroot\content\**" />
+    <EmbeddedResource Remove="wwwroot\JSAdapter12_aspnet\**" />
+    <None Remove="wwwroot\content\**" />
+    <None Remove="wwwroot\JSAdapter12_aspnet\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="wwwroot\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="JSAdapter12_aspnet\bin\IBM_Scorm_Web.dll.config" />
+    <None Include="JSAdapter12_aspnet\JSAdapter12_asp\bin\IBM_Scorm_Web.dll.config" />
+    <None Include="JSAdapter12_aspnet\JSAdapter12_asp\web.config" />
+  </ItemGroup>
+
+</Project>

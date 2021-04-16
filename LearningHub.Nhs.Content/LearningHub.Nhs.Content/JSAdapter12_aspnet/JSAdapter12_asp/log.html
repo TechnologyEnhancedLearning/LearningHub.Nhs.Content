@@ -1,0 +1,45 @@
+<!-- $Header: log.html 120.0.12010000.1 2013/07/17 11:37:19 smahanka noship $ -->
+<html>
+<head>
+<title>SCORM Log</title>
+<style type="text/css">DIV.LogText{font-family:Courier-New,Arial,Helvetica,Geneva,sans-serif;color:#000000;text-decoration:none;font-size:8pt;}</style>
+<script type="text/javascript">
+var MAX_LOG_SIZE=10000;
+function log(msg){
+	var logContainer=document.getElementById('contents');
+	var currentMsg=logContainer.innerHTML;
+	var newMsg=msg.replace(/\n/g,'<BR>');
+	newMsg=newMsg.replace(/ /g,'&nbsp;');
+	if(currentMsg.length+newMsg.length>MAX_LOG_SIZE){
+		currentMsg=currentMsg.substr(currentMsg.length+newMsg.length-MAX_LOG_SIZE);
+	}
+	logContainer.innerHTML=currentMsg+newMsg+"<br>";
+	window.scrollTo(0,document.body.scrollHeight);
+}
+function doClear(){
+	var logContainer=document.getElementById('contents');
+	logContainer.innerHTML="";
+}
+function doHide(){
+	if(parent!=window){
+		parent.hideLog();
+	}else if(opener){
+		opener.closeLog();
+	}else{
+		window.close();
+	}
+}
+</script>
+</head>
+<body>
+<table>
+<tr>
+<td width="100%">
+<div id="contents"class="LogText"></div>
+<td valign="bottom">
+<input type="button"value="Clear"onclick="doClear()"><br>
+<input type="button"value="Close"onclick="doHide()"><br>
+</tr>
+</table>
+</body>
+</html>
