@@ -7,23 +7,53 @@
 
   <ItemGroup>
     <Compile Remove="wwwroot\content\**" />
-    <Compile Remove="wwwroot\JSAdapter12_aspnet\**" />
     <Content Remove="wwwroot\content\**" />
-    <Content Remove="wwwroot\JSAdapter12_aspnet\**" />
     <EmbeddedResource Remove="wwwroot\content\**" />
-    <EmbeddedResource Remove="wwwroot\JSAdapter12_aspnet\**" />
     <None Remove="wwwroot\content\**" />
-    <None Remove="wwwroot\JSAdapter12_aspnet\**" />
   </ItemGroup>
 
   <ItemGroup>
+    <Content Remove="stylecop.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <AdditionalFiles Include="stylecop.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="JSAdapter12_aspnet\bin\IBM_Scorm_Web.dll" />
+    <Content Include="JSAdapter12_aspnet\bin\IBM_Scorm_Web.pdb" />
+    <Content Include="JSAdapter12_aspnet\JSAdapter12_asp\adapter_blank.html" />
+    <Content Include="JSAdapter12_aspnet\JSAdapter12_asp\adapter_js.js" />
+    <Content Include="JSAdapter12_aspnet\JSAdapter12_asp\adapter_lms.js" />
+    <Content Include="JSAdapter12_aspnet\JSAdapter12_asp\adapter_no_url.html" />
+    <Content Include="JSAdapter12_aspnet\JSAdapter12_asp\bin\IBM_Scorm_Web.dll" />
+    <Content Include="JSAdapter12_aspnet\JSAdapter12_asp\bin\IBM_Scorm_Web.pdb" />
+    <Content Include="JSAdapter12_aspnet\JSAdapter12_asp\CustomLog.txt" />
+    <Content Include="JSAdapter12_aspnet\JSAdapter12_asp\lms12.html" />
+    <Content Include="JSAdapter12_aspnet\JSAdapter12_asp\LMSApplet.js" />
+    <Content Include="JSAdapter12_aspnet\JSAdapter12_asp\LMSElement.js" />
+    <Content Include="JSAdapter12_aspnet\JSAdapter12_asp\LMSTime.js" />
+    <Content Include="JSAdapter12_aspnet\JSAdapter12_asp\LMSUtil.js" />
+    <Content Include="JSAdapter12_aspnet\JSAdapter12_asp\log.html" />
+    <Content Include="JSAdapter12_aspnet\JSAdapter12_asp\Oracle_SCORM_Adapter_JS.html" />
+    <Content Include="JSAdapter12_aspnet\JSAdapter12_asp\readme.txt" />
+    <Content Include="JSAdapter12_aspnet\JSAdapter12_asp\Scorm12Applet.js" />
+    <Content Include="JSAdapter12_aspnet\JSAdapter12_asp\WebForm1.aspx" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Models\" />
     <Folder Include="wwwroot\" />
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="JSAdapter12_aspnet\bin\IBM_Scorm_Web.dll.config" />
-    <None Include="JSAdapter12_aspnet\JSAdapter12_asp\bin\IBM_Scorm_Web.dll.config" />
-    <None Include="JSAdapter12_aspnet\JSAdapter12_asp\web.config" />
+    <PackageReference Include="LearningHub.Nhs.Models" Version="1.0.100" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+    <PackageReference Include="StyleCop.Analyzers" Version="1.1.118">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
   </ItemGroup>
 
 </Project>

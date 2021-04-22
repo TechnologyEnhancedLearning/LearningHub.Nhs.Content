@@ -1,13 +1,22 @@
+// <copyright file="Startup.cs" company="HEE.nhs.uk">
+// Copyright (c) HEE.nhs.uk.
+// </copyright>
+
 namespace LearningHub.Nhs.Content
 {
+    using System.Net.Http;
+    using LearningHub.Nhs.Content.Configuration;
     using LearningHub.Nhs.Content.Interfaces;
     using LearningHub.Nhs.Content.Service;
+    using LearningHub.Nhs.Content.Services;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Rewrite;
+    using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Hosting;
+    using Microsoft.Extensions.Options;
 
     /// <summary>
     /// Defines the <see cref="Startup" />.
@@ -15,22 +24,33 @@ namespace LearningHub.Nhs.Content
     public class Startup
     {
         /// <summary>
-        /// The ConfigureServices.
+        /// The hosting environment.
         /// </summary>
-        /// <param name="services">The services<see cref="IServiceCollection"/>.</param>
-        public void ConfigureServices(IServiceCollection services)
+        private readonly IWebHostEnvironment env;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Startup"/> class.
+        /// </summary>
+        /// <param name="configuration">The configuration<see cref="IConfiguration"/>.</param>
+        /// <param name="env">The env<see cref="IWebHostEnvironment"/>.</param>
+        public Startup(IConfiguration configuration, IWebHostEnvironment env)
         {
-            services.AddSingleton<IScormContentRewriteService, ScormContentRewriteService>();
+            this.env = env;
+            this.Configuration = configuration;
         }
+
+        /// <summary>
+        /// Gets or sets the Configuration.
+        /// </summary>
+        public IConfiguration Configuration { get; set; }
 
         /// <summary>
         /// The Configure.
         /// </summary>
         /// <param name="app">The app<see cref="IApplicationBuilder"/>.</param>
-        /// <param name="env">The env<see cref="IWebHostEnvironment"/>.</param>
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app)
         {
-            if (env.IsDevelopment())
+            if (this.env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
             }
@@ -42,9 +62,10 @@ namespace LearningHub.Nhs.Content
             app.UseDefaultFiles(defaultOptions);
 
             var scormContentRequestHandler = app.ApplicationServices.GetService<IScormContentRewriteService>();
+            var settings = app.ApplicationServices.GetService<IOptions<Settings>>();
 
             var rewriteOptions = new RewriteOptions()
-                 .Add(new ScormContentRewriteRule(scormContentRequestHandler));
+                 .Add(new ScormContentRewriteRule(scormContentRequestHandler, settings));
 
             app.UseRewriter(rewriteOptions);
             app.UseStaticFiles();
@@ -56,6 +77,33 @@ namespace LearningHub.Nhs.Content
                     await context.Response.WriteAsync("Learning Hub Content Server");
                 });
             });
+        }
+
+        /// <summary>
+        /// The ConfigureServices.
+        /// </summary>
+        /// <param name="services">The services<see cref="IServiceCollection"/>.</param>
+        public void ConfigureServices(IServiceCollection services)
+        {
+            services.Configure<Settings>(this.Configuration.GetSection("Settings"));
+
+            // Register an ILearningHubHttpClient.
+            if (this.env.IsDevelopment())
+            {
+                services.AddHttpClient<ILearningHubHttpClient, LearningHubHttpClient>()
+                    .ConfigurePrimaryHttpMessageHandler(
+                        () => new HttpClientHandler
+                        {
+                            ServerCertificateCustomValidationCallback =
+                                          HttpClientHandler.DangerousAcceptAnyServerCertificateValidator,
+                        });
+            }
+            else
+            {
+                services.AddHttpClient<ILearningHubHttpClient, LearningHubHttpClient>();
+            }
+
+            services.AddSingleton<IScormContentRewriteService, ScormContentRewriteService>();
         }
     }
 }
