@@ -1,3 +1,7 @@
+// <copyright file="Program.cs" company="HEE.nhs.uk">
+// Copyright (c) HEE.nhs.uk.
+// </copyright>
+
 namespace LearningHub.Nhs.Content
 {
     using Microsoft.AspNetCore.Hosting;

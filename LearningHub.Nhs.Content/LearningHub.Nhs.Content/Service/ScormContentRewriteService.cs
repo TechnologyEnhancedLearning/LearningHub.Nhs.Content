@@ -5,10 +5,9 @@
 namespace LearningHub.Nhs.Content.Service
 {
     using System;
-    using System.Collections.Generic;
-    using System.Linq;
     using System.Threading.Tasks;
     using System.Web;
+    using LearningHub.Nhs.Caching;
     using LearningHub.Nhs.Content.Interfaces;
     using LearningHub.Nhs.Models.Resource;
     using Newtonsoft.Json;
@@ -19,38 +18,29 @@ namespace LearningHub.Nhs.Content.Service
     public class ScormContentRewriteService : IScormContentRewriteService
     {
         /// <summary>
+        /// Defines a string which is prefixed to all cache keys used by the LH Content Server.
+        /// </summary>
+        private const string KeyPrefix = "ContentServer-";
+
+        /// <summary>
         /// Defines the learningHubHttpClient.
         /// </summary>
         private ILearningHubHttpClient learningHubHttpClient;
 
         /// <summary>
-        /// Defines the scormContentRegister.
+        /// Defines the Redis cacheService.
         /// </summary>
-        private Dictionary<string, ScormContentServerViewModel> scormContentRegister;
+        private ICacheService cacheService;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ScormContentRewriteService"/> class.
         /// </summary>
         /// <param name="learningHubHttpClient">The learningHubHttpClient.</param>
-        public ScormContentRewriteService(ILearningHubHttpClient learningHubHttpClient)
+        /// <param name="cacheService">The cacheService.</param>
+        public ScormContentRewriteService(ILearningHubHttpClient learningHubHttpClient, ICacheService cacheService)
         {
             this.learningHubHttpClient = learningHubHttpClient;
-
-            this.scormContentRegister = new Dictionary<string, ScormContentServerViewModel>
-            {
-                ////{ "https://localhost:44373/content/EFM_2017_01", new ScormContentServerViewModel { ContentFilePath = "5f1a449b-0d34-4bf4-904d-b69c04bb712b", ManifestUrl = "d/index.html" } },
-                ////{ "https://localhost:44373/content/ACU_03_001", new ScormResourceDetail { ContentFolderName = "689d9f29-ce4d-4e65-b551-fa8fcc8086a1", ManifestUrl = "d/ELFH_Scenario/32/session.html" } },
-                ////{ "https://localhost:44373/content/MLD_03_003", new ScormResourceDetail { ContentFolderName = "6cdae485-679d-4285-82ab-6beff6ab9950", ManifestUrl = "index_lms.html" } },
-                ////{ "http://localhost/LearningHub.Nhs.Content/content/EFM_2017_01", new ScormResourceDetail { ContentFolderName = "5f1a449b-0d34-4bf4-904d-b69c04bb712b", ManifestUrl = "d/index.html" } },
-                ////{ "http://localhost/LearningHub.Nhs.Content/content/ACU_03_001", new ScormResourceDetail { ContentFolderName = "689d9f29-ce4d-4e65-b551-fa8fcc8086a1", ManifestUrl = "d/ELFH_Scenario/32/session.html" } },
-                ////{ "http://localhost/LearningHub.Nhs.Content/content/MLD_03_003", new ScormResourceDetail { ContentFolderName = "6cdae485-679d-4285-82ab-6beff6ab9950", ManifestUrl = "index_lms.html" } },
-                ////{ "https://dev-test-learninghub-nhs-content.azurewebsites.net/content/EFM_2017_01", new ScormResourceDetail { ContentFolderName = "5f1a449b-0d34-4bf4-904d-b69c04bb712b", ManifestUrl = "d/index.html" } },
-                ////{ "https://dev-test-learninghub-nhs-content.azurewebsites.net/content/ACU_03_001", new ScormResourceDetail { ContentFolderName = "689d9f29-ce4d-4e65-b551-fa8fcc8086a1", ManifestUrl = "d/ELFH_Scenario/32/session.html" } },
-                ////{ "https://dev-test-learninghub-nhs-content.azurewebsites.net/content/MLD_03_003", new ScormResourceDetail { ContentFolderName = "6cdae485-679d-4285-82ab-6beff6ab9950", ManifestUrl = "index_lms.html" } },
-                ////{ "https://learninghubnhscontent.azurewebsites.net/content/EFM_2017_01", new ScormResourceDetail { ContentFolderName = "5f1a449b-0d34-4bf4-904d-b69c04bb712b", ManifestUrl = "d/index.html" } },
-                ////{ "https://learninghubnhscontent.azurewebsites.net/content/ACU_03_001", new ScormResourceDetail { ContentFolderName = "689d9f29-ce4d-4e65-b551-fa8fcc8086a1", ManifestUrl = "d/ELFH_Scenario/32/session.html" } },
-                ////{ "https://learninghubnhscontent.azurewebsites.net/content/MLD_03_003", new ScormResourceDetail { ContentFolderName = "6cdae485-679d-4285-82ab-6beff6ab9950", ManifestUrl = "index_lms.html" } },
-            };
+            this.cacheService = cacheService;
         }
 
         /// <summary>
@@ -60,18 +50,7 @@ namespace LearningHub.Nhs.Content.Service
         /// <returns>The <see cref="ScormContentServerViewModel"/>.</returns>
         public async Task<ScormContentServerViewModel> GetScormResourceDetailAsync(string requestUrl)
         {
-            var scormResourceDetail = this.scormContentRegister.SingleOrDefault(scr => requestUrl.StartsWith(scr.Key)).Value;
-
-            // If not found in cache get from WebAPI.
-            if (scormResourceDetail == null)
-            {
-                scormResourceDetail = await this.GetScormContentDetailsFromApiAsync(requestUrl);
-
-                if (scormResourceDetail != null)
-                {
-                    this.scormContentRegister.Add(scormResourceDetail.ExternalUrl, scormResourceDetail);
-                }
-            }
+            var scormResourceDetail = await this.cacheService.GetOrCreateAsync($"{KeyPrefix}{requestUrl}", () => this.GetScormContentDetailsFromApiAsync(requestUrl).Result);
 
             return scormResourceDetail;
         }

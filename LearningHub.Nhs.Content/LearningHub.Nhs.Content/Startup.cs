@@ -5,6 +5,7 @@
 namespace LearningHub.Nhs.Content
 {
     using System.Net.Http;
+    using LearningHub.Nhs.Caching;
     using LearningHub.Nhs.Content.Configuration;
     using LearningHub.Nhs.Content.Interfaces;
     using LearningHub.Nhs.Content.Service;
@@ -104,6 +105,9 @@ namespace LearningHub.Nhs.Content
             }
 
             services.AddSingleton<IScormContentRewriteService, ScormContentRewriteService>();
+
+            // Set up redis caching.
+            services.AddDistributedCache(this.Configuration);
         }
     }
 }

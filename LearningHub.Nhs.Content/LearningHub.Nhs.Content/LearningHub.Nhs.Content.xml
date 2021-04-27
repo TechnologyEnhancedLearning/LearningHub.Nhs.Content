@@ -1,0 +1,229 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>LearningHub.Nhs.Content</name>
+    </assembly>
+    <members>
+        <member name="T:LearningHub.Nhs.Content.Configuration.Settings">
+            <summary>
+            Defines the <see cref="T:LearningHub.Nhs.Content.Configuration.Settings" />.
+            </summary>
+        </member>
+        <member name="M:LearningHub.Nhs.Content.Configuration.Settings.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:LearningHub.Nhs.Content.Configuration.Settings"/> class.
+            </summary>
+        </member>
+        <member name="P:LearningHub.Nhs.Content.Configuration.Settings.LearningHubContentServerUrl">
+            <summary>
+            Gets or sets the LearningHubContentServerUrl.
+            </summary>
+        </member>
+        <member name="P:LearningHub.Nhs.Content.Configuration.Settings.LearningHubApiUrl">
+            <summary>
+            Gets or sets the LearningHubApiUrl.
+            </summary>
+        </member>
+        <member name="P:LearningHub.Nhs.Content.Configuration.Settings.ContentServerClientIdentityKey">
+            <summary>
+            Gets or sets the ContentServerClientIdentityKey.
+            </summary>
+        </member>
+        <member name="T:LearningHub.Nhs.Content.Interfaces.ILearningHubHttpClient">
+            <summary>
+            The LearningHubHttpClient interface.
+            </summary>
+        </member>
+        <member name="M:LearningHub.Nhs.Content.Interfaces.ILearningHubHttpClient.GetClientAsync">
+            <summary>
+            The get client async.
+            </summary>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task"/>.
+            </returns>
+        </member>
+        <member name="T:LearningHub.Nhs.Content.Interfaces.IScormContentRewriteService">
+            <summary>
+            Defines the <see cref="T:LearningHub.Nhs.Content.Interfaces.IScormContentRewriteService" />.
+            </summary>
+        </member>
+        <member name="M:LearningHub.Nhs.Content.Interfaces.IScormContentRewriteService.GetScormResourceDetailAsync(System.String)">
+            <summary>
+            The GetScormResourceDetail.
+            </summary>
+            <param name="requestUrl">The requestUrl<see cref="T:System.String"/>.</param>
+            <returns>The <see cref="T:LearningHub.Nhs.Models.Resource.ScormContentServerViewModel"/>.</returns>
+        </member>
+        <member name="T:LearningHub.Nhs.Content.Program">
+            <summary>
+            Defines the <see cref="T:LearningHub.Nhs.Content.Program" />.
+            </summary>
+        </member>
+        <member name="M:LearningHub.Nhs.Content.Program.Main(System.String[])">
+            <summary>
+            The Main.
+            </summary>
+            <param name="args">The args<see cref="!:string[]"/>.</param>
+        </member>
+        <member name="M:LearningHub.Nhs.Content.Program.CreateHostBuilder(System.String[])">
+            <summary>
+            The CreateHostBuilder.
+            </summary>
+            <param name="args">The args<see cref="!:string[]"/>.</param>
+            <returns>The <see cref="T:Microsoft.Extensions.Hosting.IHostBuilder"/>.</returns>
+        </member>
+        <member name="T:LearningHub.Nhs.Content.ScormContentRewriteRule">
+            <summary>
+            Defines the <see cref="T:LearningHub.Nhs.Content.ScormContentRewriteRule" />.
+            </summary>
+        </member>
+        <member name="F:LearningHub.Nhs.Content.ScormContentRewriteRule.scormContentRewriteService">
+            <summary>
+            Defines the scormContentRewriteService.
+            </summary>
+        </member>
+        <member name="F:LearningHub.Nhs.Content.ScormContentRewriteRule.settings">
+            <summary>
+            The settings.
+            </summary>
+        </member>
+        <member name="F:LearningHub.Nhs.Content.ScormContentRewriteRule.contentSegment">
+            <summary>
+            Defines the contentSegment.
+            </summary>
+        </member>
+        <member name="F:LearningHub.Nhs.Content.ScormContentRewriteRule.adapterSegment">
+            <summary>
+            Defines the adapterSegment.
+            </summary>
+        </member>
+        <member name="M:LearningHub.Nhs.Content.ScormContentRewriteRule.#ctor(LearningHub.Nhs.Content.Interfaces.IScormContentRewriteService,Microsoft.Extensions.Options.IOptions{LearningHub.Nhs.Content.Configuration.Settings})">
+            <summary>
+            Initializes a new instance of the <see cref="T:LearningHub.Nhs.Content.ScormContentRewriteRule"/> class.
+            </summary>
+            <param name="scormContentRewriteService">The scormContentRewriteService<see cref="T:LearningHub.Nhs.Content.Interfaces.IScormContentRewriteService"/>.</param>
+            <param name="settings">The settings.</param>
+        </member>
+        <member name="M:LearningHub.Nhs.Content.ScormContentRewriteRule.ApplyRule(Microsoft.AspNetCore.Rewrite.RewriteContext)">
+            <summary>
+            The ApplyRule.
+            </summary>
+            <param name="context">The context<see cref="T:Microsoft.AspNetCore.Rewrite.RewriteContext"/>.</param>
+        </member>
+        <member name="T:LearningHub.Nhs.Content.Services.LearningHubHttpClient">
+            <summary>
+            The learning hub http client. Simplified from those in WebUI and AdminUI because the content server is never authenticated.
+            Simply passes in a client key in header. All WebAPI methods called have the AuthorizeOrCallFromLH attribute.
+            </summary>
+        </member>
+        <member name="F:LearningHub.Nhs.Content.Services.LearningHubHttpClient.httpClient">
+            <summary>
+            The http client.
+            </summary>
+        </member>
+        <member name="F:LearningHub.Nhs.Content.Services.LearningHubHttpClient.settings">
+            <summary>
+            The settings.
+            </summary>
+        </member>
+        <member name="M:LearningHub.Nhs.Content.Services.LearningHubHttpClient.#ctor(Microsoft.Extensions.Options.IOptions{LearningHub.Nhs.Content.Configuration.Settings},System.Net.Http.HttpClient)">
+            <summary>
+            Initializes a new instance of the <see cref="T:LearningHub.Nhs.Content.Services.LearningHubHttpClient"/> class.
+            </summary>
+            <param name="settings">
+            The settings.
+            </param>
+            <param name="client">
+            The client.
+            </param>
+        </member>
+        <member name="M:LearningHub.Nhs.Content.Services.LearningHubHttpClient.GetClientAsync">
+            <summary>
+            The get client async.
+            </summary>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task"/>.
+            </returns>
+        </member>
+        <member name="M:LearningHub.Nhs.Content.Services.LearningHubHttpClient.Initialise">
+            <summary>
+            The initialise.
+            </summary>
+        </member>
+        <member name="T:LearningHub.Nhs.Content.Service.ScormContentRewriteService">
+            <summary>
+            Defines the <see cref="T:LearningHub.Nhs.Content.Service.ScormContentRewriteService" />.
+            </summary>
+        </member>
+        <member name="F:LearningHub.Nhs.Content.Service.ScormContentRewriteService.KeyPrefix">
+            <summary>
+            Defines a string which is prefixed to all cache keys used by the LH Content Server.
+            </summary>
+        </member>
+        <member name="F:LearningHub.Nhs.Content.Service.ScormContentRewriteService.learningHubHttpClient">
+            <summary>
+            Defines the learningHubHttpClient.
+            </summary>
+        </member>
+        <member name="F:LearningHub.Nhs.Content.Service.ScormContentRewriteService.cacheService">
+            <summary>
+            Defines the Redis cacheService.
+            </summary>
+        </member>
+        <member name="M:LearningHub.Nhs.Content.Service.ScormContentRewriteService.#ctor(LearningHub.Nhs.Content.Interfaces.ILearningHubHttpClient,LearningHub.Nhs.Caching.ICacheService)">
+            <summary>
+            Initializes a new instance of the <see cref="T:LearningHub.Nhs.Content.Service.ScormContentRewriteService"/> class.
+            </summary>
+            <param name="learningHubHttpClient">The learningHubHttpClient.</param>
+            <param name="cacheService">The cacheService.</param>
+        </member>
+        <member name="M:LearningHub.Nhs.Content.Service.ScormContentRewriteService.GetScormResourceDetailAsync(System.String)">
+            <summary>
+            The GetScormResourceDetail.
+            </summary>
+            <param name="requestUrl">The requestUrl<see cref="T:System.String"/>.</param>
+            <returns>The <see cref="T:LearningHub.Nhs.Models.Resource.ScormContentServerViewModel"/>.</returns>
+        </member>
+        <member name="M:LearningHub.Nhs.Content.Service.ScormContentRewriteService.GetScormContentDetailsFromApiAsync(System.String)">
+            <summary>
+            The GetScormContentDetailsAsync.
+            </summary>
+            <param name="externalUrl">The externalUrl.</param>
+            <returns>A <see cref="T:System.Threading.Tasks.Task`1"/> representing the result of the asynchronous operation.</returns>
+        </member>
+        <member name="T:LearningHub.Nhs.Content.Startup">
+            <summary>
+            Defines the <see cref="T:LearningHub.Nhs.Content.Startup" />.
+            </summary>
+        </member>
+        <member name="F:LearningHub.Nhs.Content.Startup.env">
+            <summary>
+            The hosting environment.
+            </summary>
+        </member>
+        <member name="M:LearningHub.Nhs.Content.Startup.#ctor(Microsoft.Extensions.Configuration.IConfiguration,Microsoft.AspNetCore.Hosting.IWebHostEnvironment)">
+            <summary>
+            Initializes a new instance of the <see cref="T:LearningHub.Nhs.Content.Startup"/> class.
+            </summary>
+            <param name="configuration">The configuration<see cref="T:Microsoft.Extensions.Configuration.IConfiguration"/>.</param>
+            <param name="env">The env<see cref="T:Microsoft.AspNetCore.Hosting.IWebHostEnvironment"/>.</param>
+        </member>
+        <member name="P:LearningHub.Nhs.Content.Startup.Configuration">
+            <summary>
+            Gets or sets the Configuration.
+            </summary>
+        </member>
+        <member name="M:LearningHub.Nhs.Content.Startup.Configure(Microsoft.AspNetCore.Builder.IApplicationBuilder)">
+            <summary>
+            The Configure.
+            </summary>
+            <param name="app">The app<see cref="T:Microsoft.AspNetCore.Builder.IApplicationBuilder"/>.</param>
+        </member>
+        <member name="M:LearningHub.Nhs.Content.Startup.ConfigureServices(Microsoft.Extensions.DependencyInjection.IServiceCollection)">
+            <summary>
+            The ConfigureServices.
+            </summary>
+            <param name="services">The services<see cref="T:Microsoft.Extensions.DependencyInjection.IServiceCollection"/>.</param>
+        </member>
+    </members>
+</doc>
