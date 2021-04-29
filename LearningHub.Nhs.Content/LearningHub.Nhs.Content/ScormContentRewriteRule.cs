@@ -61,6 +61,12 @@ namespace LearningHub.Nhs.Content
             var requestUrl = request.GetDisplayUrl();
             const int resourceSegmentPosition = 3;
 
+            // TEMP:
+            if (requestUrl.EndsWith("test.html"))
+            {
+                return;
+            }
+
             // Work out if the request is for an LH external URL or an historic one.
             if (requestUrl.StartsWith(this.settings.LearningHubContentServerUrl))
             {

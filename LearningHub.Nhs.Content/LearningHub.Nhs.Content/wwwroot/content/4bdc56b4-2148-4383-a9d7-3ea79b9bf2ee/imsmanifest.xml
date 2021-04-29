@@ -1,0 +1,149 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<manifest identifier="_5hOXMcnj2we_course_id" version="1.0" xmlns="http://www.imsproject.org/xsd/imscp_rootv1p1p2" xmlns:adlcp="http://www.adlnet.org/xsd/adlcp_rootv1p2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.imsproject.org/xsd/imscp_rootv1p1p2 imscp_rootv1p1p2.xsd http://www.imsglobal.org/xsd/imsmd_rootv1p2p1 imsmd_rootv1p2p1.xsd http://www.adlnet.org/xsd/adlcp_rootv1p2 adlcp_rootv1p2.xsd">
+  <metadata>
+    <schema>ADL SCORM</schema>
+    <schemaversion>1.2</schemaversion>
+    <lom xmlns="http://www.imsglobal.org/xsd/imsmd_rootv1p2p1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.imsglobal.org/xsd/imsmd_rootv1p2p1 imsmd_rootv1p2p1.xsd">
+      <general>
+        <title>
+          <langstring xml:lang="x-none">Medical Terminology</langstring>
+        </title>
+      </general>
+      <lifecycle>
+        <version>
+          <langstring xml:lang="x-none">1</langstring>
+        </version>
+        <status>
+          <source>
+            <langstring xml:lang="x-none">LOMv1.0</langstring>
+          </source>
+          <value>
+            <langstring xml:lang="x-none">Final</langstring>
+          </value>
+        </status>
+      </lifecycle>
+      <metametadata>
+        <metadatascheme>ADL SCORM 1.2</metadatascheme>
+      </metametadata>
+      <educational>
+        <typicallearningtime>
+          <datetime>PT0H0M0S</datetime>
+        </typicallearningtime>
+      </educational>
+      <rights>
+        <cost>
+          <source>
+            <langstring xml:lang="x-none">LOMv1.0</langstring>
+          </source>
+          <value>
+            <langstring xml:lang="x-none">yes</langstring>
+          </value>
+        </cost>
+        <copyrightandotherrestrictions>
+          <source>
+            <langstring xml:lang="x-none">LOMv1.0</langstring>
+          </source>
+          <value>
+            <langstring xml:lang="x-none">yes</langstring>
+          </value>
+        </copyrightandotherrestrictions>
+      </rights>
+    </lom>
+  </metadata>
+  <organizations default="Medical_Terminology_ORG">
+    <organization identifier="Medical_Terminology_ORG">
+      <title>Medical Terminology</title>
+      <item identifier="Medical_Terminology_SCO" isvisible="true" identifierref="__5hOXMcnj2we_course_id_RES">
+        <title>Medical Terminology</title>
+        <adlcp:masteryscore>100</adlcp:masteryscore>
+      </item>
+    </organization>
+  </organizations>
+  <resources>
+    <resource identifier="__5hOXMcnj2we_course_id_RES" type="webcontent" href="index_lms.html" adlcp:scormtype="sco">
+      <file href="story_content/thumbnail.jpg" />
+      <file href="story_content/5eDsHLFPe69.html" />
+      <file href="story_content/5eDsHLFPe696X3pfdWL1ds{Width=560, Height=315}Light_DX1120_DY1120.jpg" />
+      <file href="mobile/5eDsHLFPe696X3pfdWL1ds{Width=560, Height=315}Light_DX1120_DY1120_CX560_CY315.jpg" />
+      <file href="story_content/67cWyHBOm7R.html" />
+      <file href="story_content/67cWyHBOm7R5hx4uAXoaWk{Width=640, Height=360}Light_DX1280_DY1280.jpg" />
+      <file href="mobile/67cWyHBOm7R5hx4uAXoaWk{Width=640, Height=360}Light_DX1280_DY1280_CX640_CY360.jpg" />
+      <file href="story_content/5lapkZHRcSe_DX1426_DY1426.jpg" />
+      <file href="mobile/5lapkZHRcSe_DX1426_DY1426_CX991_CY511.jpg" />
+      <file href="story_content/6S2MizX4X15_DX210_DY210.swf" />
+      <file href="mobile/6S2MizX4X15_DX210_DY210_CX128_CY128.png" />
+      <file href="story_content/5YvNG4XJ9Tj_DX210_DY210.swf" />
+      <file href="mobile/5YvNG4XJ9Tj_DX210_DY210_CX128_CY128.png" />
+      <file href="story_content/5grsu9n7JdJ_DX1274_DY1274.jpg" />
+      <file href="mobile/5grsu9n7JdJ_DX1274_DY1274_CX699_CY490.jpg" />
+      <file href="meta.xml" />
+      <file href="story_content/FontFactory.swf" />
+      <file href="story_content/fonts.swf" />
+      <file href="story_content/frame.xml" />
+      <file href="story_content/user.js" />
+      <file href="story.swf" />
+      <file href="story_content/frame.swf" />
+      <file href="story_content/slides/5Y2PlHtwE1s.swf" />
+      <file href="story_content/slides/6IOTiOe7kfG.swf" />
+      <file href="story_content/slides/62gmgJAYVCY.swf" />
+      <file href="story_content/slides/686nCBpBGWl.swf" />
+      <file href="story_content/slides/5db6tAyWal7.swf" />
+      <file href="story_content/slides/5vZTp0FgoXI.swf" />
+      <file href="story_content/slides/6m2z5l06akG.swf" />
+      <file href="story_content/slides/6byj8Myhs68.swf" />
+      <file href="story_content/slides/5YZs2FRlOau.swf" />
+      <file href="story_content/slides/5qcVi3nfevW.swf" />
+      <file href="story_content/slides/61rvymJftPD.swf" />
+      <file href="story_content/slides/6Q1DnIgmOxk.swf" />
+      <file href="story_content/slides/5Ww8VfFOMJz.swf" />
+      <file href="story_content/slides/6PKZcXciFSS.swf" />
+      <file href="story_content/data.swf" />
+      <file href="html5/data/css/output.min.css" />
+      <file href="html5/data/js/5db6tAyWal7.js" />
+      <file href="html5/data/js/5qcVi3nfevW.js" />
+      <file href="html5/data/js/5vZTp0FgoXI.js" />
+      <file href="html5/data/js/5Ww8VfFOMJz.js" />
+      <file href="html5/data/js/5Y2PlHtwE1s.js" />
+      <file href="html5/data/js/5YZs2FRlOau.js" />
+      <file href="html5/data/js/61rvymJftPD.js" />
+      <file href="html5/data/js/62gmgJAYVCY.js" />
+      <file href="html5/data/js/686nCBpBGWl.js" />
+      <file href="html5/data/js/6byj8Myhs68.js" />
+      <file href="html5/data/js/6IOTiOe7kfG.js" />
+      <file href="html5/data/js/6m2z5l06akG.js" />
+      <file href="html5/data/js/6PKZcXciFSS.js" />
+      <file href="html5/data/js/6Q1DnIgmOxk.js" />
+      <file href="html5/data/js/data.js" />
+      <file href="html5/data/js/frame.js" />
+      <file href="html5/data/js/paths.js" />
+      <file href="html5/lib/scripts/app.min.js" />
+      <file href="html5/lib/stylesheets/main.min.css" />
+      <file href="html5/lib/stylesheets/mobile-fonts/open-sans-bold.woff" />
+      <file href="html5/lib/stylesheets/mobile-fonts/open-sans-light.woff" />
+      <file href="html5/lib/stylesheets/mobile-fonts/open-sans-regular.woff" />
+      <file href="story.html" />
+      <file href="story_flash.html" />
+      <file href="story_html5.html" />
+      <file href="analytics-frame.html" />
+      <file href="story_content/blank.html" />
+      <file href="story_content/story.js" />
+      <file href="index_lms.html" />
+      <file href="index_lms_html5.html" />
+      <file href="index_lms_flash.html" />
+      <file href="lms/AICCComm.html" />
+      <file href="lms/AICCFunctions.js" />
+      <file href="lms/API.js" />
+      <file href="lms/APIConstants.js" />
+      <file href="lms/blank.html" />
+      <file href="lms/browsersniff.js" />
+      <file href="lms/Configuration.js" />
+      <file href="lms/goodbye.html" />
+      <file href="lms/lms.js" />
+      <file href="lms/LMSAPI.js" />
+      <file href="lms/NONEFunctions.js" />
+      <file href="lms/SCORM2004Functions.js" />
+      <file href="lms/SCORMFunctions.js" />
+      <file href="lms/UtilityFunctions.js" />
+    </resource>
+  </resources>
+</manifest>

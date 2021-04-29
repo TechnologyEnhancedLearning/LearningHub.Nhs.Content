@@ -62,6 +62,14 @@ namespace LearningHub.Nhs.Content.Service
         /// <returns>A <see cref="Task{TResult}"/> representing the result of the asynchronous operation.</returns>
         private async Task<ScormContentServerViewModel> GetScormContentDetailsFromApiAsync(string externalUrl)
         {
+            // TEMP:
+            return new ScormContentServerViewModel
+            {
+                ContentFilePath = "4bdc56b4-2148-4383-a9d7-3ea79b9bf2ee",
+                ExternalUrl = "https://localhost:44737/content/4bdc56b4-2148-4383-a9d7-3ea79b9bf2ee",
+                ManifestUrl = "index_lms.html"
+            };
+
             ScormContentServerViewModel viewmodel = null;
 
             var client = await this.learningHubHttpClient.GetClientAsync();
