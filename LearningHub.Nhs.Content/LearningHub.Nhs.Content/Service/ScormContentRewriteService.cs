@@ -9,7 +9,8 @@ namespace LearningHub.Nhs.Content.Service
     using System.Web;
     using LearningHub.Nhs.Caching;
     using LearningHub.Nhs.Content.Interfaces;
-    using LearningHub.Nhs.Models.Resource;
+    using LearningHub.Nhs.Content.Models;
+    ////using LearningHub.Nhs.Models.Resource;
     using Newtonsoft.Json;
 
     /// <summary>

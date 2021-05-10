@@ -40,10 +40,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Models\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <None Include="wwwroot\content\4bdc56b4-2148-4383-a9d7-3ea79b9bf2ee\adlcp_rootv1p2.xsd" />
     <None Include="wwwroot\content\4bdc56b4-2148-4383-a9d7-3ea79b9bf2ee\html5\data\js\5db6tAyWal7.js" />
     <None Include="wwwroot\content\4bdc56b4-2148-4383-a9d7-3ea79b9bf2ee\html5\data\js\5qcVi3nfevW.js" />

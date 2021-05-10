@@ -52,7 +52,27 @@
             The GetScormResourceDetail.
             </summary>
             <param name="requestUrl">The requestUrl<see cref="T:System.String"/>.</param>
-            <returns>The <see cref="T:LearningHub.Nhs.Models.Resource.ScormContentServerViewModel"/>.</returns>
+            <returns>The <see cref="T:LearningHub.Nhs.Content.Models.ScormContentServerViewModel"/>.</returns>
+        </member>
+        <member name="T:LearningHub.Nhs.Content.Models.ScormContentServerViewModel">
+            <summary>
+            Defines the <see cref="T:LearningHub.Nhs.Content.Models.ScormContentServerViewModel" />.
+            </summary>
+        </member>
+        <member name="P:LearningHub.Nhs.Content.Models.ScormContentServerViewModel.ExternalUrl">
+            <summary>
+            Gets or sets the ExternalUrl. Could be an LH one or an historic one for a migrated resource (i.e. a totally different domain).
+            </summary>
+        </member>
+        <member name="P:LearningHub.Nhs.Content.Models.ScormContentServerViewModel.ContentFilePath">
+            <summary>
+            Gets or sets the ContentFilePath.
+            </summary>
+        </member>
+        <member name="P:LearningHub.Nhs.Content.Models.ScormContentServerViewModel.ManifestUrl">
+            <summary>
+            Gets or sets the ManifestUrl.
+            </summary>
         </member>
         <member name="T:LearningHub.Nhs.Content.Program">
             <summary>
@@ -182,7 +202,7 @@
             The GetScormResourceDetail.
             </summary>
             <param name="requestUrl">The requestUrl<see cref="T:System.String"/>.</param>
-            <returns>The <see cref="T:LearningHub.Nhs.Models.Resource.ScormContentServerViewModel"/>.</returns>
+            <returns>The <see cref="T:LearningHub.Nhs.Content.Models.ScormContentServerViewModel"/>.</returns>
         </member>
         <member name="M:LearningHub.Nhs.Content.Service.ScormContentRewriteService.GetScormContentDetailsFromApiAsync(System.String)">
             <summary>

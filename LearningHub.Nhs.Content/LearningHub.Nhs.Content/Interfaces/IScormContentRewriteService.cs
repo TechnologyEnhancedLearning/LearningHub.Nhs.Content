@@ -4,8 +4,9 @@
 
 namespace LearningHub.Nhs.Content.Interfaces
 {
+    using LearningHub.Nhs.Content.Models;
     using System.Threading.Tasks;
-    using LearningHub.Nhs.Models.Resource;
+    ////using LearningHub.Nhs.Models.Resource;
 
     /// <summary>
     /// Defines the <see cref="IScormContentRewriteService" />.
