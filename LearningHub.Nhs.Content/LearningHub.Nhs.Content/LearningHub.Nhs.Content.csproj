@@ -18,28 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="JSAdapter12_aspnet\bin\IBM_Scorm_Web.dll" />
-    <Content Include="JSAdapter12_aspnet\bin\IBM_Scorm_Web.pdb" />
-    <Content Include="JSAdapter12_aspnet\JSAdapter12_asp\adapter_blank.html" />
-    <Content Include="JSAdapter12_aspnet\JSAdapter12_asp\adapter_js.js" />
-    <Content Include="JSAdapter12_aspnet\JSAdapter12_asp\adapter_lms.js" />
-    <Content Include="JSAdapter12_aspnet\JSAdapter12_asp\adapter_no_url.html" />
-    <Content Include="JSAdapter12_aspnet\JSAdapter12_asp\bin\IBM_Scorm_Web.dll" />
-    <Content Include="JSAdapter12_aspnet\JSAdapter12_asp\bin\IBM_Scorm_Web.pdb" />
-    <Content Include="JSAdapter12_aspnet\JSAdapter12_asp\CustomLog.txt" />
-    <Content Include="JSAdapter12_aspnet\JSAdapter12_asp\lms12.html" />
-    <Content Include="JSAdapter12_aspnet\JSAdapter12_asp\LMSApplet.js" />
-    <Content Include="JSAdapter12_aspnet\JSAdapter12_asp\LMSElement.js" />
-    <Content Include="JSAdapter12_aspnet\JSAdapter12_asp\LMSTime.js" />
-    <Content Include="JSAdapter12_aspnet\JSAdapter12_asp\LMSUtil.js" />
-    <Content Include="JSAdapter12_aspnet\JSAdapter12_asp\log.html" />
-    <Content Include="JSAdapter12_aspnet\JSAdapter12_asp\Oracle_SCORM_Adapter_JS.html" />
-    <Content Include="JSAdapter12_aspnet\JSAdapter12_asp\readme.txt" />
-    <Content Include="JSAdapter12_aspnet\JSAdapter12_asp\Scorm12Applet.js" />
-    <Content Include="JSAdapter12_aspnet\JSAdapter12_asp\WebForm1.aspx" />
-  </ItemGroup>
-
-  <ItemGroup>
+    <None Include="JSAdapter12_aspnet\bin\IBM_Scorm_Web.dll.config" />
     <None Include="wwwroot\content\4bdc56b4-2148-4383-a9d7-3ea79b9bf2ee\adlcp_rootv1p2.xsd" />
     <None Include="wwwroot\content\4bdc56b4-2148-4383-a9d7-3ea79b9bf2ee\html5\data\js\5db6tAyWal7.js" />
     <None Include="wwwroot\content\4bdc56b4-2148-4383-a9d7-3ea79b9bf2ee\html5\data\js\5qcVi3nfevW.js" />
@@ -100,8 +79,12 @@
 
   <ItemGroup>
     <PackageReference Include="LearningHub.Nhs.Caching" Version="1.0.0" />
-    <PackageReference Include="LearningHub.Nhs.Models" Version="1.0.100" />
+    <PackageReference Include="LearningHub.Nhs.Models" Version="1.0.103" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Models\" />
   </ItemGroup>
 
 </Project>

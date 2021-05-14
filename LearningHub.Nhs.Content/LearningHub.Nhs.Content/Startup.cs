@@ -104,10 +104,10 @@ namespace LearningHub.Nhs.Content
                 services.AddHttpClient<ILearningHubHttpClient, LearningHubHttpClient>();
             }
 
-            services.AddSingleton<IScormContentRewriteService, ScormContentRewriteService>();
-
             // Set up redis caching.
             services.AddDistributedCache(this.Configuration);
+
+            services.AddSingleton<IScormContentRewriteService, ScormContentRewriteService>();
         }
     }
 }

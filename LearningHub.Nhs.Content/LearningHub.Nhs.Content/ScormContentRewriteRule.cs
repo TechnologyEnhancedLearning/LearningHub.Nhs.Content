@@ -5,9 +5,8 @@
 namespace LearningHub.Nhs.Content
 {
     using LearningHub.Nhs.Content.Configuration;
-    using LearningHub.Nhs.Content.Interfaces;
-    using LearningHub.Nhs.Content.Models;
-    ////using LearningHub.Nhs.Models.Resource;
+    using LearningHub.Nhs.Content.Interfaces;    
+    using LearningHub.Nhs.Models.Resource;
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Http.Extensions;
     using Microsoft.AspNetCore.Rewrite;
