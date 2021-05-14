@@ -1,0 +1,63 @@
+<!-- $Header: Oracle_SCORM_Adapter_JS.html 120.0.12010000.6.1 2017/05/16 09:17:36 smahanka noship $ -->
+
+<html>
+<head>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<script src="adapter_js.js"language="javascript">
+</script>
+<script>
+var API=null;
+
+if(window.addEventListener){
+   window.addEventListener("message", function(e){
+         if(e.data=="openLog"){openLog();}
+         if(e.data=="forceFinish"){
+            var originUrl = getLMSUrl();
+            var originHost = originUrl.substring(0, originUrl.indexOf("/",8));
+            if(originHost.indexOf(e.origin)==0){
+               forceFinish();
+            }
+         }
+   }, false);
+}else if(window.attachEvent){
+   window.attachEvent("onmessage", function(e){
+         if(e.data=="openLog"){openLog();}
+         if(e.data=="forceFinish"){
+            var originUrl = getLMSUrl();
+            var originHost = originUrl.substring(0, originUrl.indexOf("/",8));
+            if(originHost.indexOf(e.origin)==0){
+               forceFinish();
+            }
+         }
+   });
+}
+
+function initAPI()
+{
+   API=lms_frame.API;
+   API.logWin=log_frame;
+}
+
+function getLMSPage()
+{
+   return"lms12.html";
+}
+
+function openLog(){  
+   API.openLog();
+}
+
+function forceFinish(){
+   rco_frame.location.href="adapter_blank.html";
+}
+</script>
+<noscript>JavaScript is not enabled.</noscript>
+</head>
+
+<frameset rows="0,*,0" onload="doLoad()" frameborder="NO" border=0>
+   <frame name="lms_frame" src="adapter_blank.html" scrolling="NO" NORESIZE marginwidth="0" marginheight="0"></frame>
+   <frame name="rco_frame" src="adapter_blank.html" NORESIZE marginwidth="0" marginheight="0"></frame>
+   <frame name="log_frame" src="log.html" scrolling="YES" RESIZE marginwidth="0" marginheight="0"></frame>
+</frameset>
+
+</html>
