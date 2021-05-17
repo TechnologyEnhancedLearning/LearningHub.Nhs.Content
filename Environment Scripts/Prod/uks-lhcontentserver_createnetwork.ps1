@@ -1,4 +1,5 @@
 ### Used to set up the initial environment if torn down completely
+### ResourceGroup must be created first manually.
 ### Safetynet:
 throw 'Never run this script twice - IP address must be static and not overwritten, check before commenting out this line.'
 ###
