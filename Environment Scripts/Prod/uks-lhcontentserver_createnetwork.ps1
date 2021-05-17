@@ -1,10 +1,13 @@
 ### Used to set up the initial environment if torn down completely
+### Safetynet:
+throw 'Never run this script twice - IP address must be static and not overwritten, check before commenting out this line.'
+###
 
 Login-AzAccount
 Get-AzSubscription
 select-AzSubscription -Subscription "eLfH Prod"
 
-$resourcegroup = "UKS-LearningHubNhsUk-ContentServer-Prod-RG"
+$resourcegroup = "UKS-LearningHub-ContentServer-Prod-RG"
 $region = "UK South"
 $vnetname = "UKS-LHCONTENTSERVER-PROD-VNET"
 $snetname = "UKS-LHCONTENTSERVER-PROD-SNET"
