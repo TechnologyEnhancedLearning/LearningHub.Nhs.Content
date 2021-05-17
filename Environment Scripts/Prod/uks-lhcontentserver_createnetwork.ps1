@@ -2,20 +2,21 @@
 
 Login-AzAccount
 Get-AzSubscription
-select-AzSubscription -Subscription "eLfH DevTest"
+select-AzSubscription -Subscription "eLfH Prod"
 
-$resourcegroup = "UKS-ELFH-ESRPROXY-RG"
+$resourcegroup = "UKS-LearningHubNhsUk-ContentServer-Prod-RG"
 $region = "UK South"
-$vnetname = "UKS-LHCONTENTSERVER-VNET"
-$pipname = "UKS-LHCONTENTSERVER-PIP"
-$nsgname = "UKS-LHCONTENTSERVER-NSG"
+$vnetname = "UKS-LHCONTENTSERVER-PROD-VNET"
+$snetname = "UKS-LHCONTENTSERVER-PROD-SNET"
+$pipname = "UKS-LHCONTENTSERVER-PROD-PIP"
+$nsgname = "UKS-LHCONTENTSERVER-PROD-NSG"
 
 #write-host "****** Creating Resource Group"
 #New-AzResourceGroup -Name $resourcegroup -Location $region -Force
 
 write-host "****** Create a virtual network subnet"
 $subnet = New-AzVirtualNetworkSubnetConfig `
-  -Name "LHContentServer-snet" `
+  -Name "$snetname" `
   -AddressPrefix 10.0.0.0/24
 
 write-host "******  Create a virtual network"
@@ -63,7 +64,7 @@ $frontendSubnet = $ssvnet.Subnets[0]
 write-host "***** Set NSG on subnet"
 Set-AzVirtualNetworkSubnetConfig `
 -VirtualNetwork $ssvnet `
--Name "LHContentServer-snet" `
+-Name "$snetname" `
 -AddressPrefix $frontendSubnet.AddressPrefix `
 -NetworkSecurityGroup $nsgFrontend
 
