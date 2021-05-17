@@ -1,21 +1,26 @@
 ### Used to set up the initial environment if torn down completely
+### ResourceGroup must be created first manually.
+### Safetynet:
+throw 'Never run this script twice - IP address must be static and not overwritten, check before commenting out this line.'
+###
 
 Login-AzAccount
 Get-AzSubscription
 select-AzSubscription -Subscription "eLfH DevTest"
 
-$resourcegroup = "UKS-ELFH-ESRPROXY-RG"
+$resourcegroup = "UKS-LearningHub-ContentServer-Dev-RG"
 $region = "UK South"
-$vnetname = "UKS-LHCONTENTSERVER-VNET"
-$pipname = "UKS-LHCONTENTSERVER-PIP"
-$nsgname = "UKS-LHCONTENTSERVER-NSG"
+$vnetname = "UKS-LHCONTENTSERVER-DEV-VNET"
+$snetname = "UKS-LHCONTENTSERVER-DEV-SNET"
+$pipname = "UKS-LHCONTENTSERVER-DEV-PIP"
+$nsgname = "UKS-LHCONTENTSERVER-DEV-NSG"
 
 #write-host "****** Creating Resource Group"
 #New-AzResourceGroup -Name $resourcegroup -Location $region -Force
 
 write-host "****** Create a virtual network subnet"
 $subnet = New-AzVirtualNetworkSubnetConfig `
-  -Name "LHContentServer-snet" `
+  -Name "$snetname" `
   -AddressPrefix 10.0.0.0/24
 
 write-host "******  Create a virtual network"
@@ -63,7 +68,7 @@ $frontendSubnet = $ssvnet.Subnets[0]
 write-host "***** Set NSG on subnet"
 Set-AzVirtualNetworkSubnetConfig `
 -VirtualNetwork $ssvnet `
--Name "LHContentServer-snet" `
+-Name "$snetname" `
 -AddressPrefix $frontendSubnet.AddressPrefix `
 -NetworkSecurityGroup $nsgFrontend
 
