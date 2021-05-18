@@ -67,8 +67,9 @@ namespace LearningHub.Nhs.Content
 
             var rewriteOptions = new RewriteOptions()
                  .Add(new ScormContentRewriteRule(scormContentRequestHandler, settings));
-
             app.UseRewriter(rewriteOptions);
+
+            app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseRouting();
             app.UseEndpoints(endpoints =>

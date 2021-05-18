@@ -2,15 +2,21 @@
 // Copyright (c) HEE.nhs.uk.
 // </copyright>
 
+using LearningHub.Nhs.Content.Configuration;
+using Microsoft.EntityFrameworkCore.Query.Internal;
+using Microsoft.Extensions.Options;
+
 namespace LearningHub.Nhs.Content.Service
 {
-    using System;
-    using System.Threading.Tasks;
-    using System.Web;
     using LearningHub.Nhs.Caching;
-    using LearningHub.Nhs.Content.Interfaces;    
+    using LearningHub.Nhs.Content.Interfaces;
+    using LearningHub.Nhs.Models.Entities.Migration;
     using LearningHub.Nhs.Models.Resource;
     using Newtonsoft.Json;
+    using System;
+    using System.Collections.Generic;
+    using System.Threading.Tasks;
+    using System.Web;
 
     /// <summary>
     /// Defines the <see cref="ScormContentRewriteService" />.
@@ -18,64 +24,164 @@ namespace LearningHub.Nhs.Content.Service
     public class ScormContentRewriteService : IScormContentRewriteService
     {
         /// <summary>
-        /// Defines a string which is prefixed to all cache keys used by the LH Content Server.
-        /// </summary>
-        private const string KeyPrefix = "ContentServer-";
-
-        /// <summary>
         /// Defines the learningHubHttpClient.
         /// </summary>
         private ILearningHubHttpClient learningHubHttpClient;
 
         /// <summary>
-        /// Defines the Redis cacheService.
+        /// Defines the Redis cacheService......
         /// </summary>
         private ICacheService cacheService;
+        
+        /// <summary>
+        ///     The settings...
+        /// </summary>
+        private readonly Settings settings;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ScormContentRewriteService"/> class.
         /// </summary>
         /// <param name="learningHubHttpClient">The learningHubHttpClient.</param>
         /// <param name="cacheService">The cacheService.</param>
-        public ScormContentRewriteService(ILearningHubHttpClient learningHubHttpClient, ICacheService cacheService)
+        public ScormContentRewriteService(ILearningHubHttpClient learningHubHttpClient, ICacheService cacheService, IOptions<Settings> settings)
         {
             this.learningHubHttpClient = learningHubHttpClient;
             this.cacheService = cacheService;
+            this.settings = settings.Value;
         }
 
         /// <summary>
-        /// The GetScormResourceDetail.
+        /// The GetMigrationSourcesAsync.
         /// </summary>
-        /// <param name="requestUrl">The requestUrl<see cref="string"/>.</param>
-        /// <returns>The <see cref="ScormContentServerViewModel"/>.</returns>
-        public async Task<ScormContentServerViewModel> GetScormResourceDetailAsync(string requestUrl)
+        /// <param name="cacheKey"></param>
+        /// <returns>The <see cref="Task{List{MigrationSourceViewModel}}"/>.</returns>
+        public async Task<List<MigrationSourceViewModel>> GetMigrationSourcesAsync(string cacheKey)
         {
-            var scormResourceDetail = await this.cacheService.GetOrCreateAsync($"{KeyPrefix}{requestUrl}", () => this.GetScormContentDetailsFromApiAsync(requestUrl).Result);
+            var migrationSources = this.cacheService.GetAsync<List<MigrationSourceViewModel>>(cacheKey+"a").Result;
 
-            return scormResourceDetail;
-        }
+            if (migrationSources != null)
+                return migrationSources;
 
-        /// <summary>
-        /// The GetScormContentDetailsAsync.
-        /// </summary>
-        /// <param name="externalUrl">The externalUrl.</param>
-        /// <returns>A <see cref="Task{TResult}"/> representing the result of the asynchronous operation.</returns>
-        private async Task<ScormContentServerViewModel> GetScormContentDetailsFromApiAsync(string externalUrl)
-        {
-            // TEMP:
-            return new ScormContentServerViewModel
+            migrationSources = await this.ApiGetMigrationSourceAsync();
+            // Also include learning hub by default as this is not part of a migration
+            migrationSources.Add(new MigrationSourceViewModel
             {
-                ContentFilePath = "4bdc56b4-2148-4383-a9d7-3ea79b9bf2ee",
-                ExternalUrl = "https://localhost:44737/content/4bdc56b4-2148-4383-a9d7-3ea79b9bf2ee",
-                ManifestUrl = "index_lms.html"
-            };
+                Id = 0,
+                HostName = this.settings.LearningHubContentServerUrl,
+                Description = "LearningHub",
+                ResourcePath = "/content/",
+                ResourceIdentifierPosition = 3,
+            });
+            await this.cacheService.SetAsync(cacheKey, migrationSources);
+            return migrationSources;
+        }
 
+        /// <summary>
+        /// The GetScormContentDetailsByExternalUrlAsync.
+        /// </summary>
+        /// <param name="historicUrl">The historicUrl<see cref="string"/>.</param>
+        /// <param name="cacheKey"></param>
+        /// <returns>The <see cref="Task{ScormContentServerViewModel}"/>.</returns>
+        public async Task<ScormContentServerViewModel> GetScormContentDetailsByExternalUrlAsync(string historicUrl, string cacheKey)
+        {
+            var contentServerResponse = this.cacheService.GetAsync<ScormContentServerViewModel>(cacheKey).Result;
+            if (contentServerResponse != null)
+            {
+                return contentServerResponse;
+            }
+
+            contentServerResponse = await this.ApiGetScormContentDetailsByExternalUrlAsync(historicUrl);
+            await this.cacheService.SetAsync(cacheKey, contentServerResponse);
+            return contentServerResponse;
+        }
+
+        /// <summary>
+        /// The GetScormContentDetailsByExternalReferenceAsync.
+        /// </summary>
+        /// <param name="resourceExternalReference"></param>
+        /// <param name="cacheKey">The externalReference<see cref="string"/>.</param>
+        /// <returns>The <see cref="Task{ScormContentServerViewModel}"/>.</returns>
+        public async Task<ScormContentServerViewModel> GetScormContentDetailsByExternalReferenceAsync(
+            string resourceExternalReference, string cacheKey)
+        {
+            var contentServerResponse = this.cacheService.GetAsync<ScormContentServerViewModel>(cacheKey).Result;
+            if (contentServerResponse != null)
+            {
+                return contentServerResponse;
+            }
+
+            contentServerResponse = await this.ApiGetScormContentDetailsByExternalReferenceAsync(resourceExternalReference);
+            await this.cacheService.SetAsync(cacheKey, contentServerResponse);
+            
+            return contentServerResponse;
+        }
+
+        /// <summary>
+        /// The ApiGetMigrationSourceAsync.
+        /// </summary>
+        /// <returns>The <see cref="Task{List{MigrationSourceViewModel}}"/>.</returns>
+        private async Task<List<MigrationSourceViewModel>> ApiGetMigrationSourceAsync()
+        {
+            var client = await this.learningHubHttpClient.GetClientAsync();
+            var migrationSources = new List<MigrationSourceViewModel>();
+            var request = $"migration/get-migration-sources";
+            var response = await client.GetAsync(request).ConfigureAwait(false);
+
+            if (response.IsSuccessStatusCode)
+            {
+                var result = response.Content.ReadAsStringAsync().Result;
+                migrationSources = JsonConvert.DeserializeObject<List<MigrationSourceViewModel>>(result);
+            }
+            else if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized ||
+                     response.StatusCode == System.Net.HttpStatusCode.Forbidden)
+            {
+                throw new Exception("AccessDenied");
+            }
+
+            return migrationSources;
+        }
+
+        /// <summary>
+        /// The ApiGetScormContentDetailsByExternalUrlAsync.
+        /// </summary>
+        /// <param name="externalUrl">The externalUrl<see cref="string"/>.</param>
+        /// <returns>The <see cref="Task{ScormContentServerViewModel}"/>.</returns>
+        private async Task<ScormContentServerViewModel> ApiGetScormContentDetailsByExternalUrlAsync(string externalUrl)
+        {
             ScormContentServerViewModel viewmodel = null;
 
             var client = await this.learningHubHttpClient.GetClientAsync();
 
             var encodedUrl = HttpUtility.UrlEncode(externalUrl);
             var request = $"ScormContentServer/GetScormContentDetailsByExternalUrl/{encodedUrl}";
+            var response = await client.GetAsync(request).ConfigureAwait(false);
+
+            if (response.IsSuccessStatusCode)
+            {
+                var result = response.Content.ReadAsStringAsync().Result;
+                viewmodel = JsonConvert.DeserializeObject<ScormContentServerViewModel>(result);
+            }
+            else if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized ||
+                     response.StatusCode == System.Net.HttpStatusCode.Forbidden)
+            {
+                throw new Exception("AccessDenied");
+            }
+
+            return viewmodel;
+        }
+
+        /// <summary>
+        /// The ApiGetScormContentDetailsByExternalReferenceAsync.
+        /// </summary>
+        /// <param name="externalReference">The externalReference<see cref="string"/>.</param>
+        /// <returns>The <see cref="Task{ScormContentServerViewModel}"/>.</returns>
+        private async Task<ScormContentServerViewModel> ApiGetScormContentDetailsByExternalReferenceAsync(string externalReference)
+        {
+            ScormContentServerViewModel viewmodel = null;
+
+            var client = await this.learningHubHttpClient.GetClientAsync();
+
+            var request = $"ScormContentServer/GetScormContentDetailsByExternalReference/{externalReference}";
             var response = await client.GetAsync(request).ConfigureAwait(false);
 
             if (response.IsSuccessStatusCode)

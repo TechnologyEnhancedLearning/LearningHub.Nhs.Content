@@ -4,8 +4,11 @@
 
 namespace LearningHub.Nhs.Content.Interfaces
 {
-    using System.Threading.Tasks;
+    using LearningHub.Nhs.Models.Entities.Migration;
     using LearningHub.Nhs.Models.Resource;
+    using System;
+    using System.Collections.Generic;
+    using System.Threading.Tasks;
 
     /// <summary>
     /// Defines the <see cref="IScormContentRewriteService" />.
@@ -13,10 +16,27 @@ namespace LearningHub.Nhs.Content.Interfaces
     public interface IScormContentRewriteService
     {
         /// <summary>
-        /// The GetScormResourceDetail.
+        /// Gets the SCORM content details for a particular external url (LH or historic).
         /// </summary>
-        /// <param name="requestUrl">The requestUrl<see cref="string"/>.</param>
+        /// <param name="externalUrl">The externalUrl<see cref="string"/>.</param>
+        /// <param name="cacheKey">The cacheKey.</param>
         /// <returns>The <see cref="ScormContentServerViewModel"/>.</returns>
-        Task<ScormContentServerViewModel> GetScormResourceDetailAsync(string requestUrl);
+        Task<ScormContentServerViewModel> GetScormContentDetailsByExternalUrlAsync(string externalUrl, string cacheKey);
+
+        /// <summary>
+        /// The GetScormContentDetailsByExternalReference.
+        /// </summary>
+        /// <param name="resourceExternalReference"></param>
+        /// <param name="cacheKey">The cacheKey.</param>
+        /// <returns>The <see cref="ScormContentServerViewModel"/>.</returns>
+        Task<ScormContentServerViewModel> GetScormContentDetailsByExternalReferenceAsync(
+            string resourceExternalReference, string cacheKey);
+
+        /// <summary>
+        /// The GetMigrationSourcesAsync.
+        /// </summary>
+        /// <param name="cacheKey">The cacheKey.</param>
+        /// <returns>The <see cref="Task{List{MigrationSourceViewModel}}"/>.</returns>
+        Task<List<MigrationSourceViewModel>> GetMigrationSourcesAsync(string cacheKey);
     }
 }
