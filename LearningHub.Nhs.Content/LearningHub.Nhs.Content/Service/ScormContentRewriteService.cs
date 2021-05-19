@@ -92,7 +92,10 @@ namespace LearningHub.Nhs.Content.Service
             }
 
             contentServerResponse = await this.ApiGetScormContentDetailsByExternalUrlAsync(historicUrl);
-            await this.cacheService.SetAsync(cacheKey, contentServerResponse);
+            if (contentServerResponse != null)
+            {
+                await this.cacheService.SetAsync(cacheKey, contentServerResponse);
+            }
             return contentServerResponse;
         }
 
@@ -112,8 +115,10 @@ namespace LearningHub.Nhs.Content.Service
             }
 
             contentServerResponse = await this.ApiGetScormContentDetailsByExternalReferenceAsync(resourceExternalReference);
-            await this.cacheService.SetAsync(cacheKey, contentServerResponse);
-            
+            if (contentServerResponse != null)
+            {
+                await this.cacheService.SetAsync(cacheKey, contentServerResponse);
+            }
             return contentServerResponse;
         }
 

@@ -33,9 +33,9 @@ namespace LearningHub.Nhs.Content
             "/JSAdapter12_aspnet/JSAdapter12_asp/Oracle_SCORM_Adapter_JS.html?starting_url=";
 
         /// <summary>
-        /// Defines the ContentSegment.
+        /// Defines the NewResourceMappedPath.
         /// </summary>
-        private readonly string ContentSegment = "/content/";
+        private readonly string NewResourceMappedPath = "/content/";
 
         /// <summary>
         /// Defines a string which is prefixed to all cache keys used by the LH Content Server........
@@ -155,11 +155,11 @@ namespace LearningHub.Nhs.Content
             }
 
             rewrittenUrlStringBuilder.Append(requestPath);
-            rewrittenUrlStringBuilder.Replace(sourceSystem.ResourcePath, ContentSegment)
+            rewrittenUrlStringBuilder.Replace(sourceSystem.ResourcePath, NewResourceMappedPath)
                 .Replace(resourceExternalReference, scormContentDetail.InternalResourceIdentifier);
             context.HttpContext.Request.Path = rewrittenUrlStringBuilder.ToString();
 
-            Debug.WriteLine($"Source :{sourceSystem.Description} ---- Request Path:{requestPath} ---- Rewritten Path:{rewrittenUrlStringBuilder}");
+            Debug.WriteLine($"Source System :{sourceSystem.Description} ---- Request Path:{requestPath} ---- Rewritten Path:{rewrittenUrlStringBuilder}");
         }
     }
 }
