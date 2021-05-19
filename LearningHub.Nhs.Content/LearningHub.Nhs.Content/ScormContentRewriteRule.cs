@@ -4,57 +4,61 @@
 
 namespace LearningHub.Nhs.Content
 {
-    using System.Collections.Generic;
-    using System.Diagnostics;
     using LearningHub.Nhs.Content.Configuration;
     using LearningHub.Nhs.Content.Extensions;
     using LearningHub.Nhs.Content.Interfaces;
     using LearningHub.Nhs.Content.Models;
     using LearningHub.Nhs.Models.Entities.Migration;
+    using LearningHub.Nhs.Models.Resource;
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Http.Extensions;
     using Microsoft.AspNetCore.Rewrite;
     using Microsoft.Extensions.Options;
     using Microsoft.Net.Http.Headers;
+    using System.Collections.Generic;
+    using System.Diagnostics;
+    using System.Text;
+    using System.Text.RegularExpressions;
+    using System.Threading.Tasks;
 
     /// <summary>
-    ///     Defines the <see cref="ScormContentRewriteRule" />.
+    /// Defines the <see cref="ScormContentRewriteRule" />.
     /// </summary>
     public class ScormContentRewriteRule : IRule
     {
         /// <summary>
-        ///     Defines the AdapterSegment.
+        /// Defines the AdapterSegment.
         /// </summary>
         private readonly string AdapterSegment =
             "/JSAdapter12_aspnet/JSAdapter12_asp/Oracle_SCORM_Adapter_JS.html?starting_url=";
 
         /// <summary>
-        ///     Defines the CONTENT_SEGMENT.
+        /// Defines the ContentSegment.
         /// </summary>
         private readonly string ContentSegment = "/content/";
 
         /// <summary>
-        /// Defines a string which is prefixed to all cache keys used by the LH Content Server......
+        /// Defines a string which is prefixed to all cache keys used by the LH Content Server........
         /// </summary>
         private const string KeyPrefix = "ContentServer";
 
         /// <summary>
-        ///     Defines the scormContentRewriteService.
+        /// Defines the scormContentRewriteService.
         /// </summary>
         private readonly IScormContentRewriteService scormContentRewriteService;
 
         /// <summary>
-        ///     The settings...
+        /// The settings.....
         /// </summary>
         private readonly Settings settings;
 
         /// <summary>
-        ///     Defines the sourceSystems.
+        /// Defines the sourceSystems.
         /// </summary>
         private readonly List<MigrationSourceViewModel> sourceSystems;
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="ScormContentRewriteRule" /> class.
+        /// Initializes a new instance of the <see cref="ScormContentRewriteRule"/> class.
         /// </summary>
         /// <param name="scormContentRewriteService">The scormContentRewriteService<see cref="IScormContentRewriteService" />.</param>
         /// <param name="settings">The settings.</param>
@@ -67,7 +71,7 @@ namespace LearningHub.Nhs.Content
         }
 
         /// <summary>
-        ///     The ApplyRule.
+        /// The ApplyRule.
         /// </summary>
         /// <param name="context">The context<see cref="RewriteContext" />.</param>
         public void ApplyRule(RewriteContext context)
@@ -76,117 +80,86 @@ namespace LearningHub.Nhs.Content
 
             var migrationSource = sourceSystems.GetMigrationSource(displayUrl);
 
-            if(migrationSource == null)
+            if (migrationSource == null)
                 return;
 
-            switch (migrationSource.SourceType())
-            {
-                case SourceType.LearningHub:
-                    HandleLearningHubRequests(context, migrationSource);
-                    break;
-                case SourceType.eLR:
-                    HandleExternalRequests(context, migrationSource);
-                    break;
-                case SourceType.eWIN:
-                    Debug.WriteLine($"SourceType : {migrationSource.SourceType()} Not Supported");
-                    break;
-                default:
-                    Debug.WriteLine("SourceType : Not Supported");
-                    break;
-            }
+            _ = this.HandleRequestsAsync(context, migrationSource);
         }
 
         /// <summary>
-        /// The HandleLearningHubRequests.
+        /// The HandleExternalSourceRequests.
         /// </summary>
         /// <param name="context">The context<see cref="RewriteContext" />.</param>
-        /// <param name="migrationSource"></param>
-        private void HandleLearningHubRequests(RewriteContext context,
-            MigrationSourceViewModel migrationSource)
+        /// <param name="sourceSystem">.</param>
+        /// <returns>The <see cref="Task"/>.</returns>
+        private async Task HandleRequestsAsync(RewriteContext context, MigrationSourceViewModel sourceSystem)
         {
+            // example https://www.elearningrepository.nhs.uk/sites/default/files/lms/5742/Lesson_1/default.html
             // example https://cs1.e-learningforhealthcare.org.uk/content/ACM_001/
             // example https://content.learninghub.nhs.uk/content/07BD413E-5758-43C9-9117-F7A7F469452E/
 
             var requestPath = context.HttpContext.Request.Path.Value;
             var displayUrl = context.HttpContext.Request.GetDisplayUrl();
 
-            if (!requestPath.Contains(migrationSource.ResourcePath))
-                return;
-
             var pathSegments = requestPath.Split('/');
 
-            if (pathSegments.Length < migrationSource.ResourceIdentifierPosition)
+            if (pathSegments.Length < sourceSystem.ResourceIdentifierPosition)
             {
                 context.HttpContext.Response.StatusCode = StatusCodes.Status404NotFound;
                 return;
             }
-            var resourceExternalReference = pathSegments[migrationSource.ResourceIdentifierPosition - 1];
+            var resourceExternalReference = pathSegments[sourceSystem.ResourceIdentifierPosition - 1];
 
-            var cacheKey = $"{KeyPrefix}{migrationSource.ResourcePath.Replace("/","-")}{resourceExternalReference}";
+            var match = Regex.Match(resourceExternalReference, sourceSystem.ResourceRegEx, RegexOptions.IgnoreCase);
 
-            var scormResourceDetail = scormContentRewriteService
-                .GetScormContentDetailsByExternalReferenceAsync(resourceExternalReference, cacheKey).Result;
-            if (scormResourceDetail == null)
-            {
-                context.HttpContext.Response.StatusCode = StatusCodes.Status404NotFound;
-                return;
-            }
-
-            var hostSegment = displayUrl.Substring(0, displayUrl.IndexOf(migrationSource.ResourcePath));
-            var resourceUrl = $"{hostSegment}{ContentSegment}{scormResourceDetail.InternalResourceIdentifier}";
-            
-            var rewrittenUrl = $"{hostSegment}{AdapterSegment}{resourceUrl}/{scormResourceDetail.ManifestUrl}";
-            context.HttpContext.Response.Headers[HeaderNames.Location] = rewrittenUrl;
-            context.HttpContext.Response.StatusCode = StatusCodes.Status302Found;
-            //context.HttpContext.Request.Path = $"{requestPath.Replace(resourceExternalReference, scormResourceDetail.InternalResourceIdentifier)}";
-            context.Result = RuleResult.EndResponse;
-
-            Debug.WriteLine($"Source :{migrationSource.Description} ---- Request Path:{requestPath} ---- Rewritten Path:{rewrittenUrl}");
-        }
-
-        /// <summary>
-        ///     The HandleExternalSourceRequests.
-        /// </summary>
-        /// <param name="context">The context<see cref="RewriteContext" />.</param>
-        /// <param name="migrationSource"></param>
-        private void HandleExternalRequests(RewriteContext context, MigrationSourceViewModel migrationSource)
-        {
-            // example https://www.elearningrepository.nhs.uk/sites/default/files/lms/5742/Lesson_1/default.html
-            
-            var requestPath = context.HttpContext.Request.Path.Value;
-            var displayUrl = context.HttpContext.Request.GetDisplayUrl();
-
-            Debug.WriteLine($"Source :{migrationSource.Description} ---- Request Path:{requestPath}");
-
-            var pathSegments = requestPath.Split('/');
-
-            if (pathSegments.Length < migrationSource.ResourceIdentifierPosition)
-            {
-                context.HttpContext.Response.StatusCode = StatusCodes.Status404NotFound;
-                return;
-            }
-            var resourceExternalReference = pathSegments[migrationSource.ResourceIdentifierPosition - 1];
-
-            var cacheKey = $"{KeyPrefix}{migrationSource.ResourcePath.Replace("/", "-")}{resourceExternalReference}";
-
-            var scormResourceDetail =
-                scormContentRewriteService.GetScormContentDetailsByExternalUrlAsync(displayUrl, cacheKey).Result;
-
-            if (scormResourceDetail == null)
+            if (!match.Success)
             {
                 context.HttpContext.Response.StatusCode = StatusCodes.Status404NotFound;
                 return;
             }
 
-            var hostSegment = displayUrl.Substring(0, displayUrl.IndexOf(migrationSource.ResourcePath));
-            var resourceUrl = $"{hostSegment}{ContentSegment}{scormResourceDetail.InternalResourceIdentifier}";
+            var cacheKey = $"{KeyPrefix}{sourceSystem.ResourcePath.Replace("/", "-")}{resourceExternalReference}";
 
-            var rewrittenUrl =
-                $"{hostSegment}{AdapterSegment}{resourceUrl}/{scormResourceDetail.ManifestUrl}";
-            context.HttpContext.Response.Headers[HeaderNames.Location] = rewrittenUrl;
-            context.HttpContext.Response.StatusCode = StatusCodes.Status302Found;
-            context.Result = RuleResult.EndResponse;
-            Debug.WriteLine($"Source :{migrationSource.Description} ---- Request Path:{requestPath} ---- Rewritten Path:{rewrittenUrl}");
+            ScormContentServerViewModel scormContentDetail = null;
+            switch (sourceSystem.SourceType())
+            {
+                case SourceType.LearningHub:
+                    scormContentDetail = await scormContentRewriteService.GetScormContentDetailsByExternalReferenceAsync(resourceExternalReference, cacheKey);
+                    break;
+                case SourceType.eLR:
+                    scormContentDetail = await scormContentRewriteService.GetScormContentDetailsByExternalUrlAsync(displayUrl, cacheKey);
+                    break;
+                case SourceType.eWIN:
+                default:
+                    Debug.WriteLine("SourceType : Not Supported");
+                    break;
+            }
+
+            if (scormContentDetail == null)
+            {
+                context.HttpContext.Response.StatusCode = StatusCodes.Status404NotFound;
+                return;
+            }
+
+            var rewrittenUrlStringBuilder = new StringBuilder();
+            if (pathSegments.Length == sourceSystem.ResourceIdentifierPosition)
+            {
+                rewrittenUrlStringBuilder.Append(sourceSystem.HostName);
+                rewrittenUrlStringBuilder.Append($"{requestPath}/{scormContentDetail.ManifestUrl}");
+
+                context.HttpContext.Response.StatusCode = StatusCodes.Status302Found;
+                context.HttpContext.Response.Headers[HeaderNames.Location] = rewrittenUrlStringBuilder.ToString();
+                Debug.WriteLine($"Manifest file included {rewrittenUrlStringBuilder}");
+                context.Result = RuleResult.EndResponse;
+                return;
+            }
+
+            rewrittenUrlStringBuilder.Append(requestPath);
+            rewrittenUrlStringBuilder.Replace(sourceSystem.ResourcePath, ContentSegment)
+                .Replace(resourceExternalReference, scormContentDetail.InternalResourceIdentifier);
+            context.HttpContext.Request.Path = rewrittenUrlStringBuilder.ToString();
+
+            Debug.WriteLine($"Source :{sourceSystem.Description} ---- Request Path:{requestPath} ---- Rewritten Path:{rewrittenUrlStringBuilder}");
         }
     }
 }

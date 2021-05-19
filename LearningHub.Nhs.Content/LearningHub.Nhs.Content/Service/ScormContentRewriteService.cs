@@ -71,6 +71,7 @@ namespace LearningHub.Nhs.Content.Service
                 Description = "LearningHub",
                 ResourcePath = "/content/",
                 ResourceIdentifierPosition = 3,
+                ResourceRegEx = "[({]?[a-fA-F0-9]{8}[-]?([a-fA-F0-9]{4}[-]?){3}[a-fA-F0-9]{12}[})]?"
             });
             await this.cacheService.SetAsync(cacheKey, migrationSources);
             return migrationSources;
