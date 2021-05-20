@@ -2,6 +2,8 @@
 // Copyright (c) HEE.nhs.uk.
 // </copyright>
 
+using System;
+
 namespace LearningHub.Nhs.Content
 {
     using LearningHub.Nhs.Content.Configuration;
@@ -99,10 +101,10 @@ namespace LearningHub.Nhs.Content
             // example https://content.learninghub.nhs.uk/content/07BD413E-5758-43C9-9117-F7A7F469452E/
 
             var requestPath = context.HttpContext.Request.Path.Value;
-            var displayUrl = context.HttpContext.Request.GetDisplayUrl();
+            var fullResourceUrl = context.HttpContext.Request.GetDisplayUrl();
 
             var pathSegments = requestPath.Split('/');
-
+            
             if (pathSegments.Length < sourceSystem.ResourceIdentifierPosition)
             {
                 context.HttpContext.Response.StatusCode = StatusCodes.Status404NotFound;
@@ -118,7 +120,7 @@ namespace LearningHub.Nhs.Content
                 return;
             }
 
-            var cacheKey = $"{KeyPrefix}{sourceSystem.ResourcePath.Replace("/", "-")}{resourceExternalReference}";
+            var cacheKey = $"{KeyPrefix}-{sourceSystem.Description}-{resourceExternalReference}";
 
             ScormContentServerViewModel scormContentDetail = null;
             switch (sourceSystem.SourceType())
@@ -127,7 +129,7 @@ namespace LearningHub.Nhs.Content
                     scormContentDetail = await scormContentRewriteService.GetScormContentDetailsByExternalReferenceAsync(resourceExternalReference, cacheKey);
                     break;
                 case SourceType.eLR:
-                    scormContentDetail = await scormContentRewriteService.GetScormContentDetailsByExternalUrlAsync(displayUrl, cacheKey);
+                    scormContentDetail = await scormContentRewriteService.GetScormContentDetailsByExternalUrlAsync(fullResourceUrl, cacheKey);
                     break;
                 case SourceType.eWIN:
                 default:
@@ -144,8 +146,8 @@ namespace LearningHub.Nhs.Content
             var rewrittenUrlStringBuilder = new StringBuilder();
             if (pathSegments.Length == sourceSystem.ResourceIdentifierPosition)
             {
-                rewrittenUrlStringBuilder.Append(sourceSystem.HostName);
-                rewrittenUrlStringBuilder.Append($"{requestPath}/{scormContentDetail.ManifestUrl}");
+                var hostSegment = fullResourceUrl[..fullResourceUrl.IndexOf(sourceSystem.ResourcePath)];
+                rewrittenUrlStringBuilder.Append($"{hostSegment}{requestPath}/{scormContentDetail.ManifestUrl}");
 
                 context.HttpContext.Response.StatusCode = StatusCodes.Status302Found;
                 context.HttpContext.Response.Headers[HeaderNames.Location] = rewrittenUrlStringBuilder.ToString();
@@ -154,11 +156,11 @@ namespace LearningHub.Nhs.Content
                 return;
             }
 
-            rewrittenUrlStringBuilder.Append(requestPath);
-            rewrittenUrlStringBuilder.Replace(sourceSystem.ResourcePath, NewResourceMappedPath)
+            rewrittenUrlStringBuilder
+                .Append(requestPath)
+                .Replace(sourceSystem.ResourcePath, NewResourceMappedPath)
                 .Replace(resourceExternalReference, scormContentDetail.InternalResourceIdentifier);
             context.HttpContext.Request.Path = rewrittenUrlStringBuilder.ToString();
-
             Debug.WriteLine($"Source System :{sourceSystem.Description} ---- Request Path:{requestPath} ---- Rewritten Path:{rewrittenUrlStringBuilder}");
         }
     }

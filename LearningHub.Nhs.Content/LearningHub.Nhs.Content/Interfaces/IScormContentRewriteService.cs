@@ -16,12 +16,12 @@ namespace LearningHub.Nhs.Content.Interfaces
     public interface IScormContentRewriteService
     {
         /// <summary>
-        /// Gets the SCORM content details for a particular external url (LH or historic).
+        /// Gets the SCORM content details for a particular external url.
         /// </summary>
-        /// <param name="externalUrl">The externalUrl<see cref="string"/>.</param>
+        /// <param name="resourceExternalUrl">The resourceExternalUrl<see cref="string"/>.</param>
         /// <param name="cacheKey">The cacheKey.</param>
         /// <returns>The <see cref="ScormContentServerViewModel"/>.</returns>
-        Task<ScormContentServerViewModel> GetScormContentDetailsByExternalUrlAsync(string externalUrl, string cacheKey);
+        Task<ScormContentServerViewModel> GetScormContentDetailsByExternalUrlAsync(string resourceExternalUrl, string cacheKey);
 
         /// <summary>
         /// The GetScormContentDetailsByExternalReference.

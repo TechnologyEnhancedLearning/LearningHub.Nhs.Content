@@ -80,10 +80,10 @@ namespace LearningHub.Nhs.Content.Service
         /// <summary>
         /// The GetScormContentDetailsByExternalUrlAsync.
         /// </summary>
-        /// <param name="historicUrl">The historicUrl<see cref="string"/>.</param>
+        /// <param name="resourceExternalUrl">The resourceExternalUrl<see cref="string"/>.</param>
         /// <param name="cacheKey"></param>
         /// <returns>The <see cref="Task{ScormContentServerViewModel}"/>.</returns>
-        public async Task<ScormContentServerViewModel> GetScormContentDetailsByExternalUrlAsync(string historicUrl, string cacheKey)
+        public async Task<ScormContentServerViewModel> GetScormContentDetailsByExternalUrlAsync(string resourceExternalUrl, string cacheKey)
         {
             var contentServerResponse = this.cacheService.GetAsync<ScormContentServerViewModel>(cacheKey).Result;
             if (contentServerResponse != null)
@@ -91,7 +91,7 @@ namespace LearningHub.Nhs.Content.Service
                 return contentServerResponse;
             }
 
-            contentServerResponse = await this.ApiGetScormContentDetailsByExternalUrlAsync(historicUrl);
+            contentServerResponse = await this.ApiGetScormContentDetailsByExternalUrlAsync(resourceExternalUrl);
             if (contentServerResponse != null)
             {
                 await this.cacheService.SetAsync(cacheKey, contentServerResponse);
@@ -150,15 +150,15 @@ namespace LearningHub.Nhs.Content.Service
         /// <summary>
         /// The ApiGetScormContentDetailsByExternalUrlAsync.
         /// </summary>
-        /// <param name="externalUrl">The externalUrl<see cref="string"/>.</param>
+        /// <param name="resourceExternalUrl">The resourceExternalUrl<see cref="string"/>.</param>
         /// <returns>The <see cref="Task{ScormContentServerViewModel}"/>.</returns>
-        private async Task<ScormContentServerViewModel> ApiGetScormContentDetailsByExternalUrlAsync(string externalUrl)
+        private async Task<ScormContentServerViewModel> ApiGetScormContentDetailsByExternalUrlAsync(string resourceExternalUrl)
         {
             ScormContentServerViewModel viewmodel = null;
 
             var client = await this.learningHubHttpClient.GetClientAsync();
 
-            var encodedUrl = HttpUtility.UrlEncode(externalUrl);
+            var encodedUrl = HttpUtility.UrlEncode(resourceExternalUrl);
             var request = $"ScormContentServer/GetScormContentDetailsByExternalUrl/{encodedUrl}";
             var response = await client.GetAsync(request).ConfigureAwait(false);
 
