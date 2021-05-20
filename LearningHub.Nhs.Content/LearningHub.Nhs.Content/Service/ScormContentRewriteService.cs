@@ -66,7 +66,6 @@ namespace LearningHub.Nhs.Content.Service
             // Also include learning hub by default as this is not part of a migration
             migrationSources.Add(new MigrationSourceViewModel
             {
-                Id = 0,
                 HostName = this.settings.LearningHubContentServerUrl,
                 Description = "LearningHub",
                 ResourcePath = "/content/",
