@@ -140,7 +140,7 @@ namespace LearningHub.Nhs.Content
                     break;
                 case SourceType.eWIN:
                 default:
-                    Debug.WriteLine("SourceType : Not Supported");
+                    //Debug.WriteLine("SourceType : Not Supported");
                     break;
             }
 
@@ -158,7 +158,7 @@ namespace LearningHub.Nhs.Content
 
                 context.HttpContext.Response.StatusCode = StatusCodes.Status302Found;
                 context.HttpContext.Response.Headers[HeaderNames.Location] = rewrittenUrlStringBuilder.ToString();
-                Debug.WriteLine($"Manifest file included {rewrittenUrlStringBuilder}");
+                //Debug.WriteLine($"Manifest file included {rewrittenUrlStringBuilder}");
                 context.Result = RuleResult.EndResponse;
                 return;
             }
@@ -168,7 +168,7 @@ namespace LearningHub.Nhs.Content
                 .Replace(sourceSystem.ResourcePath, NewResourceMappedPath)
                 .Replace(resourceExternalReference, scormContentDetail.InternalResourceIdentifier);
             context.HttpContext.Request.Path = rewrittenUrlStringBuilder.ToString();
-            Debug.WriteLine($"Source System :{sourceSystem.Description} ---- Request Path:{requestPath} ---- Rewritten Path:{rewrittenUrlStringBuilder}");
+           // Debug.WriteLine($"Source System :{sourceSystem.Description} ---- Request Path:{requestPath} ---- Rewritten Path:{rewrittenUrlStringBuilder}");
         }
     }
 }
