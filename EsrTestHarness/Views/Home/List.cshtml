@@ -1,0 +1,63 @@
+﻿@model EsrTestHarness.ViewModels.ListVM
+
+<div class="d-flex flex-column" style="height:200px;">
+    <div class="p-5">
+
+        <div class="text-center pb-2">
+            <h5 class="d-inline pe-2">Welcome @Model.SessionId</h5>
+            <small><a href="/">Logout</a></small>
+        </div>
+
+        <div class="row my-3 text-center">
+            <div class="col-sm-12">
+                Provide scorm resource url below and use button to launch content.
+            </div>
+        </div>
+
+        <div class="my-3">
+            <form class="d-flex justify-content-center flex-fill">
+                <input type="url" id="scormUrl" class="form-control d-inline" style="max-width:600px;" required placeholder="your scorm resource url" />
+                <button class="btn btn-primary ms-3 mb-1" type="submit" onclick="return launchScrom()">Launch</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="d-flex flex-column w-100">
+    <hr />
+</div>
+
+<div class="d-flex flex-column flex-grow-1 overflow-auto" style="font-size: 0.8rem;">
+    <ul id="messagesList" class="list-unstyled mx-4"></ul>
+</div>
+
+<small id="clearLog" class="position-absolute d-none" style="top: 230px; right: 25px;">
+    <a href="#" onclick="clearLog()">Clear logs</a>
+</small>
+
+@section Scripts
+{
+    <script src="~/js/signalr/dist/browser/signalr.js"></script>
+    <script src="~/js/message.js"></script>
+
+    <script>
+        function launchScrom() {
+            const form = document.forms[0];
+            if (form.checkValidity()) {
+                const scormUrl = $('#scormUrl').val();
+                window.open(`@Model.ScormAdapterUrl?starting_url=${scormUrl}&sessionid=${escape(btoa('@Model.SessionId'))}&lms_Url=@Model.LmsHost/lms-content/`,
+                    'winname',
+                    'directories=no,titlebar=no,toolbar=no,location=no,status=no,menubar=no');
+            } else {
+                form.reportValidity();
+            }
+
+            return false;
+        }
+
+        function clearLog() {
+            $('#messagesList').html("");
+            $('#clearLog').addClass('d-none');
+        }
+    </script>
+}
