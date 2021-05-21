@@ -78,14 +78,21 @@ namespace LearningHub.Nhs.Content
         /// <param name="context">The context<see cref="RewriteContext" />.</param>
         public void ApplyRule(RewriteContext context)
         {
-            var displayUrl = context.HttpContext.Request.GetDisplayUrl();
+            try
+            {
+                var displayUrl = context.HttpContext.Request.GetDisplayUrl();
 
-            var migrationSource = sourceSystems.GetMigrationSource(displayUrl);
+                var migrationSource = sourceSystems.GetMigrationSource(displayUrl);
 
-            if (migrationSource == null)
-                return;
+                if (migrationSource == null)
+                    return;
 
-            _ = this.HandleRequestsAsync(context, migrationSource);
+                _ = this.HandleRequestsAsync(context, migrationSource);
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine(e.Message);
+            }
         }
 
         /// <summary>
