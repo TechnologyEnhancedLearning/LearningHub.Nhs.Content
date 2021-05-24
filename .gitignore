@@ -405,5 +405,7 @@ Training
 Blog
 About
 /LearningHub.Nhs.Content/LearningHub.Nhs.Content/wwwroot/content
-/LearningHub.Nhs.Content/LearningHub.Nhs.Content/web.config
+/EsrTestHarness/Properties/launchSettings.json
+/EsrTestHarness/web.config
+/EsrTestHarness/EsrTestHarness.sqlite
 /LearningHub.Nhs.Content/LearningHub.Nhs.Content/web.config
