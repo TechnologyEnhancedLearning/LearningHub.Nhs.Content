@@ -10,12 +10,16 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="JSAdapter12_aspnet\**" />
     <Compile Remove="wwwroot\content\2fbb83a8-06ae-4429-a120-defa929fc2f1\**" />
     <Compile Remove="wwwroot\content\b6bc24a8-00c8-4b6f-8542-1d88e5d568bf\**" />
+    <Content Remove="JSAdapter12_aspnet\**" />
     <Content Remove="wwwroot\content\2fbb83a8-06ae-4429-a120-defa929fc2f1\**" />
     <Content Remove="wwwroot\content\b6bc24a8-00c8-4b6f-8542-1d88e5d568bf\**" />
+    <EmbeddedResource Remove="JSAdapter12_aspnet\**" />
     <EmbeddedResource Remove="wwwroot\content\2fbb83a8-06ae-4429-a120-defa929fc2f1\**" />
     <EmbeddedResource Remove="wwwroot\content\b6bc24a8-00c8-4b6f-8542-1d88e5d568bf\**" />
+    <None Remove="JSAdapter12_aspnet\**" />
     <None Remove="wwwroot\content\2fbb83a8-06ae-4429-a120-defa929fc2f1\**" />
     <None Remove="wwwroot\content\b6bc24a8-00c8-4b6f-8542-1d88e5d568bf\**" />
   </ItemGroup>
@@ -29,10 +33,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="JSAdapter12_aspnet\bin\IBM_Scorm_Web.dll.config" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="LearningHub.Nhs.Caching" Version="1.0.0" />
     <PackageReference Include="LearningHub.Nhs.Models" Version="1.0.107" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
@@ -40,6 +40,12 @@
 
   <ItemGroup>
     <Folder Include="wwwroot\content\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="JSAdapter12_aspnet.zip">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>
