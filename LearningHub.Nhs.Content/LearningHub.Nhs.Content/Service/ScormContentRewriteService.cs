@@ -3,7 +3,6 @@
 // </copyright>
 
 using LearningHub.Nhs.Content.Configuration;
-using Microsoft.EntityFrameworkCore.Query.Internal;
 using Microsoft.Extensions.Options;
 
 namespace LearningHub.Nhs.Content.Service
