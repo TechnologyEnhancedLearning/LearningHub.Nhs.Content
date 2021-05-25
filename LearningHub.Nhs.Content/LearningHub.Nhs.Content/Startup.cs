@@ -69,12 +69,16 @@ namespace LearningHub.Nhs.Content
 
             var scormContentRequestHandler = app.ApplicationServices.GetService<IScormContentRewriteService>();
             var settings = app.ApplicationServices.GetService<IOptions<Settings>>();
+            
+            //:TODO remove check after validating the powershell scripts
+            if (this.environment.IsDevelopment())
+            {
+                var rewriteOptions = new RewriteOptions()
+                    .Add(new ScormContentRewriteRule(scormContentRequestHandler, settings));
+                app.UseRewriter(rewriteOptions);
+            }
 
-            var rewriteOptions = new RewriteOptions()
-                 .Add(new ScormContentRewriteRule(scormContentRequestHandler, settings));
-            app.UseRewriter(rewriteOptions);
-
-            app.UseHttpsRedirection();
+            //app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseRouting();
             app.UseCors(AllowOrigins);
