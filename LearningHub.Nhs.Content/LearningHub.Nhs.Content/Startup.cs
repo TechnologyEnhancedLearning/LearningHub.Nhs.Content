@@ -63,20 +63,14 @@ namespace LearningHub.Nhs.Content
 
             var defaultOptions = new DefaultFilesOptions();
             defaultOptions.DefaultFileNames.Clear();
-            defaultOptions.DefaultFileNames.Add("index.html");
-            defaultOptions.DefaultFileNames.Add("index_lms.html");
             app.UseDefaultFiles(defaultOptions);
 
             var scormContentRequestHandler = app.ApplicationServices.GetService<IScormContentRewriteService>();
             var settings = app.ApplicationServices.GetService<IOptions<Settings>>();
-            
-            //:TODO remove check after validating the powershell scripts
-            if (this.environment.IsDevelopment())
-            {
-                var rewriteOptions = new RewriteOptions()
-                    .Add(new ScormContentRewriteRule(scormContentRequestHandler, settings));
-                app.UseRewriter(rewriteOptions);
-            }
+
+            var rewriteOptions = new RewriteOptions()
+                .Add(new ScormContentRewriteRule(scormContentRequestHandler, settings));
+            app.UseRewriter(rewriteOptions);
 
             //app.UseHttpsRedirection();
             app.UseStaticFiles();
