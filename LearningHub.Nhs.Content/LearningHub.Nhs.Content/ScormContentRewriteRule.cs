@@ -3,6 +3,9 @@
 // </copyright>
 
 using System;
+using System.Linq;
+using Microsoft.Extensions.Logging;
+using NLog;
 
 namespace LearningHub.Nhs.Content
 {
@@ -59,17 +62,22 @@ namespace LearningHub.Nhs.Content
         /// </summary>
         private readonly List<MigrationSourceViewModel> sourceSystems;
 
+        private readonly ILogger<ScormContentRewriteRule> logger;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="ScormContentRewriteRule"/> class.
         /// </summary>
         /// <param name="scormContentRewriteService">The scormContentRewriteService<see cref="IScormContentRewriteService" />.</param>
         /// <param name="settings">The settings.</param>
+        /// <param name="logger">logger</param>
         public ScormContentRewriteRule(IScormContentRewriteService scormContentRewriteService,
-            IOptions<Settings> settings)
+            IOptions<Settings> settings, ILogger<ScormContentRewriteRule> logger)
         {
             this.scormContentRewriteService = scormContentRewriteService;
             this.settings = settings.Value;
+            this.logger = logger;
             sourceSystems = this.scormContentRewriteService.GetMigrationSourcesAsync($"{KeyPrefix}-Migration-Sources").Result;
+            this.logger.LogInformation($"source systems {sourceSystems.Count}");
         }
 
         /// <summary>
@@ -140,7 +148,7 @@ namespace LearningHub.Nhs.Content
                     break;
                 case SourceType.eWIN:
                 default:
-                    //Debug.WriteLine("SourceType : Not Supported");
+                    this.logger.LogInformation("SourceType : Not Supported");
                     break;
             }
 
@@ -158,7 +166,8 @@ namespace LearningHub.Nhs.Content
 
                 context.HttpContext.Response.StatusCode = StatusCodes.Status302Found;
                 context.HttpContext.Response.Headers[HeaderNames.Location] = rewrittenUrlStringBuilder.ToString();
-                //Debug.WriteLine($"Manifest file included {rewrittenUrlStringBuilder}");
+                
+                this.logger.LogInformation($"Manifest file included {rewrittenUrlStringBuilder}");
                 context.Result = RuleResult.EndResponse;
                 return;
             }
@@ -168,7 +177,7 @@ namespace LearningHub.Nhs.Content
                 .Replace(sourceSystem.ResourcePath, NewResourceMappedPath)
                 .Replace(resourceExternalReference, scormContentDetail.InternalResourceIdentifier);
             context.HttpContext.Request.Path = rewrittenUrlStringBuilder.ToString();
-           // Debug.WriteLine($"Source System :{sourceSystem.Description} ---- Request Path:{requestPath} ---- Rewritten Path:{rewrittenUrlStringBuilder}");
+            this.logger.LogInformation($"Source System :{sourceSystem.Description} ---- Request Path:{requestPath} ---- Rewritten Path:{rewrittenUrlStringBuilder}");
         }
     }
 }

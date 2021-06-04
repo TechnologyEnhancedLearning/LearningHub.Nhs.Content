@@ -2,6 +2,9 @@
 // Copyright (c) HEE.nhs.uk.
 // </copyright>
 
+using Microsoft.Extensions.Logging;
+using NLog;
+
 namespace LearningHub.Nhs.Content
 {
     using LearningHub.Nhs.Caching;
@@ -69,9 +72,9 @@ namespace LearningHub.Nhs.Content
 
             var scormContentRequestHandler = app.ApplicationServices.GetService<IScormContentRewriteService>();
             var settings = app.ApplicationServices.GetService<IOptions<Settings>>();
-
+            var logger = app.ApplicationServices.GetService<ILogger<ScormContentRewriteRule>>();
             var rewriteOptions = new RewriteOptions()
-                .Add(new ScormContentRewriteRule(scormContentRequestHandler, settings));
+                .Add(new ScormContentRewriteRule(scormContentRequestHandler, settings, logger));
             app.UseRewriter(rewriteOptions);
 
             //app.UseHttpsRedirection();

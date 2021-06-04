@@ -2,6 +2,9 @@
 // Copyright (c) HEE.nhs.uk.
 // </copyright>
 
+using Microsoft.Extensions.Logging;
+using NLog.Web;
+
 namespace LearningHub.Nhs.Content
 {
     using Microsoft.AspNetCore.Hosting;
@@ -30,7 +33,12 @@ namespace LearningHub.Nhs.Content
             Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
-                    webBuilder.UseStartup<Startup>();
+                    webBuilder.UseStartup<Startup>().ConfigureLogging(options =>
+                        {
+                            options.ClearProviders();
+                            options.SetMinimumLevel(LogLevel.Trace);
+                        }).UseNLog();
+
                 });
     }
 }
