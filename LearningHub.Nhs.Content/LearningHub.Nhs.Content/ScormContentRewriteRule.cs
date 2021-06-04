@@ -97,9 +97,9 @@ namespace LearningHub.Nhs.Content
 
                 _ = this.HandleRequestsAsync(context, migrationSource);
             }
-            catch (Exception e)
+            catch (Exception exception)
             {
-                throw e;
+                this.logger.LogError(exception, exception.Message);
             }
         }
 
@@ -126,11 +126,12 @@ namespace LearningHub.Nhs.Content
                 return;
             }
             var resourceExternalReference = pathSegments[sourceSystem.ResourceIdentifierPosition - 1];
-
+            this.logger.LogInformation($"{requestPath} : resourceExternalReference :{resourceExternalReference}");
             var match = Regex.Match(resourceExternalReference, sourceSystem.ResourceRegEx, RegexOptions.IgnoreCase);
 
             if (!match.Success)
             {
+                this.logger.LogInformation($"{requestPath} : resourceExternalReference :{resourceExternalReference}: Resource Identifier Invalid Regex Format");
                 context.HttpContext.Response.StatusCode = StatusCodes.Status404NotFound;
                 return;
             }
@@ -154,6 +155,7 @@ namespace LearningHub.Nhs.Content
 
             if (scormContentDetail == null)
             {
+                this.logger.LogInformation($"{requestPath} : resourceExternalReference :{resourceExternalReference}: scormContentDetail NOT FOUND");
                 context.HttpContext.Response.StatusCode = StatusCodes.Status404NotFound;
                 return;
             }
