@@ -7,11 +7,11 @@ select-AzSubscription -Subscription "eLfH DevTest"
 # before running this script, delete all resources, excluding the vnet and public IP address
 # if the network resources do not exist. Please run uks-lhcontentserver_createnetwork, before continuing with this script. 
 
-$DeploymentEnvironment= "prod"
+$DeploymentEnvironment= "uat"
 $ArtifactLocation = "https://ukselfhdevlhcontentstore.blob.core.windows.net/contentserverartifacts/"
 $CustomScriptFileName = "$DeploymentEnvironment/uks-lhcontentserver_cse.ps1"
 
-$DeploymentEnvironment= "PROD"
+$DeploymentEnvironment= "UAT"
 
 $resourcegroup = "UKS-LEARNINGHUB-CONTENTSERVER-$DeploymentEnvironment-RG"
 $region = "UK South"
@@ -20,7 +20,7 @@ $vnetname = "UKS-LHCONTENTSERVER-$DeploymentEnvironment-VNET"
 $pipname = "UKS-LHCONTENTSERVER-$DeploymentEnvironment-PIP"
 
 $AdminUsername = "windowsadmin";
-$AdminPassword = "Pr0dCOnSvR@dM1N";
+$AdminPassword = "U@tCOnSvR@dM1N";
 
 write-host "****** Get vnet ********"
 $vnet = Get-AzVirtualNetwork `

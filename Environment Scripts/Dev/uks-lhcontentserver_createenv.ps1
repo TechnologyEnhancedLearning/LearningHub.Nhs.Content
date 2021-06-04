@@ -1,19 +1,26 @@
-### Used to set up the machines, env must exist (use _createenv_ script first)
+### Used to set up the machines, env must exist (use uks-lhcontentserver_createnetwork first)
 
 Login-AzAccount
 Get-AzSubscription
 select-AzSubscription -Subscription "eLfH DevTest"
 
 # before running this script, delete all resources, excluding the vnet and public IP address
-# if the ne-elfh-esrproxy-rg and network resources do not exist. Please run elfproxypoc_createnetwork, before continuing with this script. 
+# if the network resources do not exist. Please run uks-lhcontentserver_createnetwork, before continuing with this script. 
 
-$resourcegroup = "UKS-ELFH-ESRPROXY-RG"
+$DeploymentEnvironment= "dev"
+$ArtifactLocation = "https://ukselfhdevlhcontentstore.blob.core.windows.net/contentserverartifacts/"
+$CustomScriptFileName = "$DeploymentEnvironment/uks-lhcontentserver_cse.ps1"
+
+$DeploymentEnvironment= "DEV"
+
+$resourcegroup = "UKS-LEARNINGHUB-CONTENTSERVER-$DeploymentEnvironment-RG"
 $region = "UK South"
-$ssname = "uks-LHContentServer-ss"
-$vnetname = "UKS-LHCONTENTSERVER-VNET"
-$pipname = "UKS-LHCONTENTSERVER-PIP"
+$ssname = "UKS-LHCONTENTSERVER-$DeploymentEnvironment-SS"
+$vnetname = "UKS-LHCONTENTSERVER-$DeploymentEnvironment-VNET"
+$pipname = "UKS-LHCONTENTSERVER-$DeploymentEnvironment-PIP"
+
 $AdminUsername = "windowsadmin";
-$AdminPassword = "P@ssword" + $resourcegroup;
+$AdminPassword = "D3VCOnSvR@dM1N";
 
 write-host "****** Get vnet ********"
 $vnet = Get-AzVirtualNetwork `
@@ -25,17 +32,16 @@ $publicIP = Get-AzPublicIpAddress `
   -Name $pipname `
   -ResourceGroupName $resourcegroup
 
-
 write-host "****** Create a frontend and backend IP pool"
 $frontendIP = New-AzLoadBalancerFrontendIpConfig `
-  -Name "LHContentServer-FPool" `
+  -Name "UKS-LHCONTENTSERVER-$DeploymentEnvironment-FPool" `
   -PublicIpAddress $publicIP
-$backendPool = New-AzLoadBalancerBackendAddressPoolConfig -Name "LHContentServer-BPool"
+$backendPool = New-AzLoadBalancerBackendAddressPoolConfig -Name "UKS-LHCONTENTSERVER-$DeploymentEnvironment-BPOOL"
 
 write-host "****** Create a Network Address Translation (NAT) pool"
 # A rule for Remote Desktop Protocol (RDP) traffic is created on TCP port 3389
 $inboundNATPool = New-AzLoadBalancerInboundNatPoolConfig `
-  -Name "LHContentServer-RDPRule" `
+  -Name "UKS-LHCONTENTSERVER-$DeploymentEnvironment-RDPRULE" `
   -FrontendIpConfigurationId $frontendIP.Id `
   -Protocol TCP `
   -FrontendPortRangeStart 50001 `
@@ -45,7 +51,7 @@ $inboundNATPool = New-AzLoadBalancerInboundNatPoolConfig `
 write-host "****** Create the load balancer"
 $lb = New-AzLoadBalancer `
   -ResourceGroupName $resourcegroup `
-  -Name "LHContentServer-LB" `
+  -Name "UKS-LHCONTENTSERVER-$DeploymentEnvironment-LB" `
   -Location $region `
   -Sku Standard `
   -FrontendIpConfiguration $frontendIP `
@@ -53,7 +59,7 @@ $lb = New-AzLoadBalancer `
   -InboundNatPool $inboundNATPool
 
 write-host "****** Create a load balancer health probe for TCP port 80"
-Add-AzLoadBalancerProbeConfig -Name "LHContentServer-probe" `
+Add-AzLoadBalancerProbeConfig -Name "UKS-LHCONTENTSERVER-$DeploymentEnvironment-PROBE" `
   -LoadBalancer $lb `
   -Protocol TCP `
   -Port 80 `
@@ -64,21 +70,21 @@ write-host "****** Create a load balancer rule to distribute traffic on port TCP
 # The health probe from the previous step is used to make sure that traffic is
 # only directed to healthy VM instances
 Add-AzLoadBalancerRuleConfig `
-  -Name "LHContentServer-LBRule" `
+  -Name "UKS-LHCONTENTSERVER-$DeploymentEnvironment-LBRule" `
   -LoadBalancer $lb `
   -FrontendIpConfiguration $lb.FrontendIpConfigurations[0] `
   -BackendAddressPool $lb.BackendAddressPools[0] `
   -Protocol TCP `
   -FrontendPort 80 `
   -BackendPort 80 `
-  -Probe (Get-AzLoadBalancerProbeConfig -Name "LHContentServer-probe" -LoadBalancer $lb)
+  -Probe (Get-AzLoadBalancerProbeConfig -Name "UKS-LHCONTENTSERVER-$DeploymentEnvironment-PROBE" -LoadBalancer $lb)
 
 write-host "****** Update the load balancer configuration"
 Set-AzLoadBalancer -LoadBalancer $lb
 
 write-host "****** Create IP address configurations"
 $ipConfig = New-AzVmssIpConfig `
-  -Name "LHContentServer-IPConfig" `
+  -Name "UKS-LHCONTENTSERVER-$DeploymentEnvironment-IPCONFIG" `
   -LoadBalancerBackendAddressPoolsId $lb.BackendAddressPools[0].Id `
   -LoadBalancerInboundNatPoolsId $inboundNATPool.Id `
   -SubnetId $vnet.Subnets[0].Id
@@ -119,28 +125,27 @@ $vmss = New-AzVmss `
   -VirtualMachineScaleSet $vmssConfig
   
 write-host "****** Define the script for your Custom Script Extension to run"
-$publicSettings = @{
-    "fileUris" = (,"https://ukselfhproxyfs.blob.core.windows.net/elfhartifacts/LHContentServer/uks-lhcontentserver_cse_v1.0.ps1");
-    "commandToExecute" = "powershell -ExecutionPolicy Unrestricted -File uks-lhcontentserver_cse_v1.0.ps1"
+
+$customConfig = @{
+    "fileUris" = (,"$ArtifactLocation$CustomScriptFileName");
+    "commandToExecute" = "powershell -ExecutionPolicy Unrestricted -File $CustomScriptFileName"
 }
 
 write-host "***** Run Custom Script Extension to install IIS and configure basic website"
-Add-AzVmssExtension -VirtualMachineScaleSet $vmss `
+
+# Add the Custom Script Extension to install IIS and configure basic website
+$vmss = Add-AzVmssExtension `
+  -VirtualMachineScaleSet $vmss `
   -Name "customScript" `
   -Publisher "Microsoft.Compute" `
   -Type "CustomScriptExtension" `
   -TypeHandlerVersion 1.9 `
-  -Setting $publicSettings
+  -Setting $customConfig
+
+Write-Output "Started to update vm scale set"
 
 write-host "***** Update the scale set and apply the Custom Script Extension to the VM instances"
 Update-AzVmss `
   -ResourceGroupName $resourcegroup `
   -Name $ssname `
   -VirtualMachineScaleSet $vmss
-
-
-write-host "***** Update the scale set and apply the Custom Script Extension to the VM instances"
-Update-AzVmss `
--ResourceGroupName $resourcegroup `
--Name $ssname `
--VirtualMachineScaleSet $vmss

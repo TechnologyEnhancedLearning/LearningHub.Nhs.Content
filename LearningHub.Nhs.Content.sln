@@ -9,7 +9,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	ProjectSection(SolutionItems) = preProject
 		Directory.Build.props = Directory.Build.props
 		StyleCop.ruleset = StyleCop.ruleset
-		Environment Scripts\Dev\uks-lhcontentserver_createnetwork.ps1 = Environment Scripts\Dev\uks-lhcontentserver_createnetwork.ps1
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Environment Scripts", "Environment Scripts", "{6B094D33-099A-4681-9639-7F8F0C81D259}"
@@ -26,6 +25,20 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Prod", "Prod", "{78F2745B-8
 		Environment Scripts\Prod\uks-lhcontentserver_createenv.ps1 = Environment Scripts\Prod\uks-lhcontentserver_createenv.ps1
 		Environment Scripts\Prod\uks-lhcontentserver_createnetwork.ps1 = Environment Scripts\Prod\uks-lhcontentserver_createnetwork.ps1
 		Environment Scripts\Prod\uks-lhcontentserver_cse.ps1 = Environment Scripts\Prod\uks-lhcontentserver_cse.ps1
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Test", "Test", "{89360D34-D4A2-4D90-8787-BE449162FA79}"
+	ProjectSection(SolutionItems) = preProject
+		Environment Scripts\Test\uks-lhcontentserver_createenv.ps1 = Environment Scripts\Test\uks-lhcontentserver_createenv.ps1
+		Environment Scripts\Test\uks-lhcontentserver_createnetwork.ps1 = Environment Scripts\Test\uks-lhcontentserver_createnetwork.ps1
+		Environment Scripts\Test\uks-lhcontentserver_cse.ps1 = Environment Scripts\Test\uks-lhcontentserver_cse.ps1
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Uat", "Uat", "{D179127E-E5D2-4003-903A-375FD007711C}"
+	ProjectSection(SolutionItems) = preProject
+		Environment Scripts\Uat\uks-lhcontentserver_createenv.ps1 = Environment Scripts\Uat\uks-lhcontentserver_createenv.ps1
+		Environment Scripts\Uat\uks-lhcontentserver_createnetwork.ps1 = Environment Scripts\Uat\uks-lhcontentserver_createnetwork.ps1
+		Environment Scripts\Uat\uks-lhcontentserver_cse.ps1 = Environment Scripts\Uat\uks-lhcontentserver_cse.ps1
 	EndProjectSection
 EndProject
 Global
@@ -45,6 +58,8 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{E11F4078-1357-4DCA-9F3C-EF52DB754BE8} = {6B094D33-099A-4681-9639-7F8F0C81D259}
 		{78F2745B-83FE-4C14-AFFD-96B422FCB85C} = {6B094D33-099A-4681-9639-7F8F0C81D259}
+		{89360D34-D4A2-4D90-8787-BE449162FA79} = {6B094D33-099A-4681-9639-7F8F0C81D259}
+		{D179127E-E5D2-4003-903A-375FD007711C} = {6B094D33-099A-4681-9639-7F8F0C81D259}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {B548ACD9-DA2C-42F4-8F9C-293FBD20D4E3}

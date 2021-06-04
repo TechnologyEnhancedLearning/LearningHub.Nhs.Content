@@ -8,7 +8,7 @@ Login-AzAccount
 Get-AzSubscription
 select-AzSubscription -Subscription "eLfH DevTest"
 
-$DeploymentEnvironment= "DEV"
+$DeploymentEnvironment= "TEST"
 
 $resourcegroup = "UKS-LEARNINGHUB-CONTENTSERVER-$DeploymentEnvironment-RG"
 $region = "UK South"

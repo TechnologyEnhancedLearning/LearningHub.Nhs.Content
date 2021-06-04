@@ -6,7 +6,7 @@ $log_file =  "$env:SystemDrive\inetpub\wwwroot\log.txt"
 
 $LHContentServerDownloadFolder =  "$env:SystemDrive\LearningHub"
 
-$DeploymentEnvironment= "dev"
+$DeploymentEnvironment= "test"
 
 # Learning Hub Content Server artifacts location
 $LHContentServerZippedFileUrl = "https://ukselfhdevlhcontentstore.blob.core.windows.net/contentserverartifacts/$DeploymentEnvironment/LearningHub.Nhs.Content.zip"
