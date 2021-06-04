@@ -91,7 +91,7 @@ namespace LearningHub.Nhs.Content
             }
             catch (Exception e)
             {
-                Debug.WriteLine(e.Message);
+                throw e;
             }
         }
 

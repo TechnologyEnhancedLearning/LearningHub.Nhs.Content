@@ -60,6 +60,8 @@ namespace LearningHub.Nhs.Content
             {
                 app.UseDeveloperExceptionPage();
             }
+            
+            app.UseDeveloperExceptionPage();
 
             var defaultOptions = new DefaultFilesOptions();
             defaultOptions.DefaultFileNames.Clear();
