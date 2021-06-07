@@ -2,8 +2,8 @@
 // Copyright (c) HEE.nhs.uk.
 // </copyright>
 
-using Microsoft.Extensions.Logging;
-using NLog;
+
+using System;
 
 namespace LearningHub.Nhs.Content
 {
@@ -21,6 +21,10 @@ namespace LearningHub.Nhs.Content
     using Microsoft.Extensions.Hosting;
     using Microsoft.Extensions.Options;
     using System.Net.Http;
+    using System.IO;
+    using Microsoft.Extensions.FileProviders;
+    using Microsoft.Extensions.Logging;
+    using NLog;
 
     /// <summary>
     /// Defines the <see cref="Startup" />.
@@ -74,9 +78,14 @@ namespace LearningHub.Nhs.Content
             var rewriteOptions = new RewriteOptions()
                 .Add(new ScormContentRewriteRule(scormContentRequestHandler, settings, logger));
             app.UseRewriter(rewriteOptions);
+            
+            app.UseFileServer(new FileServerOptions
+            {
+                FileProvider = new PhysicalFileProvider(settings.Value.LearningHubContentPhysicalPath),
+                RequestPath = settings.Value.LearningHubContentVirtualPath,
+                EnableDirectoryBrowsing = true
+            });
 
-            //app.UseHttpsRedirection();
-            app.UseStaticFiles();
             app.UseRouting();
             app.UseCors(AllowOrigins);
             app.UseEndpoints(endpoints =>

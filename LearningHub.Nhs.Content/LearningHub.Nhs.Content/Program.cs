@@ -37,7 +37,8 @@ namespace LearningHub.Nhs.Content
                         {
                             options.ClearProviders();
                             options.SetMinimumLevel(LogLevel.Trace);
-                        }).UseNLog();
+                        })
+                        .UseNLog();
 
                 });
     }

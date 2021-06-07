@@ -4,8 +4,6 @@
 
 namespace LearningHub.Nhs.Content.Configuration
 {
-    using System;
-
     /// <summary>
     /// Defines the <see cref="Settings" />.
     /// </summary>
@@ -22,6 +20,16 @@ namespace LearningHub.Nhs.Content.Configuration
         /// Gets or sets the LearningHubContentServerUrl.
         /// </summary>
         public string LearningHubContentServerUrl { get; set; }
+
+        /// <summary>
+        /// Gets or sets the LearningHubContentPhysicalPath.
+        /// </summary>
+        public string LearningHubContentPhysicalPath { get; set; }
+
+        /// <summary>
+        /// Gets or sets the LearningHubContentVirtualPath.
+        /// </summary>
+        public string LearningHubContentVirtualPath { get; set; }
 
         /// <summary>
         /// Gets or sets the LearningHubApiUrl.
