@@ -63,7 +63,7 @@ namespace LearningHub.Nhs.Content.Service
 
             migrationSources = await this.ApiGetMigrationSourceAsync();
             // Also include learning hub by default as this is not part of a migration
-            migrationSources.Add(new MigrationSourceViewModel
+            migrationSources?.Add(new MigrationSourceViewModel
             {
                 HostName = this.settings.LearningHubContentServerUrl,
                 Description = "LearningHub",
@@ -127,13 +127,13 @@ namespace LearningHub.Nhs.Content.Service
         private async Task<List<MigrationSourceViewModel>> ApiGetMigrationSourceAsync()
         {
             var client = await this.learningHubHttpClient.GetClientAsync();
-            var migrationSources = new List<MigrationSourceViewModel>();
+            List<MigrationSourceViewModel> migrationSources = null;
             var request = $"migration/get-migration-sources";
             var response = await client.GetAsync(request).ConfigureAwait(false);
 
             if (response.IsSuccessStatusCode)
             {
-                var result = response.Content.ReadAsStringAsync().Result;
+                var result = await response.Content.ReadAsStringAsync();
                 migrationSources = JsonConvert.DeserializeObject<List<MigrationSourceViewModel>>(result);
             }
             else if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized ||

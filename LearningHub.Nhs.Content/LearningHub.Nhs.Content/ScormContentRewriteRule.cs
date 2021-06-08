@@ -122,10 +122,6 @@ namespace LearningHub.Nhs.Content
         /// <returns>The <see cref="Task"/>.</returns>
         private async Task HandleRequestsAsync(RewriteContext context, MigrationSourceViewModel sourceSystem)
         {
-            // example https://www.elearningrepository.nhs.uk/sites/default/files/lms/5742/Lesson_1/default.html
-            // example https://cs1.e-learningforhealthcare.org.uk/content/ACM_001/
-            // example https://content.learninghub.nhs.uk/content/07BD413E-5758-43C9-9117-F7A7F469452E/
-
             var requestPath = context.HttpContext.Request.Path.Value;
             var fullResourceUrl = context.HttpContext.Request.GetDisplayUrl();
 
