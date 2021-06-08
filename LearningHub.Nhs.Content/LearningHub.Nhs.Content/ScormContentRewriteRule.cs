@@ -66,6 +66,7 @@ namespace LearningHub.Nhs.Content
             this.scormContentRewriteService = scormContentRewriteService;
             this.settings = settings.Value;
             this.logger = logger;
+            this.LoadSourceSystems();
         }
 
         /// <summary>
@@ -73,13 +74,20 @@ namespace LearningHub.Nhs.Content
         /// </summary>
         private void LoadSourceSystems()
         {
-            if (this.sourceSystems != null) 
-                return;
+            try
+            {
+                if (this.sourceSystems != null)
+                    return;
 
-            this.sourceSystems = this.scormContentRewriteService
-                .GetMigrationSourcesAsync($"{KeyPrefix}-Migration-Sources").Result;
-                
-            this.logger.LogTrace($"Source systems Loaded # Count :{sourceSystems.Count}");
+                this.sourceSystems = this.scormContentRewriteService
+                    .GetMigrationSourcesAsync($"{KeyPrefix}-Migration-Sources").Result;
+
+                this.logger.LogTrace($"Source systems Loaded # Count :{sourceSystems.Count}");
+            }
+            catch (Exception e)
+            {
+                this.logger.LogError(e, e.Message);
+            }
         }
 
         /// <summary>
