@@ -32,6 +32,11 @@ namespace LearningHub.Nhs.Content.Configuration
         public string LearningHubContentVirtualPath { get; set; }
 
         /// <summary>
+        /// Gets or sets the LearningHubContentLogTable.
+        /// </summary>
+        public string LearningHubContentLogTable { get; set; }
+
+        /// <summary>
         /// Gets or sets the LearningHubApiUrl.
         /// </summary>
         public string LearningHubApiUrl { get; set; }

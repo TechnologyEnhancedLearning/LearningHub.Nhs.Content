@@ -84,7 +84,7 @@ try{
         ## Restrat IIS
 
         # Extract Content Server zipped artifact
-            Expand-Archive -LiteralPath $LHContentServerZippedFileLocation -DestinationPath $LHContentServerZippedFileExtactLocation
+            Expand-Archive -LiteralPath $LHContentServerZippedFileLocation -DestinationPath $LHContentServerZippedFileExtactLocation -Force
 	        Write-Log -Text "Completed Extract Content Server zipped artifact" -Type INFO    
 
         ## Restrat IIS
@@ -215,19 +215,8 @@ try{
             throw "Unable to mount network drive  Z:"
         }
 
-        Write-Log -Text "Mapping Network drive as virtual directory and creating apppools" -Type INFO
+        Write-Log -Text "Creating Local User and apppool" -Type INFO
   
-        # Create Virtual Directory
-        $physicalPath = "\\$Share.file.core.windows.net\$Folder"
-        #$physicalPath = "${MountedDrive}:\$Folder"
-        $virtualDirectoryPath = "IIS:\Sites\Default Web Site\content"
-        New-Item $virtualDirectoryPath -type VirtualDirectory -physicalPath $physicalPath -Force
-        Set-ItemProperty $virtualDirectoryPath -Name username -Value "$User"
-        Set-ItemProperty $virtualDirectoryPath -Name password -Value "$Key"
-        New-WebVirtualDirectory -Site "Default Web Site" -Name content -PhysicalPath $physicalPath -Force
-
-        Write-Log -Text "content virtual directory created mapping to network drive" -Type INFO	
-
         # Create new local user with same name and password as Azure File Share         
         $pwd = ConvertTo-SecureString -AsPlainText "$Key" -Force
         New-LocalUser -PasswordNeverExpires -Name "$Share" -Password $pwd 
@@ -243,21 +232,15 @@ try{
         Set-ItemProperty 'IIS:\Sites\Default Web Site' applicationPool $app_pool_name
         Write-Log -Text "created apppool under local user" -Type INFO	
         
-        # Change anonymous authentication of content site to App Pool
-        set-webconfigurationproperty /system.webServer/security/authentication/anonymousAuthentication -name userName -value "" -location "Default Web Site/content"
-        Write-Log -Text "changed anonymous authentication of content site to App Pool" -Type INFO
-        
-
         ## Restrat IIS
            iisreset
         ## Restrat IIS
         Write-Log -Text "VM Configuration Complete" -Type INFO
 
         Finish-Execution
-    }
-   
+    }   
 }
  catch{
     Write-Log -Text "$Error[0]" -Type ERROR	
     Finish-Execution
-    }
+   }

@@ -75,6 +75,7 @@ namespace LearningHub.Nhs.Content
             var scormContentRequestHandler = app.ApplicationServices.GetService<IScormContentRewriteService>();
             var settings = app.ApplicationServices.GetService<IOptions<Settings>>();
             var logger = app.ApplicationServices.GetService<ILogger<ScormContentRewriteRule>>();
+            
             var rewriteOptions = new RewriteOptions()
                 .Add(new ScormContentRewriteRule(scormContentRequestHandler, settings, logger));
             app.UseRewriter(rewriteOptions);
@@ -83,7 +84,7 @@ namespace LearningHub.Nhs.Content
             {
                 FileProvider = new PhysicalFileProvider(settings.Value.LearningHubContentPhysicalPath),
                 RequestPath = settings.Value.LearningHubContentVirtualPath,
-                EnableDirectoryBrowsing = true
+                EnableDirectoryBrowsing = false
             });
 
             app.UseRouting();

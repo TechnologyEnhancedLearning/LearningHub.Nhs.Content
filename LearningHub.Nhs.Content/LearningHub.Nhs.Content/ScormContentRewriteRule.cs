@@ -2,6 +2,8 @@
 // Copyright (c) HEE.nhs.uk.
 // </copyright>
 
+using System.Linq;
+
 namespace LearningHub.Nhs.Content
 {
     using LearningHub.Nhs.Content.Configuration;
@@ -71,9 +73,13 @@ namespace LearningHub.Nhs.Content
         /// </summary>
         private void LoadSourceSystemsAsync()
         {
-            sourceSystems ??= this.scormContentRewriteService
+            if (sourceSystems != null) 
+                return;
+
+            sourceSystems = this.scormContentRewriteService
                 .GetMigrationSourcesAsync($"{KeyPrefix}-Migration-Sources").Result;
-            this.logger.LogInformation($"source systems {sourceSystems.Count}");
+                
+            this.logger.LogInformation($"Source systems Loaded # Count :{sourceSystems.Count}");
         }
 
         /// <summary>
@@ -82,8 +88,6 @@ namespace LearningHub.Nhs.Content
         /// <param name="context">The context<see cref="RewriteContext" />.</param>
         public void ApplyRule(RewriteContext context)
         {
-            if (context.HttpContext.Request.Path.Value.Contains("/nlog/"))
-                return;
             try
             {
                 var displayUrl = context.HttpContext.Request.GetDisplayUrl();
@@ -150,13 +154,13 @@ namespace LearningHub.Nhs.Content
                     break;
                 case SourceType.eWIN:
                 default:
-                    this.logger.LogInformation("SourceType : Not Supported");
+                    this.logger.LogWarning("SourceType : Not Supported");
                     break;
             }
 
             if (scormContentDetail == null)
             {
-                this.logger.LogInformation($"{requestPath} : resourceExternalReference :{resourceExternalReference}: scormContentDetail NOT FOUND");
+                this.logger.LogWarning($"Original Request Path:{requestPath} # : resourceExternalReference :{resourceExternalReference}: scormContentDetail NOT FOUND");
                 context.HttpContext.Response.StatusCode = StatusCodes.Status404NotFound;
                 return;
             }
@@ -170,7 +174,7 @@ namespace LearningHub.Nhs.Content
                 context.HttpContext.Response.StatusCode = StatusCodes.Status302Found;
                 context.HttpContext.Response.Headers[HeaderNames.Location] = rewrittenUrlStringBuilder.ToString();
 
-                this.logger.LogInformation($"Manifest file included {rewrittenUrlStringBuilder}");
+                this.logger.LogInformation($"Original Request Path:{requestPath} # Manifest file included {rewrittenUrlStringBuilder}");
                 context.Result = RuleResult.EndResponse;
                 return;
             }
@@ -180,9 +184,18 @@ namespace LearningHub.Nhs.Content
                 .Replace(sourceSystem.ResourcePath, $"{this.settings.LearningHubContentVirtualPath}/")
                 .Replace(resourceExternalReference, scormContentDetail.InternalResourceIdentifier);
             context.HttpContext.Request.Path = rewrittenUrlStringBuilder.ToString();
-            if (requestPath.Contains("htm"))
+            
+            match = Regex.Match(pathSegments.Last(), @"^(?i:index|default).*\.(htm|html)$");
+            
+            if (match.Success)
             {
-                this.logger.LogInformation($"Source System :{sourceSystem.Description} ---- Request Path:{requestPath} ---- Rewritten Path:{rewrittenUrlStringBuilder}");
+                this.logger.LogInformation(
+                    $"Source System :{sourceSystem.Description} # Original Request Path:{requestPath} # Rewritten Path:{rewrittenUrlStringBuilder}");
+            }
+            else
+            {
+                this.logger.LogTrace(
+                    $"Source System :{sourceSystem.Description} # Original Request Path:{requestPath} # Rewritten Path:{rewrittenUrlStringBuilder}");
             }
         }
     }
