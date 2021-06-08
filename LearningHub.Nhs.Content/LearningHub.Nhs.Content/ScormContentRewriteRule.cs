@@ -71,15 +71,15 @@ namespace LearningHub.Nhs.Content
         /// <summary>
         /// The LoadSourceSystemsAsync.
         /// </summary>
-        private void LoadSourceSystemsAsync()
+        private void LoadSourceSystems()
         {
-            if (sourceSystems != null) 
+            if (this.sourceSystems != null) 
                 return;
 
-            sourceSystems = this.scormContentRewriteService
+            this.sourceSystems = this.scormContentRewriteService
                 .GetMigrationSourcesAsync($"{KeyPrefix}-Migration-Sources").Result;
                 
-            this.logger.LogInformation($"Source systems Loaded # Count :{sourceSystems.Count}");
+            this.logger.LogTrace($"Source systems Loaded # Count :{sourceSystems.Count}");
         }
 
         /// <summary>
@@ -91,12 +91,9 @@ namespace LearningHub.Nhs.Content
             try
             {
                 var displayUrl = context.HttpContext.Request.GetDisplayUrl();
+                this.LoadSourceSystems();
 
-                if (this.sourceSystems == null)
-                {
-                    this.LoadSourceSystemsAsync();
-                }
-                var migrationSource = sourceSystems.GetMigrationSource(displayUrl);
+                var migrationSource = sourceSystems?.GetMigrationSource(displayUrl);
 
                 if (migrationSource == null)
                     return;
