@@ -99,7 +99,14 @@ namespace LearningHub.Nhs.Content
             try
             {
                 var displayUrl = context.HttpContext.Request.GetDisplayUrl();
+                this.logger.LogTrace($"FULL REQUEST URL {displayUrl}");
                 this.LoadSourceSystems();
+
+                if (sourceSystems == null)
+                {
+                    this.logger.LogWarning("SOURCE SYSTEMS NOT LOADED");
+                    return;
+                }
 
                 var migrationSource = sourceSystems?.GetMigrationSource(displayUrl);
 
@@ -129,6 +136,7 @@ namespace LearningHub.Nhs.Content
 
             if (pathSegments.Length < sourceSystem.ResourceIdentifierPosition)
             {
+                this.logger.LogWarning($"{requestPath} INVALID PATH SEGMENTS pathSegmentsLength: {pathSegments.Length} # Expected PathSegments: {sourceSystem.ResourceIdentifierPosition}");
                 context.HttpContext.Response.StatusCode = StatusCodes.Status404NotFound;
                 return;
             }
