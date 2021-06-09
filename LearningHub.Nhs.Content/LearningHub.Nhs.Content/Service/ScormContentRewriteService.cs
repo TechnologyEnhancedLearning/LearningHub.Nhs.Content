@@ -2,6 +2,7 @@
 // Copyright (c) HEE.nhs.uk.
 // </copyright>
 
+using System.Text;
 using LearningHub.Nhs.Content.Configuration;
 using Microsoft.Extensions.Options;
 
@@ -155,10 +156,10 @@ namespace LearningHub.Nhs.Content.Service
             ScormContentServerViewModel viewmodel = null;
 
             var client = await this.learningHubHttpClient.GetClientAsync();
-
-            var encodedUrl = HttpUtility.UrlEncode(resourceExternalUrl);
-            var request = $"ScormContentServer/GetScormContentDetailsByExternalUrl/{encodedUrl}";
-            var response = await client.GetAsync(request).ConfigureAwait(false);
+            
+            var content = new System.Net.Http.StringContent(JsonConvert.SerializeObject(resourceExternalUrl), Encoding.UTF8, "application/json");
+            var request = $"ScormContentServer/GetScormContentDetailsByExternalUrl";
+            var response = await client.PostAsync(request, content).ConfigureAwait(false);
 
             if (response.IsSuccessStatusCode)
             {

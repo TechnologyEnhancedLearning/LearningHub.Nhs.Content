@@ -99,7 +99,7 @@ namespace LearningHub.Nhs.Content
             try
             {
                 var displayUrl = context.HttpContext.Request.GetDisplayUrl();
-                this.logger.LogTrace($"FULL REQUEST URL {displayUrl}");
+                
                 this.LoadSourceSystems();
 
                 if (sourceSystems == null)
@@ -136,7 +136,7 @@ namespace LearningHub.Nhs.Content
 
             if (pathSegments.Length < sourceSystem.ResourceIdentifierPosition)
             {
-                this.logger.LogWarning($"{requestPath} INVALID PATH SEGMENTS pathSegmentsLength: {pathSegments.Length} # Expected PathSegments: {sourceSystem.ResourceIdentifierPosition}");
+                this.logger.LogWarning($"{fullResourceUrl} INVALID PATH SEGMENTS pathSegmentsLength: {pathSegments.Length} # Expected PathSegments: {sourceSystem.ResourceIdentifierPosition}");
                 context.HttpContext.Response.StatusCode = StatusCodes.Status404NotFound;
                 return;
             }
@@ -145,7 +145,7 @@ namespace LearningHub.Nhs.Content
 
             if (!match.Success)
             {
-                this.logger.LogInformation($"{requestPath} : resourceExternalReference :{resourceExternalReference}: Resource Identifier Invalid Regex Format");
+                this.logger.LogInformation($"{fullResourceUrl} : resourceExternalReference :{resourceExternalReference}: Resource Identifier Invalid Regex Format");
                 context.HttpContext.Response.StatusCode = StatusCodes.Status404NotFound;
                 return;
             }
@@ -169,7 +169,7 @@ namespace LearningHub.Nhs.Content
 
             if (scormContentDetail == null)
             {
-                this.logger.LogWarning($"Original Request Path:{requestPath} # : resourceExternalReference :{resourceExternalReference}: scormContentDetail NOT FOUND");
+                this.logger.LogWarning($"Original Request Path:{fullResourceUrl} # : resourceExternalReference :{resourceExternalReference}: scormContentDetail NOT FOUND");
                 context.HttpContext.Response.StatusCode = StatusCodes.Status404NotFound;
                 return;
             }
@@ -183,7 +183,7 @@ namespace LearningHub.Nhs.Content
                 context.HttpContext.Response.StatusCode = StatusCodes.Status302Found;
                 context.HttpContext.Response.Headers[HeaderNames.Location] = rewrittenUrlStringBuilder.ToString();
 
-                this.logger.LogInformation($"Original Request Path:{requestPath} # Manifest file included {rewrittenUrlStringBuilder}");
+                this.logger.LogInformation($"Original Request Path:{fullResourceUrl} # Manifest file included {rewrittenUrlStringBuilder}");
                 context.Result = RuleResult.EndResponse;
                 return;
             }
@@ -199,12 +199,12 @@ namespace LearningHub.Nhs.Content
             if (match.Success)
             {
                 this.logger.LogInformation(
-                    $"Source System :{sourceSystem.Description} # Original Request Path:{requestPath} # Rewritten Path:{rewrittenUrlStringBuilder}");
+                    $"Source System :{sourceSystem.Description} # Original Request Path:{fullResourceUrl} # Rewritten Path:{rewrittenUrlStringBuilder}");
             }
             else
             {
                 this.logger.LogTrace(
-                    $"Source System :{sourceSystem.Description} # Original Request Path:{requestPath} # Rewritten Path:{rewrittenUrlStringBuilder}");
+                    $"Source System :{sourceSystem.Description} # Original Request Path:{fullResourceUrl} # Rewritten Path:{rewrittenUrlStringBuilder}");
             }
         }
     }
