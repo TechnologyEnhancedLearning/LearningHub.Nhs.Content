@@ -198,10 +198,11 @@ namespace LearningHub.Nhs.Content
                 {
                     var uriBuilder = new UriBuilder(rewrittenUrl)
                     {
-                        Scheme = uriScheme.ToString().ToLower() == "https" ? Uri.UriSchemeHttps : Uri.UriSchemeHttp
+                        Scheme = uriScheme.ToString().ToLower() == "https" ? Uri.UriSchemeHttps : Uri.UriSchemeHttp,
+                        Port = -1 // default port for scheme
                     };
 
-                    this.logger.LogTrace($"New Uri: '{uriBuilder}' and proper one: '{uriBuilder.Uri}'");
+                    this.logger.LogTrace($"OriginalModified: '${rewrittenUrl}' New Uri: '{uriBuilder}' and proper one: '{uriBuilder.Uri}'");
 
                     rewrittenUrl = uriBuilder.Uri.ToString();
                 }
