@@ -1,7 +1,7 @@
 ﻿using EsrTestHarness.Model;
 using System.Threading.Tasks;
 
-namespace EsrTestHarness
+namespace EsrTestHarness.Repository
 {
     public interface ITestDatabase
     {
