@@ -201,7 +201,12 @@ namespace LearningHub.Nhs.Content
                         Scheme = uriScheme.ToString().ToLower() == "https" ? Uri.UriSchemeHttps : Uri.UriSchemeHttp
                     };
 
+                    this.logger.LogTrace($"New Uri: '{uriBuilder}' and proper one: '{uriBuilder.Uri}'");
+
                     rewrittenUrl = uriBuilder.Uri.ToString();
+                }
+                else {
+                    this.logger.LogTrace($"Without if condition Uri: '{rewrittenUrl}'");
                 }
 
                 context.HttpContext.Response.StatusCode = StatusCodes.Status302Found;
