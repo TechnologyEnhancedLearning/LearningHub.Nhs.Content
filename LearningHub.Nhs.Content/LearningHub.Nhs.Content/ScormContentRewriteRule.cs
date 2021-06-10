@@ -30,11 +30,6 @@ namespace LearningHub.Nhs.Content
     public class ScormContentRewriteRule : IRule
     {
         /// <summary>
-        /// Defines a string which is prefixed to all cache keys used by the LH Content Server.........
-        /// </summary>
-        private const string KeyPrefix = "ContentServer";
-
-        /// <summary>
         /// Defines the scormContentRewriteService.
         /// </summary>
         private readonly IScormContentRewriteService scormContentRewriteService;
@@ -80,7 +75,7 @@ namespace LearningHub.Nhs.Content
                     return;
 
                 this.sourceSystems = this.scormContentRewriteService
-                    .GetMigrationSourcesAsync($"{KeyPrefix}-Migration-Sources").Result;
+                    .GetMigrationSourcesAsync($"Migration-Sources").Result;
 
                 this.logger.LogTrace($"Source systems Loaded # Count :{sourceSystems.Count}");
             }
@@ -99,11 +94,6 @@ namespace LearningHub.Nhs.Content
             try
             {
                 var displayUrl = context.HttpContext.Request.GetDisplayUrl();
-
-                foreach (var header in context.HttpContext.Request.Headers)
-                {
-                    this.logger.LogTrace($"{header.Key} # {header.Value}");
-                }
 
                 this.LoadSourceSystems();
 
@@ -184,7 +174,7 @@ namespace LearningHub.Nhs.Content
                 return;
             }
 
-            var cacheKey = $"{KeyPrefix}-{sourceSystem.Description}-{resourceExternalReference}";
+            var cacheKey = $"{sourceSystem.Description}_{resourceExternalReference}";
 
             ScormContentServerViewModel scormContentDetail = null;
             switch (sourceSystem.SourceType())
