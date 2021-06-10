@@ -97,11 +97,11 @@ namespace LearningHub.Nhs.Content
 
                 var sbRequestHeaders = new StringBuilder();
 
-                sbRequestHeaders.Append($"Request Url # {context.HttpContext.Request.Path}");
+                sbRequestHeaders.Append($"Request-Url: '{displayUrl}'");
 
                 foreach (var header in context.HttpContext.Request.Headers)
                 {
-                    sbRequestHeaders.AppendLine($"{header.Key} # {header.Value}");
+                    sbRequestHeaders.AppendLine($"   {header.Key} # {header.Value}");
                 }
 
                 logger.LogTrace(sbRequestHeaders.ToString());
