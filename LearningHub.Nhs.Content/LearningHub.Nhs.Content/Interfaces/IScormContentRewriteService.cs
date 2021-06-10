@@ -4,9 +4,11 @@
 
 namespace LearningHub.Nhs.Content.Interfaces
 {
-    using LearningHub.Nhs.Content.Models;
+    using LearningHub.Nhs.Models.Entities.Migration;
+    using LearningHub.Nhs.Models.Resource;
+    using System;
+    using System.Collections.Generic;
     using System.Threading.Tasks;
-    ////using LearningHub.Nhs.Models.Resource;
 
     /// <summary>
     /// Defines the <see cref="IScormContentRewriteService" />.
@@ -14,10 +16,27 @@ namespace LearningHub.Nhs.Content.Interfaces
     public interface IScormContentRewriteService
     {
         /// <summary>
-        /// The GetScormResourceDetail.
+        /// Gets the SCORM content details for a particular external url.
         /// </summary>
-        /// <param name="requestUrl">The requestUrl<see cref="string"/>.</param>
+        /// <param name="resourceExternalUrl">The resourceExternalUrl<see cref="string"/>.</param>
+        /// <param name="cacheKey">The cacheKey.</param>
         /// <returns>The <see cref="ScormContentServerViewModel"/>.</returns>
-        Task<ScormContentServerViewModel> GetScormResourceDetailAsync(string requestUrl);
+        Task<ScormContentServerViewModel> GetScormContentDetailsByExternalUrlAsync(string resourceExternalUrl, string cacheKey);
+
+        /// <summary>
+        /// The GetScormContentDetailsByExternalReference.
+        /// </summary>
+        /// <param name="resourceExternalReference"></param>
+        /// <param name="cacheKey">The cacheKey.</param>
+        /// <returns>The <see cref="ScormContentServerViewModel"/>.</returns>
+        Task<ScormContentServerViewModel> GetScormContentDetailsByExternalReferenceAsync(
+            string resourceExternalReference, string cacheKey);
+
+        /// <summary>
+        /// The GetMigrationSourcesAsync.
+        /// </summary>
+        /// <param name="cacheKey">The cacheKey.</param>
+        /// <returns>The <see cref="Task{List{MigrationSourceViewModel}}"/>.</returns>
+        Task<List<MigrationSourceViewModel>> GetMigrationSourcesAsync(string cacheKey);
     }
 }

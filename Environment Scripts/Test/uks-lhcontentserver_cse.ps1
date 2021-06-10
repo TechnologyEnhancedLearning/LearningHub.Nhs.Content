@@ -6,7 +6,7 @@ $log_file =  "$env:SystemDrive\inetpub\wwwroot\log.txt"
 
 $LHContentServerDownloadFolder =  "$env:SystemDrive\LearningHub"
 
-$DeploymentEnvironment= "dev"
+$DeploymentEnvironment= "test"
 
 # Learning Hub Content Server artifacts location
 $LHContentServerZippedFileUrl = "https://ukselfhdevlhcontentstore.blob.core.windows.net/contentserverartifacts/$DeploymentEnvironment/LearningHub.Nhs.Content.zip"
@@ -214,7 +214,7 @@ try{
             Finish-Execution
             throw "Unable to mount network drive  Z:"
         }
-        
+
         Write-Log -Text "Creating Local User and apppool" -Type INFO
   
         # Create new local user with same name and password as Azure File Share         
@@ -238,10 +238,9 @@ try{
         Write-Log -Text "VM Configuration Complete" -Type INFO
 
         Finish-Execution
-    }
-   
+    }   
 }
  catch{
     Write-Log -Text "$Error[0]" -Type ERROR	
     Finish-Execution
-    }
+   }

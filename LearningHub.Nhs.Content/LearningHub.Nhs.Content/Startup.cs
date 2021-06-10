@@ -2,9 +2,11 @@
 // Copyright (c) HEE.nhs.uk.
 // </copyright>
 
+
+using System;
+
 namespace LearningHub.Nhs.Content
 {
-    using System.Net.Http;
     using LearningHub.Nhs.Caching;
     using LearningHub.Nhs.Content.Configuration;
     using LearningHub.Nhs.Content.Interfaces;
@@ -18,6 +20,11 @@ namespace LearningHub.Nhs.Content
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Hosting;
     using Microsoft.Extensions.Options;
+    using System.Net.Http;
+    using System.IO;
+    using Microsoft.Extensions.FileProviders;
+    using Microsoft.Extensions.Logging;
+    using NLog;
 
     /// <summary>
     /// Defines the <see cref="Startup" />.
@@ -25,18 +32,23 @@ namespace LearningHub.Nhs.Content
     public class Startup
     {
         /// <summary>
-        /// The hosting environment.
+        /// The hosting environment..
         /// </summary>
-        private readonly IWebHostEnvironment env;
+        private readonly IWebHostEnvironment environment;
+
+        /// <summary>
+        /// Defines the AllowOrigins.
+        /// </summary>
+        private readonly string AllowOrigins = "allowOrigins";
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Startup"/> class.
         /// </summary>
         /// <param name="configuration">The configuration<see cref="IConfiguration"/>.</param>
         /// <param name="env">The env<see cref="IWebHostEnvironment"/>.</param>
-        public Startup(IConfiguration configuration, IWebHostEnvironment env)
+        public Startup(IConfiguration configuration, IWebHostEnvironment environment)
         {
-            this.env = env;
+            this.environment = environment;
             this.Configuration = configuration;
         }
 
@@ -51,26 +63,32 @@ namespace LearningHub.Nhs.Content
         /// <param name="app">The app<see cref="IApplicationBuilder"/>.</param>
         public void Configure(IApplicationBuilder app)
         {
-            if (this.env.IsDevelopment())
+            if (this.environment.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
             }
 
             var defaultOptions = new DefaultFilesOptions();
             defaultOptions.DefaultFileNames.Clear();
-            defaultOptions.DefaultFileNames.Add("index.html");
-            defaultOptions.DefaultFileNames.Add("index_lms.html");
             app.UseDefaultFiles(defaultOptions);
 
             var scormContentRequestHandler = app.ApplicationServices.GetService<IScormContentRewriteService>();
             var settings = app.ApplicationServices.GetService<IOptions<Settings>>();
-
+            var logger = app.ApplicationServices.GetService<ILogger<ScormContentRewriteRule>>();
+            
             var rewriteOptions = new RewriteOptions()
-                 .Add(new ScormContentRewriteRule(scormContentRequestHandler, settings));
-
+                .Add(new ScormContentRewriteRule(scormContentRequestHandler, settings, logger));
             app.UseRewriter(rewriteOptions);
-            app.UseStaticFiles();
+            
+            app.UseFileServer(new FileServerOptions
+            {
+                FileProvider = new PhysicalFileProvider(settings.Value.LearningHubContentPhysicalPath),
+                RequestPath = settings.Value.LearningHubContentVirtualPath,
+                EnableDirectoryBrowsing = false
+            });
+
             app.UseRouting();
+            app.UseCors(AllowOrigins);
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapGet("/", async context =>
@@ -89,7 +107,7 @@ namespace LearningHub.Nhs.Content
             services.Configure<Settings>(this.Configuration.GetSection("Settings"));
 
             // Register an ILearningHubHttpClient.
-            if (this.env.IsDevelopment())
+            if (this.environment.IsDevelopment())
             {
                 services.AddHttpClient<ILearningHubHttpClient, LearningHubHttpClient>()
                     .ConfigurePrimaryHttpMessageHandler(
@@ -104,10 +122,18 @@ namespace LearningHub.Nhs.Content
                 services.AddHttpClient<ILearningHubHttpClient, LearningHubHttpClient>();
             }
 
-            services.AddSingleton<IScormContentRewriteService, ScormContentRewriteService>();
+            services.AddCors(options =>
+            {
+                options.AddPolicy(name: AllowOrigins, builder =>
+                {
+                    builder.AllowAnyOrigin();
+                });
+            });
 
             // Set up redis caching.
             services.AddDistributedCache(this.Configuration);
+
+            services.AddSingleton<IScormContentRewriteService, ScormContentRewriteService>();
         }
     }
 }

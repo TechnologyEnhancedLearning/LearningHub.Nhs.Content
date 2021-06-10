@@ -10,7 +10,27 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="JSAdapter12_aspnet\**" />
+    <Compile Remove="wwwroot\content\2fbb83a8-06ae-4429-a120-defa929fc2f1\**" />
+    <Compile Remove="wwwroot\content\b6bc24a8-00c8-4b6f-8542-1d88e5d568bf\**" />
+    <Content Remove="JSAdapter12_aspnet\**" />
+    <Content Remove="wwwroot\content\2fbb83a8-06ae-4429-a120-defa929fc2f1\**" />
+    <Content Remove="wwwroot\content\b6bc24a8-00c8-4b6f-8542-1d88e5d568bf\**" />
+    <EmbeddedResource Remove="JSAdapter12_aspnet\**" />
+    <EmbeddedResource Remove="wwwroot\content\2fbb83a8-06ae-4429-a120-defa929fc2f1\**" />
+    <EmbeddedResource Remove="wwwroot\content\b6bc24a8-00c8-4b6f-8542-1d88e5d568bf\**" />
+    <None Remove="JSAdapter12_aspnet\**" />
+    <None Remove="wwwroot\content\2fbb83a8-06ae-4429-a120-defa929fc2f1\**" />
+    <None Remove="wwwroot\content\b6bc24a8-00c8-4b6f-8542-1d88e5d568bf\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Remove="NLog.config" />
     <Content Remove="stylecop.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="C:\Users\hkvak\.nuget\packages\nlog.config\4.7.10\contentFiles\any\any\NLog.config" />
   </ItemGroup>
 
   <ItemGroup>
@@ -18,90 +38,34 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="JSAdapter12_aspnet\bin\IBM_Scorm_Web.dll" />
-    <Content Include="JSAdapter12_aspnet\bin\IBM_Scorm_Web.pdb" />
-    <Content Include="JSAdapter12_aspnet\JSAdapter12_asp\adapter_blank.html" />
-    <Content Include="JSAdapter12_aspnet\JSAdapter12_asp\adapter_js.js" />
-    <Content Include="JSAdapter12_aspnet\JSAdapter12_asp\adapter_lms.js" />
-    <Content Include="JSAdapter12_aspnet\JSAdapter12_asp\adapter_no_url.html" />
-    <Content Include="JSAdapter12_aspnet\JSAdapter12_asp\bin\IBM_Scorm_Web.dll" />
-    <Content Include="JSAdapter12_aspnet\JSAdapter12_asp\bin\IBM_Scorm_Web.pdb" />
-    <Content Include="JSAdapter12_aspnet\JSAdapter12_asp\CustomLog.txt" />
-    <Content Include="JSAdapter12_aspnet\JSAdapter12_asp\lms12.html" />
-    <Content Include="JSAdapter12_aspnet\JSAdapter12_asp\LMSApplet.js" />
-    <Content Include="JSAdapter12_aspnet\JSAdapter12_asp\LMSElement.js" />
-    <Content Include="JSAdapter12_aspnet\JSAdapter12_asp\LMSTime.js" />
-    <Content Include="JSAdapter12_aspnet\JSAdapter12_asp\LMSUtil.js" />
-    <Content Include="JSAdapter12_aspnet\JSAdapter12_asp\log.html" />
-    <Content Include="JSAdapter12_aspnet\JSAdapter12_asp\Oracle_SCORM_Adapter_JS.html" />
-    <Content Include="JSAdapter12_aspnet\JSAdapter12_asp\readme.txt" />
-    <Content Include="JSAdapter12_aspnet\JSAdapter12_asp\Scorm12Applet.js" />
-    <Content Include="JSAdapter12_aspnet\JSAdapter12_asp\WebForm1.aspx" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Include="wwwroot\content\4bdc56b4-2148-4383-a9d7-3ea79b9bf2ee\adlcp_rootv1p2.xsd" />
-    <None Include="wwwroot\content\4bdc56b4-2148-4383-a9d7-3ea79b9bf2ee\html5\data\js\5db6tAyWal7.js" />
-    <None Include="wwwroot\content\4bdc56b4-2148-4383-a9d7-3ea79b9bf2ee\html5\data\js\5qcVi3nfevW.js" />
-    <None Include="wwwroot\content\4bdc56b4-2148-4383-a9d7-3ea79b9bf2ee\html5\data\js\5vZTp0FgoXI.js" />
-    <None Include="wwwroot\content\4bdc56b4-2148-4383-a9d7-3ea79b9bf2ee\html5\data\js\5Ww8VfFOMJz.js" />
-    <None Include="wwwroot\content\4bdc56b4-2148-4383-a9d7-3ea79b9bf2ee\html5\data\js\5Y2PlHtwE1s.js" />
-    <None Include="wwwroot\content\4bdc56b4-2148-4383-a9d7-3ea79b9bf2ee\html5\data\js\5YZs2FRlOau.js" />
-    <None Include="wwwroot\content\4bdc56b4-2148-4383-a9d7-3ea79b9bf2ee\html5\data\js\61rvymJftPD.js" />
-    <None Include="wwwroot\content\4bdc56b4-2148-4383-a9d7-3ea79b9bf2ee\html5\data\js\62gmgJAYVCY.js" />
-    <None Include="wwwroot\content\4bdc56b4-2148-4383-a9d7-3ea79b9bf2ee\html5\data\js\686nCBpBGWl.js" />
-    <None Include="wwwroot\content\4bdc56b4-2148-4383-a9d7-3ea79b9bf2ee\html5\data\js\6byj8Myhs68.js" />
-    <None Include="wwwroot\content\4bdc56b4-2148-4383-a9d7-3ea79b9bf2ee\html5\data\js\6IOTiOe7kfG.js" />
-    <None Include="wwwroot\content\4bdc56b4-2148-4383-a9d7-3ea79b9bf2ee\html5\data\js\6m2z5l06akG.js" />
-    <None Include="wwwroot\content\4bdc56b4-2148-4383-a9d7-3ea79b9bf2ee\html5\data\js\6PKZcXciFSS.js" />
-    <None Include="wwwroot\content\4bdc56b4-2148-4383-a9d7-3ea79b9bf2ee\html5\data\js\6Q1DnIgmOxk.js" />
-    <None Include="wwwroot\content\4bdc56b4-2148-4383-a9d7-3ea79b9bf2ee\html5\data\js\data.js" />
-    <None Include="wwwroot\content\4bdc56b4-2148-4383-a9d7-3ea79b9bf2ee\html5\data\js\frame.js" />
-    <None Include="wwwroot\content\4bdc56b4-2148-4383-a9d7-3ea79b9bf2ee\html5\data\js\paths.js" />
-    <None Include="wwwroot\content\4bdc56b4-2148-4383-a9d7-3ea79b9bf2ee\html5\lib\scripts\app.min.js" />
-    <None Include="wwwroot\content\4bdc56b4-2148-4383-a9d7-3ea79b9bf2ee\imscp_rootv1p1p2.xsd" />
-    <None Include="wwwroot\content\4bdc56b4-2148-4383-a9d7-3ea79b9bf2ee\imsmd_rootv1p2p1.xsd" />
-    <None Include="wwwroot\content\4bdc56b4-2148-4383-a9d7-3ea79b9bf2ee\ims_xml.xsd" />
-    <None Include="wwwroot\content\4bdc56b4-2148-4383-a9d7-3ea79b9bf2ee\lms\AICCFunctions.js" />
-    <None Include="wwwroot\content\4bdc56b4-2148-4383-a9d7-3ea79b9bf2ee\lms\API.js" />
-    <None Include="wwwroot\content\4bdc56b4-2148-4383-a9d7-3ea79b9bf2ee\lms\APIConstants.js" />
-    <None Include="wwwroot\content\4bdc56b4-2148-4383-a9d7-3ea79b9bf2ee\lms\browsersniff.js" />
-    <None Include="wwwroot\content\4bdc56b4-2148-4383-a9d7-3ea79b9bf2ee\lms\Configuration.js" />
-    <None Include="wwwroot\content\4bdc56b4-2148-4383-a9d7-3ea79b9bf2ee\lms\lms.js" />
-    <None Include="wwwroot\content\4bdc56b4-2148-4383-a9d7-3ea79b9bf2ee\lms\LMSAPI.js" />
-    <None Include="wwwroot\content\4bdc56b4-2148-4383-a9d7-3ea79b9bf2ee\lms\NONEFunctions.js" />
-    <None Include="wwwroot\content\4bdc56b4-2148-4383-a9d7-3ea79b9bf2ee\lms\SCORM2004Functions.js" />
-    <None Include="wwwroot\content\4bdc56b4-2148-4383-a9d7-3ea79b9bf2ee\lms\SCORMFunctions.js" />
-    <None Include="wwwroot\content\4bdc56b4-2148-4383-a9d7-3ea79b9bf2ee\lms\UtilityFunctions.js" />
-    <None Include="wwwroot\content\4bdc56b4-2148-4383-a9d7-3ea79b9bf2ee\story.swf" />
-    <None Include="wwwroot\content\4bdc56b4-2148-4383-a9d7-3ea79b9bf2ee\story_content\5YvNG4XJ9Tj_DX210_DY210.swf" />
-    <None Include="wwwroot\content\4bdc56b4-2148-4383-a9d7-3ea79b9bf2ee\story_content\6S2MizX4X15_DX210_DY210.swf" />
-    <None Include="wwwroot\content\4bdc56b4-2148-4383-a9d7-3ea79b9bf2ee\story_content\data.swf" />
-    <None Include="wwwroot\content\4bdc56b4-2148-4383-a9d7-3ea79b9bf2ee\story_content\FontFactory.swf" />
-    <None Include="wwwroot\content\4bdc56b4-2148-4383-a9d7-3ea79b9bf2ee\story_content\fonts.swf" />
-    <None Include="wwwroot\content\4bdc56b4-2148-4383-a9d7-3ea79b9bf2ee\story_content\frame.swf" />
-    <None Include="wwwroot\content\4bdc56b4-2148-4383-a9d7-3ea79b9bf2ee\story_content\slides\5db6tAyWal7.swf" />
-    <None Include="wwwroot\content\4bdc56b4-2148-4383-a9d7-3ea79b9bf2ee\story_content\slides\5qcVi3nfevW.swf" />
-    <None Include="wwwroot\content\4bdc56b4-2148-4383-a9d7-3ea79b9bf2ee\story_content\slides\5vZTp0FgoXI.swf" />
-    <None Include="wwwroot\content\4bdc56b4-2148-4383-a9d7-3ea79b9bf2ee\story_content\slides\5Ww8VfFOMJz.swf" />
-    <None Include="wwwroot\content\4bdc56b4-2148-4383-a9d7-3ea79b9bf2ee\story_content\slides\5Y2PlHtwE1s.swf" />
-    <None Include="wwwroot\content\4bdc56b4-2148-4383-a9d7-3ea79b9bf2ee\story_content\slides\5YZs2FRlOau.swf" />
-    <None Include="wwwroot\content\4bdc56b4-2148-4383-a9d7-3ea79b9bf2ee\story_content\slides\61rvymJftPD.swf" />
-    <None Include="wwwroot\content\4bdc56b4-2148-4383-a9d7-3ea79b9bf2ee\story_content\slides\62gmgJAYVCY.swf" />
-    <None Include="wwwroot\content\4bdc56b4-2148-4383-a9d7-3ea79b9bf2ee\story_content\slides\686nCBpBGWl.swf" />
-    <None Include="wwwroot\content\4bdc56b4-2148-4383-a9d7-3ea79b9bf2ee\story_content\slides\6byj8Myhs68.swf" />
-    <None Include="wwwroot\content\4bdc56b4-2148-4383-a9d7-3ea79b9bf2ee\story_content\slides\6IOTiOe7kfG.swf" />
-    <None Include="wwwroot\content\4bdc56b4-2148-4383-a9d7-3ea79b9bf2ee\story_content\slides\6m2z5l06akG.swf" />
-    <None Include="wwwroot\content\4bdc56b4-2148-4383-a9d7-3ea79b9bf2ee\story_content\slides\6PKZcXciFSS.swf" />
-    <None Include="wwwroot\content\4bdc56b4-2148-4383-a9d7-3ea79b9bf2ee\story_content\slides\6Q1DnIgmOxk.swf" />
-    <None Include="wwwroot\content\4bdc56b4-2148-4383-a9d7-3ea79b9bf2ee\story_content\story.js" />
-    <None Include="wwwroot\content\4bdc56b4-2148-4383-a9d7-3ea79b9bf2ee\story_content\user.js" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="LearningHub.Nhs.Caching" Version="1.0.0" />
-    <PackageReference Include="LearningHub.Nhs.Models" Version="1.0.100" />
+    <PackageReference Include="LearningHub.Nhs.Models" Version="1.0.115" />
+    <PackageReference Include="Microsoft.Data.OData" Version="5.8.4" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+    <PackageReference Include="NLog.Extensions.AzureCosmosTable" Version="2.8.0" />
+    <PackageReference Include="NLog.Web.AspNetCore" Version="4.12.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="wwwroot\content\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="NLog.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Update="wwwroot\favicon.ico">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="JSAdapter12_aspnet.zip">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

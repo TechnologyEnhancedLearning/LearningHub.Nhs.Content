@@ -6,7 +6,7 @@ $log_file =  "$env:SystemDrive\inetpub\wwwroot\log.txt"
 
 $LHContentServerDownloadFolder =  "$env:SystemDrive\LearningHub"
 
-$DeploymentEnvironment= "dev"
+$DeploymentEnvironment= "uat"
 
 # Learning Hub Content Server artifacts location
 $LHContentServerZippedFileUrl = "https://ukselfhdevlhcontentstore.blob.core.windows.net/contentserverartifacts/$DeploymentEnvironment/LearningHub.Nhs.Content.zip"
@@ -214,6 +214,7 @@ try{
             Finish-Execution
             throw "Unable to mount network drive  Z:"
         }
+
         
         Write-Log -Text "Creating Local User and apppool" -Type INFO
   
