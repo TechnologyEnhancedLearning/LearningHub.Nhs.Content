@@ -129,23 +129,52 @@ namespace LearningHub.Nhs.Content
         /// <returns>The <see cref="Task"/>.</returns>
         private async Task HandleRequestsAsync(RewriteContext context, MigrationSourceViewModel sourceSystem)
         {
-            var requestPath = context.HttpContext.Request.Path.Value;
-            var fullResourceUrl = context.HttpContext.Request.GetDisplayUrl();
+            var originalRequestPath = context.HttpContext.Request.Path.Value;
+            string requestPath;
+            var fullRequestUrl = context.HttpContext.Request.GetDisplayUrl();
+            
+            const string startUrlParam = "starting_url";
+            const string sessionIdParam = "&sessionid";
+            const string lmsUrlParam = "lms_url";
 
+            var startingUrl = string.Empty;
+            var sessionId = string.Empty;
+            var lmsUrl = string.Empty;
+            
+            if (fullRequestUrl.Contains(startUrlParam, StringComparison.InvariantCultureIgnoreCase))
+            {
+                startingUrl = context.HttpContext.Request.Query[startUrlParam];
+                var index = startingUrl.IndexOf(sourceSystem.ResourcePath,
+                    StringComparison.InvariantCultureIgnoreCase);
+                requestPath = startingUrl.Substring(index, startingUrl.Length - index);
+                sessionId = context.HttpContext.Request.Query[sessionIdParam];
+                lmsUrl = context.HttpContext.Request.Query[lmsUrlParam];
+            }
+            else
+            {
+                startingUrl = fullRequestUrl;
+                requestPath = originalRequestPath;
+            }
+            
             var pathSegments = requestPath.Split('/');
-
+           
             if (pathSegments.Length < sourceSystem.ResourceIdentifierPosition)
             {
-                this.logger.LogWarning($"{fullResourceUrl} INVALID PATH SEGMENTS pathSegmentsLength: {pathSegments.Length} # Expected PathSegments: {sourceSystem.ResourceIdentifierPosition}");
+                this.logger.LogWarning($" fullResourceUrl {startingUrl} # Request Path {requestPath} # INVALID PATH SEGMENTS pathSegmentsLength: {pathSegments.Length} # Expected PathSegments: {sourceSystem.ResourceIdentifierPosition}");
                 context.HttpContext.Response.StatusCode = StatusCodes.Status404NotFound;
                 return;
             }
             var resourceExternalReference = pathSegments[sourceSystem.ResourceIdentifierPosition - 1];
+            
+            if (resourceExternalReference.Contains(sessionIdParam))
+            {
+                resourceExternalReference = resourceExternalReference[..resourceExternalReference.IndexOf(sessionIdParam)];
+            }
             var match = Regex.Match(resourceExternalReference, sourceSystem.ResourceRegEx, RegexOptions.IgnoreCase);
 
             if (!match.Success)
             {
-                this.logger.LogInformation($"{fullResourceUrl} : resourceExternalReference :{resourceExternalReference}: Resource Identifier Invalid Regex Format");
+                this.logger.LogInformation($"{startingUrl} : resourceExternalReference :{resourceExternalReference}: Resource Identifier Invalid Regex Format");
                 context.HttpContext.Response.StatusCode = StatusCodes.Status404NotFound;
                 return;
             }
@@ -159,7 +188,8 @@ namespace LearningHub.Nhs.Content
                     scormContentDetail = await scormContentRewriteService.GetScormContentDetailsByExternalReferenceAsync(resourceExternalReference, cacheKey);
                     break;
                 case SourceType.eLR:
-                    scormContentDetail = await scormContentRewriteService.GetScormContentDetailsByExternalUrlAsync(fullResourceUrl, cacheKey);
+                    this.logger.LogWarning($"Calling Backend to fetch scorm resource detail {startingUrl}");
+                    scormContentDetail = await scormContentRewriteService.GetScormContentDetailsByExternalUrlAsync(startingUrl, cacheKey);
                     break;
                 case SourceType.eWIN:
                 default:
@@ -169,24 +199,27 @@ namespace LearningHub.Nhs.Content
 
             if (scormContentDetail == null)
             {
-                this.logger.LogWarning($"Original Request Path:{fullResourceUrl} # : resourceExternalReference :{resourceExternalReference}: scormContentDetail NOT FOUND");
+                this.logger.LogWarning($"Original Request Path:{startingUrl} # : resourceExternalReference :{resourceExternalReference}: scormContentDetail NOT FOUND");
                 context.HttpContext.Response.StatusCode = StatusCodes.Status404NotFound;
                 return;
             }
 
             var rewrittenUrlStringBuilder = new StringBuilder();
-            if (pathSegments.Length == sourceSystem.ResourceIdentifierPosition)
+            if (string.IsNullOrEmpty(startingUrl) && pathSegments.Length == sourceSystem.ResourceIdentifierPosition)
             {
-                var hostSegment = fullResourceUrl[..fullResourceUrl.IndexOf(sourceSystem.ResourcePath)];
+                var hostSegment = startingUrl[..startingUrl.IndexOf(sourceSystem.ResourcePath)];
                 rewrittenUrlStringBuilder.Append($"{hostSegment}{requestPath}/{scormContentDetail.ManifestUrl}");
 
                 context.HttpContext.Response.StatusCode = StatusCodes.Status302Found;
                 context.HttpContext.Response.Headers[HeaderNames.Location] = rewrittenUrlStringBuilder.ToString();
 
-                this.logger.LogInformation($"Original Request Path:{fullResourceUrl} # Manifest file included {rewrittenUrlStringBuilder}");
+                this.logger.LogInformation($"Original Request Path:{startingUrl} # Manifest file included {rewrittenUrlStringBuilder}");
                 context.Result = RuleResult.EndResponse;
                 return;
             }
+
+            if (pathSegments.Length == sourceSystem.ResourceIdentifierPosition)
+                scormContentDetail.InternalResourceIdentifier = ($"{scormContentDetail.InternalResourceIdentifier}/{scormContentDetail.ManifestUrl}");
 
             rewrittenUrlStringBuilder
                 .Append(requestPath)
@@ -199,12 +232,12 @@ namespace LearningHub.Nhs.Content
             if (match.Success)
             {
                 this.logger.LogInformation(
-                    $"Source System :{sourceSystem.Description} # Original Request Path:{fullResourceUrl} # Rewritten Path:{rewrittenUrlStringBuilder}");
+                    $"Source System :{sourceSystem.Description} # Original Request Path:{startingUrl} # Rewritten Path:{rewrittenUrlStringBuilder}");
             }
             else
             {
                 this.logger.LogTrace(
-                    $"Source System :{sourceSystem.Description} # Original Request Path:{fullResourceUrl} # Rewritten Path:{rewrittenUrlStringBuilder}");
+                    $"Source System :{sourceSystem.Description} # Original Request Path:{startingUrl} # Rewritten Path:{rewrittenUrlStringBuilder}");
             }
         }
     }
