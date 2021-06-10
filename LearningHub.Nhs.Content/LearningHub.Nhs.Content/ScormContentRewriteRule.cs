@@ -95,17 +95,6 @@ namespace LearningHub.Nhs.Content
             {
                 var displayUrl = context.HttpContext.Request.GetDisplayUrl();
 
-                var sbRequestHeaders = new StringBuilder();
-
-                sbRequestHeaders.Append($"Request-Url: '{displayUrl}'");
-
-                foreach (var header in context.HttpContext.Request.Headers)
-                {
-                    sbRequestHeaders.AppendLine($"   {header.Key} # {header.Value}");
-                }
-
-                logger.LogTrace(sbRequestHeaders.ToString());
-
                 this.LoadSourceSystems();
 
                 if (sourceSystems == null)
@@ -202,13 +191,7 @@ namespace LearningHub.Nhs.Content
                         Port = -1 // default port for scheme
                     };
 
-                    this.logger.LogTrace($"OriginalModified: '${rewrittenUrl}' New Uri: '{uriBuilder}' and proper one: '{uriBuilder.Uri}'");
-
                     rewrittenUrl = uriBuilder.Uri.ToString();
-                }
-                else
-                {
-                    this.logger.LogTrace($"Without if condition Uri: '{rewrittenUrl}'");
                 }
 
                 context.HttpContext.Response.StatusCode = StatusCodes.Status302Found;
