@@ -2,6 +2,6 @@
 {
     public class AppSettings
     {
-        public string ScormAdapterUrl { get; set; }
+        public string StorageConnectionString { get; set; }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using EsrTestHarness.Hubs;
 using EsrTestHarness.Model;
+using EsrTestHarness.Repository;
 using EsrTestHarness.ViewModels;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
@@ -57,11 +58,8 @@ namespace EsrTestHarness.Controllers
                 return RedirectToAction("Index");
             }
 
-            ViewBag.ScormAdapterUrl = _appSettings.ScormAdapterUrl;
-
             return View(new ListVM
             {
-                ScormAdapterUrl = _appSettings.ScormAdapterUrl,
                 SessionId = Username,
                 LmsHost = new Uri(UriHelper.GetDisplayUrl(Request)).GetLeftPart(UriPartial.Authority)
             });

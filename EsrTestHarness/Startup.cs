@@ -1,5 +1,6 @@
 using EsrTestHarness.Hubs;
 using EsrTestHarness.Model;
+using EsrTestHarness.Repository;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -36,7 +37,8 @@ namespace EsrTestHarness
 
             services.AddSignalR();
 
-            services.AddScoped<ITestDatabase, TestDatabase>();
+            //services.AddScoped<ITestDatabase, SqlLiteDatabase>();
+            services.AddScoped<ITestDatabase, AzureTableDatabase>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

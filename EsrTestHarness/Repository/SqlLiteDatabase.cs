@@ -5,11 +5,11 @@ using System.Data.SQLite;
 using System.IO;
 using System.Threading.Tasks;
 
-namespace EsrTestHarness
+namespace EsrTestHarness.Repository
 {
-    public class TestDatabase : ITestDatabase
+    public class SqlLiteDatabase : ITestDatabase
     {
-        public TestDatabase()
+        public SqlLiteDatabase()
         {
             if (!File.Exists(DbFile))
             {
