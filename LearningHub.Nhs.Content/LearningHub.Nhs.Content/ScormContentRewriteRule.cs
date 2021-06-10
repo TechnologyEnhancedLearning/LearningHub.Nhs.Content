@@ -99,7 +99,12 @@ namespace LearningHub.Nhs.Content
             try
             {
                 var displayUrl = context.HttpContext.Request.GetDisplayUrl();
-                
+
+                foreach (var header in context.HttpContext.Request.Headers)
+                {
+                    this.logger.LogTrace($"{header.Key} # {header.Value}");
+                }
+
                 this.LoadSourceSystems();
 
                 if (sourceSystems == null)
