@@ -95,6 +95,17 @@ namespace LearningHub.Nhs.Content
             {
                 var displayUrl = context.HttpContext.Request.GetDisplayUrl();
 
+                var sbRequestHeaders = new StringBuilder();
+
+                sbRequestHeaders.Append($"Request Url # {context.HttpContext.Request.Path}");
+
+                foreach (var header in context.HttpContext.Request.Headers)
+                {
+                    sbRequestHeaders.AppendLine($"{header.Key} # {header.Value}");
+                }
+
+                logger.LogTrace(sbRequestHeaders.ToString());
+
                 this.LoadSourceSystems();
 
                 if (sourceSystems == null)
@@ -129,12 +140,8 @@ namespace LearningHub.Nhs.Content
             var fullRequestUrl = context.HttpContext.Request.GetDisplayUrl();
             
             const string startUrlParam = "starting_url";
-            const string sessionIdParam = "&sessionid";
-            const string lmsUrlParam = "lms_url";
-
             var startingUrl = string.Empty;
-            var sessionId = string.Empty;
-            var lmsUrl = string.Empty;
+            
             
             if (fullRequestUrl.Contains(startUrlParam, StringComparison.InvariantCultureIgnoreCase))
             {
@@ -142,8 +149,6 @@ namespace LearningHub.Nhs.Content
                 var index = startingUrl.IndexOf(sourceSystem.ResourcePath,
                     StringComparison.InvariantCultureIgnoreCase);
                 requestPath = startingUrl.Substring(index, startingUrl.Length - index);
-                sessionId = context.HttpContext.Request.Query[sessionIdParam];
-                lmsUrl = context.HttpContext.Request.Query[lmsUrlParam];
             }
             else
             {
@@ -152,19 +157,18 @@ namespace LearningHub.Nhs.Content
             }
             
             var pathSegments = requestPath.Split('/');
-           
+            if (string.IsNullOrEmpty(pathSegments.Last()))
+            {
+                pathSegments = pathSegments.Take(pathSegments.Length-1).ToArray();
+            }
             if (pathSegments.Length < sourceSystem.ResourceIdentifierPosition)
             {
                 this.logger.LogWarning($" fullResourceUrl {startingUrl} # Request Path {requestPath} # INVALID PATH SEGMENTS pathSegmentsLength: {pathSegments.Length} # Expected PathSegments: {sourceSystem.ResourceIdentifierPosition}");
                 context.HttpContext.Response.StatusCode = StatusCodes.Status404NotFound;
                 return;
             }
+
             var resourceExternalReference = pathSegments[sourceSystem.ResourceIdentifierPosition - 1];
-            
-            if (resourceExternalReference.Contains(sessionIdParam))
-            {
-                resourceExternalReference = resourceExternalReference[..resourceExternalReference.IndexOf(sessionIdParam)];
-            }
             var match = Regex.Match(resourceExternalReference, sourceSystem.ResourceRegEx, RegexOptions.IgnoreCase);
 
             if (!match.Success)
@@ -200,7 +204,7 @@ namespace LearningHub.Nhs.Content
             }
 
             var rewrittenUrlStringBuilder = new StringBuilder();
-            if (string.IsNullOrEmpty(startingUrl) && pathSegments.Length == sourceSystem.ResourceIdentifierPosition)
+            if (pathSegments.Length == sourceSystem.ResourceIdentifierPosition)
             {
                 var hostSegment = startingUrl[..startingUrl.IndexOf(sourceSystem.ResourcePath)];
                 rewrittenUrlStringBuilder.Append($"{hostSegment}{requestPath}/{scormContentDetail.ManifestUrl}");

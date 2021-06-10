@@ -77,25 +77,7 @@ namespace LearningHub.Nhs.Content
             var scormContentRequestHandler = app.ApplicationServices.GetService<IScormContentRewriteService>();
             var settings = app.ApplicationServices.GetService<IOptions<Settings>>();
             var logger = app.ApplicationServices.GetService<ILogger<ScormContentRewriteRule>>();
-
-
-            app.Use(async (context, next) =>
-            {
-                await next.Invoke();
-
-                var sb = new StringBuilder();
-
-                sb.Append($"Request Url # {context.Request.Path}");
-
-                foreach (var header in context.Request.Headers)
-                {
-                    sb.AppendLine($"{header.Key} # {header.Value}");
-                }
-
-                logger.LogTrace(sb.ToString());
-            });
-
-
+            
             var rewriteOptions = new RewriteOptions()
                 .Add(new ScormContentRewriteRule(scormContentRequestHandler, settings, logger));
             app.UseRewriter(rewriteOptions);
@@ -161,7 +143,7 @@ namespace LearningHub.Nhs.Content
             services.AddDistributedCache(opt =>
             {
                 opt.RedisConnectionString = this.Configuration.GetConnectionString("Redis");
-                opt.KeyPrefix = $"{envPrefix}_ContentServer_";
+                opt.KeyPrefix = $"{envPrefix}_ContentServer";
             });
 
             services.AddSingleton<IScormContentRewriteService, ScormContentRewriteService>();
