@@ -205,7 +205,8 @@ namespace LearningHub.Nhs.Content
 
                     rewrittenUrl = uriBuilder.Uri.ToString();
                 }
-                else {
+                else
+                {
                     this.logger.LogTrace($"Without if condition Uri: '{rewrittenUrl}'");
                 }
 
