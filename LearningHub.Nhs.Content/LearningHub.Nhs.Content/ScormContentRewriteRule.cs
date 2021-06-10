@@ -135,31 +135,14 @@ namespace LearningHub.Nhs.Content
         /// <returns>The <see cref="Task"/>.</returns>
         private async Task HandleRequestsAsync(RewriteContext context, MigrationSourceViewModel sourceSystem)
         {
-            var originalRequestPath = context.HttpContext.Request.Path.Value;
-            string requestPath;
-            var fullRequestUrl = context.HttpContext.Request.GetDisplayUrl();
-            
-            const string startUrlParam = "starting_url";
-            var startingUrl = string.Empty;
-            
-            
-            if (fullRequestUrl.Contains(startUrlParam, StringComparison.InvariantCultureIgnoreCase))
-            {
-                startingUrl = context.HttpContext.Request.Query[startUrlParam];
-                var index = startingUrl.IndexOf(sourceSystem.ResourcePath,
-                    StringComparison.InvariantCultureIgnoreCase);
-                requestPath = startingUrl.Substring(index, startingUrl.Length - index);
-            }
-            else
-            {
-                startingUrl = fullRequestUrl;
-                requestPath = originalRequestPath;
-            }
-            
+            var requestPath = context.HttpContext.Request.Path.Value;
+
+            var startingUrl = context.HttpContext.Request.GetDisplayUrl();
+
             var pathSegments = requestPath.Split('/');
             if (string.IsNullOrEmpty(pathSegments.Last()))
             {
-                pathSegments = pathSegments.Take(pathSegments.Length-1).ToArray();
+                pathSegments = pathSegments.Take(pathSegments.Length - 1).ToArray();
             }
             if (pathSegments.Length < sourceSystem.ResourceIdentifierPosition)
             {
@@ -209,10 +192,22 @@ namespace LearningHub.Nhs.Content
                 var hostSegment = startingUrl[..startingUrl.IndexOf(sourceSystem.ResourcePath)];
                 rewrittenUrlStringBuilder.Append($"{hostSegment}{requestPath}/{scormContentDetail.ManifestUrl}");
 
-                context.HttpContext.Response.StatusCode = StatusCodes.Status302Found;
-                context.HttpContext.Response.Headers[HeaderNames.Location] = rewrittenUrlStringBuilder.ToString();
+                var rewrittenUrl = rewrittenUrlStringBuilder.ToString();
 
-                this.logger.LogInformation($"Original Request Path:{startingUrl} # Manifest file included {rewrittenUrlStringBuilder}");
+                if (context.HttpContext.Request.Headers.TryGetValue("X-FORWARDED-PROTO", out var uriScheme))
+                {
+                    var uriBuilder = new UriBuilder(rewrittenUrl)
+                    {
+                        Scheme = uriScheme.ToString().ToLower() == "https" ? Uri.UriSchemeHttps : Uri.UriSchemeHttp
+                    };
+
+                    rewrittenUrl = uriBuilder.ToString();
+                }
+
+                context.HttpContext.Response.StatusCode = StatusCodes.Status302Found;
+                context.HttpContext.Response.Headers[HeaderNames.Location] = rewrittenUrl;
+
+                this.logger.LogInformation($"Original Request Path:{startingUrl} # Manifest file included {rewrittenUrl}");
                 context.Result = RuleResult.EndResponse;
                 return;
             }
@@ -225,9 +220,9 @@ namespace LearningHub.Nhs.Content
                 .Replace(sourceSystem.ResourcePath, $"{this.settings.LearningHubContentVirtualPath}/")
                 .Replace(resourceExternalReference, scormContentDetail.InternalResourceIdentifier);
             context.HttpContext.Request.Path = rewrittenUrlStringBuilder.ToString();
-            
+
             match = Regex.Match(pathSegments.Last(), @"^(?i:index|default).*\.(htm|html)$");
-            
+
             if (match.Success)
             {
                 this.logger.LogInformation(
