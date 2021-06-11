@@ -97,8 +97,7 @@ namespace LearningHub.Nhs.Content
 
                 var hostName = context.HttpContext.Request.Host.Host.ToString();
                 var requestPath = context.HttpContext.Request.Path;
-
-                this.logger.LogInformation($"hostName {hostName} # requestPath {requestPath}");
+                
                 this.LoadSourceSystems();
 
                 if (sourceSystems == null)
@@ -110,7 +109,10 @@ namespace LearningHub.Nhs.Content
                 var migrationSource = sourceSystems?.GetMigrationSource(hostName, requestPath);
 
                 if (migrationSource == null)
+                {
+                    this.logger.LogTrace($"MigrationSource Not found stop and return # hostName {hostName} # requestPath {requestPath}");
                     return;
+                }
 
                 _ = this.HandleRequestsAsync(context, migrationSource);
             }

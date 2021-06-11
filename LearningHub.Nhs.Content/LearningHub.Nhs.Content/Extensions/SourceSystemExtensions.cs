@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using Microsoft.AspNetCore.Http;
 
 namespace LearningHub.Nhs.Content.Extensions
@@ -37,7 +38,8 @@ namespace LearningHub.Nhs.Content.Extensions
                 if (migrationSource.HostName == null || migrationSource.ResourcePath == null)
                     continue;
 
-                if (hostName.Contains(migrationSource.HostName) && resourcePath.Contains(migrationSource.ResourcePath))
+                if (migrationSource.HostName.Contains(hostName, StringComparison.InvariantCultureIgnoreCase) 
+                    && resourcePath.Contains(migrationSource.ResourcePath, StringComparison.InvariantCultureIgnoreCase))
                     return migrationSource;
             }
 
