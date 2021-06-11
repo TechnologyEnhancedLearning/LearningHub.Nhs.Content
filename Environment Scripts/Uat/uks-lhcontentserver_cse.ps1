@@ -79,8 +79,8 @@ try{
             Write-Log -Text "Completed downloading Content Server zipped artifact" -Type INFO    
     
         ## Restrat IIS
-           iisreset
-           Write-Log -Text "IIS Restarted" -Type INFO    
+           iisreset /stop
+           Write-Log -Text "IIS Stopped" -Type INFO    
         ## Restrat IIS
 
         # Extract Content Server zipped artifact
@@ -88,7 +88,7 @@ try{
 	        Write-Log -Text "Completed Extract Content Server zipped artifact" -Type INFO    
 
         ## Restrat IIS
-           iisreset
+           iisreset /start
            Write-Log -Text "IIS Restarted" -Type INFO    
         ## Restrat IIS
 

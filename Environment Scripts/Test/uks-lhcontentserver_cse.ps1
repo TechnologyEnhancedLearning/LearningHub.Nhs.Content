@@ -78,17 +78,17 @@ try{
             Invoke-WebRequest -Uri $LHContentServerZippedFileUrl -OutFile $LHContentServerZippedFileLocation
             Write-Log -Text "Completed downloading Content Server zipped artifact" -Type INFO    
     
-        ## Restrat IIS
-           iisreset
-           Write-Log -Text "IIS Restarted" -Type INFO    
-        ## Restrat IIS
+        ## Stop IIS
+           iisreset /stop
+           Write-Log -Text "IIS Stopped" -Type INFO    
+        ## Stop IIS
 
         # Extract Content Server zipped artifact
             Expand-Archive -LiteralPath $LHContentServerZippedFileLocation -DestinationPath $LHContentServerZippedFileExtactLocation -Force
 	        Write-Log -Text "Completed Extract Content Server zipped artifact" -Type INFO    
 
         ## Restrat IIS
-           iisreset
+           iisreset /start
            Write-Log -Text "IIS Restarted" -Type INFO    
         ## Restrat IIS
 
