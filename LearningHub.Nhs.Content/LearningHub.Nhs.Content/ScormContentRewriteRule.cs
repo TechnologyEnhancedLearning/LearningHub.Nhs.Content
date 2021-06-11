@@ -93,9 +93,12 @@ namespace LearningHub.Nhs.Content
         {
             try
             {
+                this.logger.LogInformation($"Begin Url Rewrite");
+
                 var hostName = context.HttpContext.Request.Host.Host.ToString();
                 var requestPath = context.HttpContext.Request.Path;
 
+                this.logger.LogInformation($"hostName {hostName} # requestPath {requestPath}");
                 this.LoadSourceSystems();
 
                 if (sourceSystems == null)
