@@ -155,10 +155,10 @@ namespace LearningHub.Nhs.Content
             switch (sourceSystem.SourceType())
             {
                 case SourceType.LearningHub:
-                    scormContentDetail = await scormContentRewriteService.GetScormContentDetailsByExternalReferenceAsync(resourceExternalReference, cacheKey);
+                    scormContentDetail = scormContentRewriteService.GetScormContentDetailsByExternalReferenceAsync(resourceExternalReference, cacheKey).Result;
                     break;
                 case SourceType.eLR:
-                    scormContentDetail = await scormContentRewriteService.GetScormContentDetailsByExternalUrlAsync(startingUrl, cacheKey);
+                    scormContentDetail = scormContentRewriteService.GetScormContentDetailsByExternalUrlAsync(startingUrl, cacheKey).Result;
                     break;
                 case SourceType.eWIN:
                 default:
