@@ -93,8 +93,6 @@ namespace LearningHub.Nhs.Content
         {
             try
             {
-                this.logger.LogInformation($"Begin Url Rewrite");
-
                 var hostName = context.HttpContext.Request.Host.Host.ToString();
                 var requestPath = context.HttpContext.Request.Path;
                 
@@ -110,7 +108,6 @@ namespace LearningHub.Nhs.Content
 
                 if (migrationSource == null)
                 {
-                    this.logger.LogTrace($"MigrationSource Not found stop and return # hostName {hostName} # requestPath {requestPath}");
                     return;
                 }
 
