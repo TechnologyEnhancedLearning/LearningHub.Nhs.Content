@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using Microsoft.AspNetCore.Http;
 
 namespace LearningHub.Nhs.Content.Extensions
 {
@@ -25,13 +26,19 @@ namespace LearningHub.Nhs.Content.Extensions
         /// The GetMigrationSource.
         /// </summary>
         /// <param name="sourceTypes">The sourceTypes<see cref="List{MigrationSourceViewModel}"/>.</param>
-        /// <param name="requestUrl">The requestUrl<see cref="string"/>.</param>
+        /// <param name="hostName">hostName</param>
+        /// <param name="resourcePath">The requestUrl<see cref="string"/>.</param>
         /// <returns>The <see cref="MigrationSourceViewModel"/>.</returns>
-        public static MigrationSourceViewModel GetMigrationSource(this List<MigrationSourceViewModel> sourceTypes, string requestUrl)
+        public static MigrationSourceViewModel GetMigrationSource(this List<MigrationSourceViewModel> sourceTypes,
+            string hostName, string resourcePath)
         {
-            foreach (var migrationSource in sourceTypes.Where(x => x.ResourcePath != null && requestUrl.Contains(x.ResourcePath)))
+            foreach (var migrationSource in sourceTypes)
             {
-                return migrationSource;
+                if (migrationSource.HostName == null || migrationSource.ResourcePath == null)
+                    continue;
+
+                if (hostName.Contains(migrationSource.HostName) && resourcePath.Contains(migrationSource.ResourcePath))
+                    return migrationSource;
             }
 
             return null;

@@ -93,7 +93,8 @@ namespace LearningHub.Nhs.Content
         {
             try
             {
-                var displayUrl = context.HttpContext.Request.GetDisplayUrl();
+                var hostName = context.HttpContext.Request.Host.Host.ToString();
+                var requestPath = context.HttpContext.Request.Path;
 
                 this.LoadSourceSystems();
 
@@ -103,7 +104,7 @@ namespace LearningHub.Nhs.Content
                     return;
                 }
 
-                var migrationSource = sourceSystems?.GetMigrationSource(displayUrl);
+                var migrationSource = sourceSystems?.GetMigrationSource(hostName, requestPath);
 
                 if (migrationSource == null)
                     return;
@@ -124,15 +125,11 @@ namespace LearningHub.Nhs.Content
         /// <returns>The <see cref="Task"/>.</returns>
         private async Task HandleRequestsAsync(RewriteContext context, MigrationSourceViewModel sourceSystem)
         {
-            var requestPath = context.HttpContext.Request.Path.Value;
+            var requestPath = context.HttpContext.Request.Path.Value?.TrimEnd('/');
 
-            var startingUrl = context.HttpContext.Request.GetDisplayUrl();
-
-            var pathSegments = requestPath.Split('/');
-            if (string.IsNullOrEmpty(pathSegments.Last()))
-            {
-                pathSegments = pathSegments.Take(pathSegments.Length - 1).ToArray();
-            }
+            var startingUrl = context.HttpContext.Request.GetDisplayUrl().TrimEnd('/');
+            
+            var pathSegments = requestPath.Split('/');            
             if (pathSegments.Length < sourceSystem.ResourceIdentifierPosition)
             {
                 this.logger.LogWarning($" fullResourceUrl {startingUrl} # Request Path {requestPath} # INVALID PATH SEGMENTS pathSegmentsLength: {pathSegments.Length} # Expected PathSegments: {sourceSystem.ResourceIdentifierPosition}");
@@ -159,7 +156,6 @@ namespace LearningHub.Nhs.Content
                     scormContentDetail = await scormContentRewriteService.GetScormContentDetailsByExternalReferenceAsync(resourceExternalReference, cacheKey);
                     break;
                 case SourceType.eLR:
-                    this.logger.LogWarning($"Calling Backend to fetch scorm resource detail {startingUrl}");
                     scormContentDetail = await scormContentRewriteService.GetScormContentDetailsByExternalUrlAsync(startingUrl, cacheKey);
                     break;
                 case SourceType.eWIN:
@@ -174,14 +170,10 @@ namespace LearningHub.Nhs.Content
                 context.HttpContext.Response.StatusCode = StatusCodes.Status404NotFound;
                 return;
             }
-
-            var rewrittenUrlStringBuilder = new StringBuilder();
+            
             if (pathSegments.Length == sourceSystem.ResourceIdentifierPosition)
             {
-                var hostSegment = startingUrl[..startingUrl.IndexOf(sourceSystem.ResourcePath)];
-                rewrittenUrlStringBuilder.Append($"{hostSegment}{requestPath}/{scormContentDetail.ManifestUrl}");
-
-                var rewrittenUrl = rewrittenUrlStringBuilder.ToString();
+                var rewrittenUrl = $"{startingUrl}/{scormContentDetail.ManifestUrl}";
 
                 if (context.HttpContext.Request.Headers.TryGetValue("X-FORWARDED-PROTO", out var uriScheme))
                 {
@@ -202,9 +194,7 @@ namespace LearningHub.Nhs.Content
                 return;
             }
 
-            if (pathSegments.Length == sourceSystem.ResourceIdentifierPosition)
-                scormContentDetail.InternalResourceIdentifier = ($"{scormContentDetail.InternalResourceIdentifier}/{scormContentDetail.ManifestUrl}");
-
+            var rewrittenUrlStringBuilder = new StringBuilder();
             rewrittenUrlStringBuilder
                 .Append(requestPath)
                 .Replace(sourceSystem.ResourcePath, $"{this.settings.LearningHubContentVirtualPath}/")
