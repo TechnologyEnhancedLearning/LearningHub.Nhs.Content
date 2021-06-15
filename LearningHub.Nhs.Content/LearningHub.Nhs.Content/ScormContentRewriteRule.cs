@@ -95,7 +95,7 @@ namespace LearningHub.Nhs.Content
             {
                 var hostName = context.HttpContext.Request.Host.Host.ToString();
                 var requestPath = context.HttpContext.Request.Path;
-                
+
                 this.LoadSourceSystems();
 
                 if (sourceSystems == null)
@@ -129,9 +129,11 @@ namespace LearningHub.Nhs.Content
         {
             var requestPath = context.HttpContext.Request.Path.Value?.TrimEnd('/');
 
-            var startingUrl = context.HttpContext.Request.GetDisplayUrl().TrimEnd('/');
-            
-            var pathSegments = requestPath.Split('/');            
+            var startingUrl = context.HttpContext.Request.GetDisplayUrl();
+
+            var uriBuilder = new UriBuilder(startingUrl);
+
+            var pathSegments = requestPath.Split('/');
             if (pathSegments.Length < sourceSystem.ResourceIdentifierPosition)
             {
                 this.logger.LogWarning($" fullResourceUrl {startingUrl} # Request Path {requestPath} # INVALID PATH SEGMENTS pathSegmentsLength: {pathSegments.Length} # Expected PathSegments: {sourceSystem.ResourceIdentifierPosition}");
@@ -158,7 +160,7 @@ namespace LearningHub.Nhs.Content
                     scormContentDetail = scormContentRewriteService.GetScormContentDetailsByExternalReferenceAsync(resourceExternalReference, cacheKey).Result;
                     break;
                 case SourceType.eLR:
-                    scormContentDetail = scormContentRewriteService.GetScormContentDetailsByExternalUrlAsync(startingUrl, cacheKey).Result;
+                    scormContentDetail = scormContentRewriteService.GetScormContentDetailsByExternalUrlAsync(uriBuilder.Uri.GetLeftPart(UriPartial.Path).TrimEnd('/'), cacheKey).Result;
                     break;
                 case SourceType.eWIN:
                 default:
@@ -172,21 +174,18 @@ namespace LearningHub.Nhs.Content
                 context.HttpContext.Response.StatusCode = StatusCodes.Status404NotFound;
                 return;
             }
-            
+
             if (pathSegments.Length == sourceSystem.ResourceIdentifierPosition)
             {
-                var rewrittenUrl = $"{startingUrl}/{scormContentDetail.ManifestUrl}";
+                uriBuilder.Path = uriBuilder.Path.EndsWith("/") ? $"{uriBuilder.Path}{scormContentDetail.ManifestUrl}" : $"{uriBuilder.Path}/{scormContentDetail.ManifestUrl}";
 
                 if (context.HttpContext.Request.Headers.TryGetValue("X-FORWARDED-PROTO", out var uriScheme))
                 {
-                    var uriBuilder = new UriBuilder(rewrittenUrl)
-                    {
-                        Scheme = uriScheme.ToString().ToLower() == "https" ? Uri.UriSchemeHttps : Uri.UriSchemeHttp,
-                        Port = -1 // default port for scheme
-                    };
-
-                    rewrittenUrl = uriBuilder.Uri.ToString();
+                    uriBuilder.Scheme = uriScheme.ToString().ToLower() == "https" ? Uri.UriSchemeHttps : Uri.UriSchemeHttp;
+                    uriBuilder.Port = -1; // default port for scheme
                 }
+
+                var rewrittenUrl = uriBuilder.Uri.ToString();
 
                 context.HttpContext.Response.StatusCode = StatusCodes.Status302Found;
                 context.HttpContext.Response.Headers[HeaderNames.Location] = rewrittenUrl;
