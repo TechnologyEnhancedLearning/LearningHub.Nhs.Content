@@ -96,6 +96,9 @@ namespace LearningHub.Nhs.Content
                 var hostName = context.HttpContext.Request.Host.Host.ToString();
                 var requestPath = context.HttpContext.Request.Path;
                 
+                if(requestPath == @"/")
+                    return;
+
                 this.LoadSourceSystems();
 
                 if (sourceSystems == null)
