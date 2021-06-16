@@ -95,7 +95,7 @@ namespace LearningHub.Nhs.Content
             {
                 var hostName = context.HttpContext.Request.Host.Host.ToString();
                 var requestPath = context.HttpContext.Request.Path;
-                this.logger.LogTrace($"requestPath '{requestPath}' hostName '{hostName}'");
+                
                 this.LoadSourceSystems();
 
                 if (sourceSystems == null)
@@ -132,9 +132,7 @@ namespace LearningHub.Nhs.Content
             var startingUrl = context.HttpContext.Request.GetDisplayUrl();
 
             var uriBuilder = new UriBuilder(startingUrl);
-
-            this.logger.LogTrace($"requestPath '{requestPath}' startingUrl '{startingUrl}'");
-
+            
             var pathSegments = requestPath.Split('/');
             if (pathSegments.Length < sourceSystem.ResourceIdentifierPosition)
             {
