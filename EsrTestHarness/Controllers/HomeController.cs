@@ -5,7 +5,6 @@ using EsrTestHarness.ViewModels;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
-using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -20,13 +19,11 @@ namespace EsrTestHarness.Controllers
     {
         private readonly IHubContext<MessageHub> _hubcontext;
         private readonly ITestDatabase _database;
-        private readonly AppSettings _appSettings;
 
-        public HomeController(IHubContext<MessageHub> hubcontext, ITestDatabase database, IOptions<AppSettings> settings)
+        public HomeController(IHubContext<MessageHub> hubcontext, ITestDatabase database)
         {
             _hubcontext = hubcontext;
             _database = database;
-            _appSettings = settings.Value;
         }
 
         public IActionResult Index()
@@ -45,7 +42,7 @@ namespace EsrTestHarness.Controllers
             Username = model.Username;
             if (await _database.GetUserAsync(model.Username) == null)
             {
-                await _database.InsertUserAsync(new Model.User { Email = model.Username });
+                await _database.InsertUserAsync(new User { Email = model.Username });
             }
 
             return RedirectToAction("List");
@@ -81,9 +78,13 @@ namespace EsrTestHarness.Controllers
         [HttpPost("/lms-content/{*path}")]
         public async Task<IActionResult> LmsContent()
         {
-
             using var reader = new StreamReader(Request.Body);
             var body = await reader.ReadToEndAsync();
+
+            if (!body.StartsWith("scormd="))
+            {
+                return BadRequest();
+            }
 
             var decoded = Decode(body.Remove(0, "scormd=".Length));
 
