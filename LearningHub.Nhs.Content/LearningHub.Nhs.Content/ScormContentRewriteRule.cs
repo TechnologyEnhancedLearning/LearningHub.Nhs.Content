@@ -95,7 +95,7 @@ namespace LearningHub.Nhs.Content
             {
                 var hostName = context.HttpContext.Request.Host.Host.ToString();
                 var requestPath = context.HttpContext.Request.Path;
-
+                
                 this.LoadSourceSystems();
 
                 if (sourceSystems == null)
@@ -132,7 +132,7 @@ namespace LearningHub.Nhs.Content
             var startingUrl = context.HttpContext.Request.GetDisplayUrl();
 
             var uriBuilder = new UriBuilder(startingUrl);
-
+            
             var pathSegments = requestPath.Split('/');
             if (pathSegments.Length < sourceSystem.ResourceIdentifierPosition)
             {
@@ -160,7 +160,9 @@ namespace LearningHub.Nhs.Content
                     scormContentDetail = scormContentRewriteService.GetScormContentDetailsByExternalReferenceAsync(resourceExternalReference, cacheKey).Result;
                     break;
                 case SourceType.eLR:
-                    scormContentDetail = scormContentRewriteService.GetScormContentDetailsByExternalUrlAsync(uriBuilder.Uri.GetLeftPart(UriPartial.Path).TrimEnd('/'), cacheKey).Result;
+                    var resourceUri = $"{sourceSystem.ResourcePath}{resourceExternalReference}/";
+                    this.logger.LogTrace($"resourceUri '{resourceUri}' Calling Backend Api");
+                    scormContentDetail = scormContentRewriteService.GetScormContentDetailsByExternalUrlAsync(resourceUri, cacheKey).Result;
                     break;
                 case SourceType.eWIN:
                 default:
