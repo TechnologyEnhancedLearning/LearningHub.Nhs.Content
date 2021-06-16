@@ -160,7 +160,9 @@ namespace LearningHub.Nhs.Content
                     scormContentDetail = scormContentRewriteService.GetScormContentDetailsByExternalReferenceAsync(resourceExternalReference, cacheKey).Result;
                     break;
                 case SourceType.eLR:
-                    scormContentDetail = scormContentRewriteService.GetScormContentDetailsByExternalUrlAsync(uriBuilder.Uri.GetLeftPart(UriPartial.Path).TrimEnd('/'), cacheKey).Result;
+                    var resourceUri = $"{sourceSystem.ResourcePath}{resourceExternalReference}/";
+                    this.logger.LogTrace($"resourceUri '{resourceUri}' Calling Backend Api");
+                    scormContentDetail = scormContentRewriteService.GetScormContentDetailsByExternalUrlAsync(resourceUri, cacheKey).Result;
                     break;
                 case SourceType.eWIN:
                 default:
