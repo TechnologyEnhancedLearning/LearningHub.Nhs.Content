@@ -117,7 +117,7 @@ namespace EsrTestHarness.Controllers
 
                         responseItems.Add("cmi.core.student_id=1");
                         responseItems.Add("cmi.core.student_name=test, user");
-                        responseItems.Add("cmi.core.lesson_location=uk");
+                        //responseItems.Add("cmi.core.lesson_location=uk");
 
                         responseItems.Add("cmi.core.credit=credit"); //credit, no-credit
 
