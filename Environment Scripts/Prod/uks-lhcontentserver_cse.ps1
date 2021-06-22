@@ -9,22 +9,22 @@ $LHContentServerDownloadFolder =  "$env:SystemDrive\LearningHub"
 $DeploymentEnvironment= "prod"
 
 # Learning Hub Content Server artifacts location
-$LHContentServerZippedFileUrl = "https://ukselfhdevlhcontentstore.blob.core.windows.net/contentserverartifacts/$DeploymentEnvironment/LearningHub.Nhs.Content.zip"
+$LHContentServerZippedFileUrl = "https://learninghubprodstor.blob.core.windows.net/contentserverartifacts/$DeploymentEnvironment/LearningHub.Nhs.Content.zip"
 $LHContentServerZippedFile = 'LearningHub.Nhs.Content.zip'
 $LHContentServerZippedFileLocation = "$LHContentServerDownloadFolder\$LHContentServerZippedFile"
 
 $LHContentServerZippedFileExtactLocation = "$env:SystemDrive\inetpub\wwwroot"
 
 # .NET Core Web Hosting Bundle installer location
-$DotnetCore2WebHostingBundleInstallerUrl = "https://ukselfhdevlhcontentstore.blob.core.windows.net/contentserverartifacts/dotnet-hosting-2.2.2-win.exe"
+$DotnetCore2WebHostingBundleInstallerUrl = "https://learninghubprodstor.blob.core.windows.net/contentserverartifacts/dotnet-hosting-2.2.2-win.exe"
 $DotnetCore2WebHostingBundleInstallerFile = "dotnet-hosting-2.2.2-win.exe"
 $DotnetCore2WebHostingBundleInstallerFileLocation = "$LHContentServerDownloadFolder\$DotnetCore2WebHostingBundleInstallerFile"
     
 # .NET Core 5 Web Hosting Bundle installer location
-$DotnetCore5WebHostingBundleInstallerUrl = "https://ukselfhdevlhcontentstore.blob.core.windows.net/contentserverartifacts/dotnet-hosting-5.0.6-win.exe"
+$DotnetCore5WebHostingBundleInstallerUrl = "https://learninghubprodstor.blob.core.windows.net/contentserverartifacts/dotnet-hosting-5.0.6-win.exe"
 $DotnetCore5WebHostingBundleInstallerFile = "dotnet-hosting-5.0.6-win.exe"
 $DotnetCore5WebHostingBundleInstallerFileLocation = "$LHContentServerDownloadFolder\$DotnetCore5WebHostingBundleInstallerFile"
-https://learninghubprodstor.file.core.windows.net/resourcesprod
+
 #File share network mapped drive
 $Share = 'learninghubprodstor'
 $Folder = "resources$DeploymentEnvironment"
@@ -78,10 +78,10 @@ try{
             Invoke-WebRequest -Uri $LHContentServerZippedFileUrl -OutFile $LHContentServerZippedFileLocation
             Write-Log -Text "Completed downloading Content Server zipped artifact" -Type INFO    
     
-        ## Restrat IIS
+        ## Stop IIS
            iisreset /stop
            Write-Log -Text "IIS Stopped" -Type INFO      
-        ## Restrat IIS
+        ## Stop IIS
 
         # Extract Content Server zipped artifact
             Expand-Archive -LiteralPath $LHContentServerZippedFileLocation -DestinationPath $LHContentServerZippedFileExtactLocation -Force
@@ -214,7 +214,6 @@ try{
             Finish-Execution
             throw "Unable to mount network drive  Z:"
         }
-
         
         Write-Log -Text "Creating Local User and apppool" -Type INFO
   
@@ -239,8 +238,7 @@ try{
         Write-Log -Text "VM Configuration Complete" -Type INFO
 
         Finish-Execution
-    }
-   
+    }   
 }
  catch{
     Write-Log -Text "$Error[0]" -Type ERROR	

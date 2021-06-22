@@ -2,13 +2,14 @@
 
 Login-AzAccount
 Get-AzSubscription
-select-AzSubscription -Subscription "eLfH DevTest"
+select-AzSubscription -Subscription "eLfH Prod"
 
 # before running this script, delete all resources, excluding the vnet and public IP address
 # if the network resources do not exist. Please run uks-lhcontentserver_createnetwork, before continuing with this script. 
 
 $DeploymentEnvironment= "prod"
-$ArtifactLocation = "https://ukselfhdevlhcontentstore.blob.core.windows.net/contentserverartifacts/"
+$ArtifactLocation = "https://learninghubprodstor.blob.core.windows.net/contentserverartifacts/"
+
 $CustomScriptFileName = "$DeploymentEnvironment/uks-lhcontentserver_cse.ps1"
 
 $DeploymentEnvironment= "PROD"
