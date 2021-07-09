@@ -1,6 +1,6 @@
 ﻿@model EsrTestHarness.ViewModels.ListVM
 
-<div class="d-flex flex-column" style="height:200px;">
+<div class="d-flex flex-column">
     <div class="p-5 pt-3">
 
         <div class="text-center pb-2">
@@ -10,8 +10,17 @@
 
         <form class="text-center">
             <div class="my-3">
-                <input type="url" id="scormAdaptorUrl" class="form-control d-inline" style="max-width:600px;" required placeholder="Scorm adaptor url"
-                       value="https://example-elr.test-learninghub.org.uk/jsadapter12_aspnet/jsadapter12_asp/oracle_scorm_adapter_js.html" />
+                <select type="url" name="scormAdaptorUrls" id="scormAdaptorUrls" class="form-select d-inline" style="max-width:600px;">
+                    <option value="">Pick an adapter location:</option>
+                    <option value="https://content-test.test-learninghub.org.uk/jsadapter12_aspnet/jsadapter12_asp/oracle_scorm_adapter_js.html">LH Test</option>
+                    <option value="https://example-elr.test-learninghub.org.uk/jsadapter12_aspnet/jsadapter12_asp/oracle_scorm_adapter_js.html">Example</option>
+                    <option value="https://content.learninghub.nhs.uk/jsadapter12_aspnet/jsadapter12_asp/oracle_scorm_adapter_js.html">LH Prod</option>
+                    <option value="https://www.elearningrepository.nhs.uk/jsadapter12_aspnet/jsadapter12_asp/oracle_scorm_adapter_js.html">eLR migration</option>
+                </select>
+            </div>
+
+            <div class="my-3">
+                <input type="url" id="scormAdaptorUrl" class="form-control d-inline" style="max-width:600px;" required placeholder="Scorm adaptor url" />
             </div>
 
             <div class="row my-3 text-center">
@@ -22,7 +31,7 @@
 
             <div class="my-3">
                 <input type="url" id="scormUrl" class="form-control d-inline" style="max-width:600px;" required placeholder="Your scorm resource url" />
-                <button class="btn btn-primary ms-3 mb-1" type="submit" onclick="return launchScrom()">Launch</button>
+                <button class="btn btn-primary ms-3 mb-1" type="submit" onclick="return launchScorm()">Launch</button>
             </div>
         </form>
     </div>
@@ -32,13 +41,13 @@
     <hr />
 </div>
 
+<small id="clearLog" class="d-flex flex-row-reverse" style="margin-right: 25px;">
+    <a href="#" onclick="clearLog()">Clear logs</a>
+</small>
+
 <div class="d-flex flex-column flex-grow-1 overflow-auto" style="font-size: 0.8rem;">
     <ul id="messagesList" class="list-unstyled mx-4"></ul>
 </div>
-
-<small id="clearLog" class="position-absolute d-none" style="top: 230px; right: 25px;">
-    <a href="#" onclick="clearLog()">Clear logs</a>
-</small>
 
 @section Scripts
 {
@@ -46,7 +55,7 @@
     <script src="~/js/message.js"></script>
 
     <script>
-        function launchScrom() {
+        function launchScorm() {
             const form = document.forms[0];
             if (form.checkValidity()) {
                 const scormAdaptorUrl = $('#scormAdaptorUrl').val();
@@ -54,7 +63,7 @@
 
                 //const launchUrl = `${scormAdaptorUrl}?starting_url=${scormUrl}&sessionid=${escape(btoa('@Model.SessionId'))}&lms_Url=@Model.LmsHost/lms-content/`;
 
-                const launchUrl = `${scormAdaptorUrl}?key3=c4g3lPbVtJ7xgXmVSJhpyw&key2=m5e-IjPUYSSOrw792ZG8-g&key1=5xPrAtJUNsnovOZBZloTYg&sessionid=${escape(btoa('@Model.SessionId'))}&LMS_URL=@Model.LmsHost/lms-content/?function_id=46610&resp_id=-1&resp_appl_id=-1&security_group_id=0&transactionid=259073649&lang_code=US&oas=XhowBodLSf11qCVewUl1Nw..&scorm_attempt=1623757493618&starting_url=${scormUrl}&lms_debug=on`;
+                const launchUrl = `${scormAdaptorUrl}?key3=c4g3lPbVtJ7xgXmVSJhpyw&key2=m5e-IjPUYSSOrw792ZG8-g&key1=5xPrAtJUNsnovOZBZloTYg&sessionid=${escape(btoa('@Model.SessionId'))}&LMS_URL=@Model.LmsHost/lms-content/?function_id=46610&resp_id=-1&resp_appl_id=-1&security_group_id=0&transactionid=259073649&lang_code=US&oas=XhowBodLSf11qCVewUl1Nw..&scorm_attempt=1623757493618&starting_url=${scormUrl}&lms_debug=off`;
 
                 window.open(launchUrl, 'winname', 'directories=no,titlebar=no,toolbar=no,location=no,status=no,menubar=no');
             } else {
@@ -68,5 +77,8 @@
             $('#messagesList').html("");
             $('#clearLog').addClass('d-none');
         }
+        $('#scormAdaptorUrls').on('change', function () {
+            $('#scormAdaptorUrl').val($(this).val());
+        });
     </script>
 }
