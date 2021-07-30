@@ -191,7 +191,6 @@ namespace LearningHub.Nhs.Content
             if (scormContentDetail.EsrLinkType != Nhs.Models.Enums.EsrLinkType.EveryOne)
             {
                 context.Result = RuleResult.SkipRemainingRules;
-                context.HttpContext.Items["OriginalRequestPath"] = context.HttpContext.Request.Path;
                 context.HttpContext.Items.Add("ScormContentDetail", scormContentDetail);
                 context.HttpContext.Response.StatusCode = StatusCodes.Status403Forbidden;
                 context.HttpContext.Request.Path = "/Forbidden";
@@ -200,7 +199,6 @@ namespace LearningHub.Nhs.Content
             if (!scormContentDetail.IsActive || scormContentDetail.VersionStatus != Nhs.Models.Enums.VersionStatusEnum.Published)
             {
                 context.Result = RuleResult.SkipRemainingRules;
-                context.HttpContext.Items["OriginalRequestPath"] = context.HttpContext.Request.Path;
                 context.HttpContext.Items.Add("ScormContentDetail", scormContentDetail);
                 context.HttpContext.Response.StatusCode = StatusCodes.Status410Gone;
                 context.HttpContext.Request.Path = "/NotPublished";
@@ -234,10 +232,13 @@ namespace LearningHub.Nhs.Content
                 .Replace(resourceExternalReference, scormContentDetail.InternalResourceIdentifier);
             context.HttpContext.Request.Path = rewrittenUrlStringBuilder.ToString();
 
-            match = Regex.Match(pathSegments.Last(), @"^(?i:index|default).*\.(htm|html)$");
+            match = Regex.Match(pathSegments.Last(), @"^.*\.(htm|html)$");
 
             if (match.Success)
             {
+                context.HttpContext.Response.Headers.Add("Cache-Control", "no-cache, no-store");
+                context.HttpContext.Response.Headers.Add("Expires", "-1");
+
                 this.logger.LogInformation(
                     $"Source System :{sourceSystem.Description} # Original Request Path:{startingUrl} # Rewritten Path:{rewrittenUrlStringBuilder}");
             }
