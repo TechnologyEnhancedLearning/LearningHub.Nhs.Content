@@ -20,6 +20,7 @@ namespace LearningHub.Nhs.Content
     using Microsoft.Net.Http.Headers;
     using System;
     using System.Collections.Generic;
+    using System.IO;
     using System.Text;
     using System.Text.RegularExpressions;
     using System.Threading.Tasks;
@@ -37,7 +38,7 @@ namespace LearningHub.Nhs.Content
         /// <summary>
         /// The settings......
         /// </summary>
-        private readonly Settings settings;
+        private readonly Configuration.Settings settings;
 
         /// <summary>
         /// Defines the sourceSystems.
@@ -56,7 +57,7 @@ namespace LearningHub.Nhs.Content
         /// <param name="settings">The settings.</param>
         /// <param name="logger">logger.</param>
         public ScormContentRewriteRule(IScormContentRewriteService scormContentRewriteService,
-            IOptions<Settings> settings, ILogger<ScormContentRewriteRule> logger)
+            IOptions<Configuration.Settings> settings, ILogger<ScormContentRewriteRule> logger)
         {
             this.scormContentRewriteService = scormContentRewriteService;
             this.settings = settings.Value;
@@ -98,6 +99,12 @@ namespace LearningHub.Nhs.Content
                 
                 if(requestPath == @"/")
                     return;
+
+                if (requestPath.Value.StartsWith(@"/css/") ||
+                    requestPath.Value.StartsWith(@"/lib/") ||
+                    requestPath.Value.StartsWith(@"/fonts/") ||
+                    requestPath.Value.StartsWith(@"/js/")){
+                    return; }
 
                 this.LoadSourceSystems();
 
@@ -176,7 +183,27 @@ namespace LearningHub.Nhs.Content
             if (scormContentDetail == null)
             {
                 this.logger.LogWarning($"Original Request Path:{startingUrl} # : resourceExternalReference :{resourceExternalReference}: scormContentDetail NOT FOUND");
+                context.Result = RuleResult.SkipRemainingRules;
                 context.HttpContext.Response.StatusCode = StatusCodes.Status404NotFound;
+                context.HttpContext.Request.Path = "/NotFound";
+                return;
+            }
+            if (scormContentDetail.EsrLinkType != Nhs.Models.Enums.EsrLinkType.EveryOne)
+            {
+                context.Result = RuleResult.SkipRemainingRules;
+                context.HttpContext.Items["OriginalRequestPath"] = context.HttpContext.Request.Path;
+                context.HttpContext.Items.Add("ScormContentDetail", scormContentDetail);
+                context.HttpContext.Response.StatusCode = StatusCodes.Status403Forbidden;
+                context.HttpContext.Request.Path = "/Forbidden";
+                return;
+            }
+            if (!scormContentDetail.IsActive || scormContentDetail.VersionStatus != Nhs.Models.Enums.VersionStatusEnum.Published)
+            {
+                context.Result = RuleResult.SkipRemainingRules;
+                context.HttpContext.Items["OriginalRequestPath"] = context.HttpContext.Request.Path;
+                context.HttpContext.Items.Add("ScormContentDetail", scormContentDetail);
+                context.HttpContext.Response.StatusCode = StatusCodes.Status410Gone;
+                context.HttpContext.Request.Path = "/NotPublished";
                 return;
             }
 

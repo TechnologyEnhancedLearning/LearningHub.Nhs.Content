@@ -67,7 +67,12 @@ namespace LearningHub.Nhs.Content
         {
             if (this.environment.IsDevelopment())
             {
-                app.UseDeveloperExceptionPage();
+                //app.UseDeveloperExceptionPage();
+                app.UseExceptionHandler("/Error");
+            }
+            else
+            {
+                app.UseExceptionHandler("/Error");               
             }
 
             var defaultOptions = new DefaultFilesOptions();
@@ -77,7 +82,7 @@ namespace LearningHub.Nhs.Content
             var scormContentRequestHandler = app.ApplicationServices.GetService<IScormContentRewriteService>();
             var settings = app.ApplicationServices.GetService<IOptions<Settings>>();
             var logger = app.ApplicationServices.GetService<ILogger<ScormContentRewriteRule>>();
-            
+
             var rewriteOptions = new RewriteOptions()
                 .Add(new ScormContentRewriteRule(scormContentRequestHandler, settings, logger));
             app.UseRewriter(rewriteOptions);
@@ -91,12 +96,10 @@ namespace LearningHub.Nhs.Content
 
             app.UseRouting();
             app.UseCors(AllowOrigins);
+            app.UseStaticFiles();
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapGet("/", async context =>
-                {
-                    await context.Response.WriteAsync("Learning Hub Content Server");
-                });
+                endpoints.MapRazorPages();
             });
         }
 
@@ -107,7 +110,7 @@ namespace LearningHub.Nhs.Content
         public void ConfigureServices(IServiceCollection services)
         {
             services.Configure<Settings>(this.Configuration.GetSection("Settings"));
-
+            services.AddRazorPages();
             // Register an ILearningHubHttpClient.
             if (this.environment.IsDevelopment())
             {
