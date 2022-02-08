@@ -77,7 +77,7 @@ namespace LearningHub.Nhs.Content
             var scormContentRequestHandler = app.ApplicationServices.GetService<IScormContentRewriteService>();
             var settings = app.ApplicationServices.GetService<IOptions<Settings>>();
             var logger = app.ApplicationServices.GetService<ILogger<ScormContentRewriteRule>>();
-            
+
             var rewriteOptions = new RewriteOptions()
                 .Add(new ScormContentRewriteRule(scormContentRequestHandler, settings, logger));
             app.UseRewriter(rewriteOptions);
@@ -96,6 +96,13 @@ namespace LearningHub.Nhs.Content
                 endpoints.MapGet("/", async context =>
                 {
                     await context.Response.WriteAsync("Learning Hub Content Server");
+                });
+
+                endpoints.MapPost("/remove-cache/{key}", async context =>
+                {
+                    var cacheService = context.RequestServices.GetService<ICacheService>();
+                    await cacheService.RemoveAsync(context.Request.RouteValues["key"].ToString());
+                    await context.Response.WriteAsync("Cache removed");
                 });
             });
         }
