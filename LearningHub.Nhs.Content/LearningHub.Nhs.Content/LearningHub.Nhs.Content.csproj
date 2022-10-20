@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
-    <TargetFramework>net5.0</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
     <UserSecretsId>411a9613-fe95-4ee7-8aec-57fae6204a77</UserSecretsId>
   </PropertyGroup>
 
@@ -39,7 +39,7 @@
 
   <ItemGroup>
     <PackageReference Include="LearningHub.Nhs.Caching" Version="1.1.0" />
-    <PackageReference Include="LearningHub.Nhs.Models" Version="1.0.125" />
+    <PackageReference Include="LearningHub.Nhs.Models" Version="2.1.12" />
     <PackageReference Include="Microsoft.Data.OData" Version="5.8.4" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="NLog.Extensions.AzureCosmosTable" Version="2.8.0" />
