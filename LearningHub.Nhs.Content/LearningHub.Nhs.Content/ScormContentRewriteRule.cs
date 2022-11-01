@@ -77,8 +77,6 @@ namespace LearningHub.Nhs.Content
 
                 this.sourceSystems = this.scormContentRewriteService
                     .GetMigrationSourcesAsync($"Migration-Sources").Result;
-
-                this.logger.LogTrace($"Source systems Loaded # Count :{sourceSystems.Count}");
             }
             catch (Exception e)
             {
@@ -155,7 +153,7 @@ namespace LearningHub.Nhs.Content
             var pathSegments = requestPath.Split('/');
             if (pathSegments.Length < sourceSystem.ResourceIdentifierPosition)
             {
-                this.logger.LogWarning($" fullResourceUrl {startingUrl} # Request Path {requestPath} # INVALID PATH SEGMENTS pathSegmentsLength: {pathSegments.Length} # Expected PathSegments: {sourceSystem.ResourceIdentifierPosition}");
+                this.logger.LogWarning($"FullResourceUrl {startingUrl} # Request Path {requestPath} # INVALID PATH SEGMENTS pathSegmentsLength: {pathSegments.Length} # Expected PathSegments: {sourceSystem.ResourceIdentifierPosition}");
                 context.HttpContext.Response.StatusCode = StatusCodes.Status404NotFound;
                 return;
             }
@@ -180,7 +178,6 @@ namespace LearningHub.Nhs.Content
                     break;
                 case SourceType.eLR:
                     var resourceUri = $"{sourceSystem.ResourcePath}{resourceExternalReference}/";
-                    this.logger.LogTrace($"resourceUri '{resourceUri}' Calling Backend Api");
                     scormContentDetail = scormContentRewriteService.GetScormContentDetailsByExternalUrlAsync(resourceUri, cacheKey).Result;
                     break;
                 case SourceType.eWIN: 

@@ -76,7 +76,7 @@ namespace LearningHub.Nhs.Content.Service
         /// <returns>The <see cref="Task{List{MigrationSourceViewModel}}"/>.</returns>
         public async Task<List<MigrationSourceViewModel>> GetMigrationSourcesAsync(string cacheKey)
         {
-            var migrationSources = this.cacheService.GetAsync<List<MigrationSourceViewModel>>(cacheKey + "a").Result;
+            var migrationSources = this.cacheService.GetAsync<List<MigrationSourceViewModel>>(cacheKey).Result;
 
             if (migrationSources != null)
                 return migrationSources;
