@@ -16,14 +16,9 @@ $LHContentServerZippedFileLocation = "$LHContentServerDownloadFolder\$LHContentS
 $LHContentServerZippedFileExtactLocation = "$env:SystemDrive\inetpub\wwwroot"
 
 # .NET Core Web Hosting Bundle installer location
-$DotnetCore2WebHostingBundleInstallerUrl = "https://ukselfhdevlhcontentstore.blob.core.windows.net/contentserverartifacts/dotnet-hosting-2.2.2-win.exe"
-$DotnetCore2WebHostingBundleInstallerFile = "dotnet-hosting-2.2.2-win.exe"
-$DotnetCore2WebHostingBundleInstallerFileLocation = "$LHContentServerDownloadFolder\$DotnetCore2WebHostingBundleInstallerFile"
-    
-# .NET Core 5 Web Hosting Bundle installer location
-$DotnetCore5WebHostingBundleInstallerUrl = "https://ukselfhdevlhcontentstore.blob.core.windows.net/contentserverartifacts/dotnet-hosting-5.0.6-win.exe"
-$DotnetCore5WebHostingBundleInstallerFile = "dotnet-hosting-5.0.6-win.exe"
-$DotnetCore5WebHostingBundleInstallerFileLocation = "$LHContentServerDownloadFolder\$DotnetCore5WebHostingBundleInstallerFile"
+$Dotnet6WebHostingBundleInstallerUrl = "https://ukselfhdevlhcontentstore.blob.core.windows.net/contentserverartifacts/dotnet-hosting-6.0.10-win.exe"
+$Dotnet6WebHostingBundleInstallerFile = "dotnet-hosting-6.0.10-win.exe"
+$Dotnet6WebHostingBundleInstallerFileLocation = "$LHContentServerDownloadFolder\$Dotnet6WebHostingBundleInstallerFile"
 
 #File share network mapped drive
 $Share = 'ukslhcontentstore'
@@ -143,12 +138,12 @@ try{
         }
 
         # Download .NET Core Web Hosting Bundle installer        
-        Invoke-WebRequest -Uri $DotnetCore2WebHostingBundleInstallerUrl -OutFile $DotnetCore2WebHostingBundleInstallerFileLocation    
-	    Write-Log -Text "Downloaded .NET Core Hosting Bundle " -Type INFO
+        Invoke-WebRequest -Uri $Dotnet6WebHostingBundleInstallerUrl -OutFile $Dotnet6WebHostingBundleInstallerFileLocation    
+	    Write-Log -Text "Downloaded .NET 6 Hosting Bundle " -Type INFO
           
         # Install .NET Core hosting bundle
-            Start-Process $LHContentServerDownloadFolder\dotnet-hosting-2.2.2-win.exe -ArgumentList '/install /quiet /norestart'        
-            Write-Log -Text "Completed Installing .NET Core hosting bundle" -Type INFO    
+            Start-Process $LHContentServerDownloadFolder\dotnet-hosting-6.0.10-win.exe -ArgumentList '/install /quiet /norestart'        
+            Write-Log -Text "Completed Installing .NET 6 hosting bundle" -Type INFO    
 
         # Create a temp folder to download artifacts
         if( ![System.IO.Directory]::Exists( $LHContentServerDownloadFolder ))
@@ -157,16 +152,7 @@ try{
            Write-Log -Text "Created Temp download folder" -Type INFO   
         }
 
-        # Download .NET Core 5 Web Hosting Bundle installer
-            Invoke-WebRequest -Uri $DotnetCore5WebHostingBundleInstallerUrl -OutFile $DotnetCore5WebHostingBundleInstallerFileLocation    
-            Write-Log -Text "Downloaded .NET Core Hosting Bundle" -Type INFO
-
-        # Install .NET Core 5 hosting bundle
-        Start-Process $LHContentServerDownloadFolder\dotnet-hosting-5.0.6-win.exe -ArgumentList '/install /quiet /norestart'
-
         Enable-WindowsOptionalFeature -Online -FeatureName IIS-HostableWebCore
-
-        Write-Log -Text "Installed .NET Core 5 Hosting Bundle" -Type INFO
 	
         # Download Content Server zipped artifact
         Invoke-WebRequest -Uri $LHContentServerZippedFileUrl -OutFile $LHContentServerZippedFileLocation

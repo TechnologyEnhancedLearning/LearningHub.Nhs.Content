@@ -2,21 +2,20 @@
 // Copyright (c) HEE.nhs.uk.
 // </copyright>
 
-using System.Text;
-using LearningHub.Nhs.Content.Configuration;
-using Microsoft.Extensions.Options;
-
 namespace LearningHub.Nhs.Content.Service
 {
     using LearningHub.Nhs.Caching;
+    using LearningHub.Nhs.Content.Configuration;
     using LearningHub.Nhs.Content.Interfaces;
     using LearningHub.Nhs.Models.Entities.Migration;
+    using LearningHub.Nhs.Models.Entities.Resource;
     using LearningHub.Nhs.Models.Resource;
+    using Microsoft.Extensions.Options;
     using Newtonsoft.Json;
     using System;
     using System.Collections.Generic;
+    using System.Text;
     using System.Threading.Tasks;
-    using System.Web;
 
     /// <summary>
     /// Defines the <see cref="ScormContentRewriteService" />.
@@ -29,12 +28,12 @@ namespace LearningHub.Nhs.Content.Service
         private ILearningHubHttpClient learningHubHttpClient;
 
         /// <summary>
-        /// Defines the Redis cacheService......
+        /// Defines the Redis cacheService.......
         /// </summary>
         private ICacheService cacheService;
-        
+
         /// <summary>
-        ///     The settings...
+        /// The settings....
         /// </summary>
         private readonly Settings settings;
 
@@ -43,6 +42,7 @@ namespace LearningHub.Nhs.Content.Service
         /// </summary>
         /// <param name="learningHubHttpClient">The learningHubHttpClient.</param>
         /// <param name="cacheService">The cacheService.</param>
+        /// <param name="settings">The settings<see cref="IOptions{Settings}"/>.</param>
         public ScormContentRewriteService(ILearningHubHttpClient learningHubHttpClient, ICacheService cacheService, IOptions<Settings> settings)
         {
             this.learningHubHttpClient = learningHubHttpClient;
@@ -51,13 +51,32 @@ namespace LearningHub.Nhs.Content.Service
         }
 
         /// <summary>
+        /// The LogScormResourceReferenceEventAsync.
+        /// </summary>
+        /// <param name="scormResourceReferenceEvent">The scormResourceReferenceEvent<see cref="ScormResourceReferenceEvent"/>.</param>
+        /// <returns>The <see cref="Task"/>.</returns>
+        public async Task LogScormResourceReferenceEventAsync(ScormResourceReferenceEventViewModel scormResourceReferenceEvent)
+        {
+            var client = await this.learningHubHttpClient.GetClientAsync();
+            var content = new System.Net.Http.StringContent(JsonConvert.SerializeObject(scormResourceReferenceEvent), Encoding.UTF8, "application/json");
+            var request = $"ScormContentServer/LogScormResourceReferenceEvent";
+            var response = await client.PostAsync(request, content).ConfigureAwait(false);
+
+             if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized ||
+                     response.StatusCode == System.Net.HttpStatusCode.Forbidden)
+            {
+                throw new Exception("AccessDenied");
+            }
+        }
+
+        /// <summary>
         /// The GetMigrationSourcesAsync.
         /// </summary>
-        /// <param name="cacheKey"></param>
+        /// <param name="cacheKey">.</param>
         /// <returns>The <see cref="Task{List{MigrationSourceViewModel}}"/>.</returns>
         public async Task<List<MigrationSourceViewModel>> GetMigrationSourcesAsync(string cacheKey)
         {
-            var migrationSources = this.cacheService.GetAsync<List<MigrationSourceViewModel>>(cacheKey+"a").Result;
+            var migrationSources = this.cacheService.GetAsync<List<MigrationSourceViewModel>>(cacheKey).Result;
 
             if (migrationSources != null)
                 return migrationSources;
@@ -80,7 +99,7 @@ namespace LearningHub.Nhs.Content.Service
         /// The GetScormContentDetailsByExternalUrlAsync.
         /// </summary>
         /// <param name="resourceExternalUrl">The resourceExternalUrl<see cref="string"/>.</param>
-        /// <param name="cacheKey"></param>
+        /// <param name="cacheKey">.</param>
         /// <returns>The <see cref="Task{ScormContentServerViewModel}"/>.</returns>
         public async Task<ScormContentServerViewModel> GetScormContentDetailsByExternalUrlAsync(string resourceExternalUrl, string cacheKey)
         {
@@ -101,7 +120,7 @@ namespace LearningHub.Nhs.Content.Service
         /// <summary>
         /// The GetScormContentDetailsByExternalReferenceAsync.
         /// </summary>
-        /// <param name="resourceExternalReference"></param>
+        /// <param name="resourceExternalReference">.</param>
         /// <param name="cacheKey">The externalReference<see cref="string"/>.</param>
         /// <returns>The <see cref="Task{ScormContentServerViewModel}"/>.</returns>
         public async Task<ScormContentServerViewModel> GetScormContentDetailsByExternalReferenceAsync(
@@ -156,7 +175,7 @@ namespace LearningHub.Nhs.Content.Service
             ScormContentServerViewModel viewmodel = null;
 
             var client = await this.learningHubHttpClient.GetClientAsync();
-            
+
             var content = new System.Net.Http.StringContent(JsonConvert.SerializeObject(resourceExternalUrl), Encoding.UTF8, "application/json");
             var request = $"ScormContentServer/GetScormContentDetailsByExternalUrl";
             var response = await client.PostAsync(request, content).ConfigureAwait(false);

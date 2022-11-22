@@ -1,0 +1,16 @@
+﻿@page
+@model LearningHub.Nhs.Content.Pages.ForbiddenModel
+@{
+    ViewData["Title"] = "Not Found";
+}
+
+<h1>Resource not available</h1>
+<div class="lh-content-container">
+    <p>
+        The contributor of <b>@Model.ScormContentDetail.Title</b> (Resource Reference Id: @Model.ScormContentDetail.ResourceReferenceId) has chosen to only allow this to be accessed from the <a href="@Model.Settings.LearningHubUrl">Learning Hub</a>.
+    </p>
+
+    <p>
+        If you need help, please contact your <a href="http://www.esrsupport.co.uk/access.php">ESR System Administrator.</a>
+    </p>
+</div>

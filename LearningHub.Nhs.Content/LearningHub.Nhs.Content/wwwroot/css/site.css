@@ -1,0 +1,143 @@
+﻿/* Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification
+for details on configuring this project to bundle and minify static web assets. */
+
+@font-face {
+    font-family: FrutigerLTW01-55Roman;
+    src: url(../fonts/FrutigerLTW01-55Roman.woff2) format('woff2')
+}
+
+@font-face {
+    font-family: FrutigerLTW01-65Bold;
+    src: url(../fonts/FrutigerLTW01-65Bold.woff2) format('woff2')
+}
+
+@font-face {
+    font-family: FrutigerLTStd-Bold;
+    src: url(../fonts/FrutigerLTStd-Bold.woff) format('woff');
+}
+
+@font-face {
+    font-family: FrutigerLight;
+    src: url(../fonts/FrutigerLT45Light.woff) format('woff');
+}
+
+@font-face {
+    font-family: FrutigerLT55Roman;
+    src: url(../fonts/FrutigerLT55Roman.woff) format('woff');
+}
+
+@font-face {
+    font-family: FontAwesome5ProLight;
+    src: url(../lib/fontawesome-pro-5.9.0/webfonts/fa-light-300.woff) format('woff');
+}
+
+@font-face {
+    font-family: FontAwesome5ProRegular;
+    src: url(../lib/fontawesome-pro-5.9.0/webfonts/fa-light-400.woff) format('woff');
+}
+
+@font-face {
+    font-family: FontAwesome5ProSolid;
+    src: url(../lib/fontawesome-pro-5.9.0/webfonts/fa-solid-900.woff) format('woff');
+}
+a.navbar-brand {
+  white-space: normal;
+  text-align: center;
+  word-break: break-all;
+}
+
+/* Provide sufficient contrast against white background */
+a {
+  color: #0366d6;
+}
+
+.btn-primary {
+  color: #fff;
+  background-color: #1b6ec2;
+  border-color: #1861ac;
+}
+
+.nav-pills .nav-link.active, .nav-pills .show > .nav-link {
+  color: #fff;
+  background-color: #1b6ec2;
+  border-color: #1861ac;
+}
+
+/* Sticky footer styles
+-------------------------------------------------- */
+html {
+  font-size: 14px;
+}
+@media (min-width: 768px) {
+  html {
+    font-size: 16px;
+  }
+}
+
+.border-top {
+  border-top: 1px solid #e5e5e5;
+}
+.border-bottom {
+  border-bottom: 1px solid #e5e5e5;
+}
+
+.box-shadow {
+  box-shadow: 0 .25rem .75rem rgba(0, 0, 0, .05);
+}
+
+button.accept-policy {
+  font-size: 1rem;
+  line-height: inherit;
+}
+
+/* Sticky footer styles
+-------------------------------------------------- */
+html {
+  position: relative;
+  min-height: 100%;
+}
+
+body {
+    /* Margin bottom by footer height */
+    font-family: FrutigerLTW01-55Roman, Arial, sans-serif;
+    font-weight:400;
+    margin-bottom: 60px;
+    margin-top: 60px;
+    background-color: #E5E5E5;    
+}
+
+.footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  white-space: nowrap;
+  line-height: 60px; /* Vertically center the text there */
+}
+
+h1 {
+    font-family: FrutigerLTW01-65Bold, Arial, sans-serif;
+    font-size: 48px;
+    line-height: 56px;
+    color: #000000;
+}
+
+b {
+    font-family: FrutigerLTW01-65Bold, Arial, sans-serif;
+    font-weight: 700;
+}
+
+p {
+    font-style: normal;
+    font-weight: normal;
+    font-size: 19px;
+    line-height: 28px;   
+    color: #000000;
+}
+
+.lh-container {
+    max-width: 800px;
+}
+
+.lh-content-container {
+    margin-top: 50px;  
+}
