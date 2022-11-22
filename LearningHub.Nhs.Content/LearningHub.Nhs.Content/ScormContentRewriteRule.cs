@@ -20,6 +20,7 @@ namespace LearningHub.Nhs.Content
     using Microsoft.Net.Http.Headers;
     using System;
     using System.Collections.Generic;
+    using System.IO;
     using System.Text;
     using System.Text.RegularExpressions;
     using System.Threading.Tasks;
@@ -37,7 +38,7 @@ namespace LearningHub.Nhs.Content
         /// <summary>
         /// The settings......
         /// </summary>
-        private readonly Settings settings;
+        private readonly Configuration.Settings settings;
 
         /// <summary>
         /// Defines the sourceSystems.
@@ -56,7 +57,7 @@ namespace LearningHub.Nhs.Content
         /// <param name="settings">The settings.</param>
         /// <param name="logger">logger.</param>
         public ScormContentRewriteRule(IScormContentRewriteService scormContentRewriteService,
-            IOptions<Settings> settings, ILogger<ScormContentRewriteRule> logger)
+            IOptions<Configuration.Settings> settings, ILogger<ScormContentRewriteRule> logger)
         {
             this.scormContentRewriteService = scormContentRewriteService;
             this.settings = settings.Value;
@@ -76,8 +77,6 @@ namespace LearningHub.Nhs.Content
 
                 this.sourceSystems = this.scormContentRewriteService
                     .GetMigrationSourcesAsync($"Migration-Sources").Result;
-
-                this.logger.LogTrace($"Source systems Loaded # Count :{sourceSystems.Count}");
             }
             catch (Exception e)
             {
@@ -98,6 +97,12 @@ namespace LearningHub.Nhs.Content
                 
                 if(requestPath == @"/")
                     return;
+
+                if (requestPath.Value.StartsWith(@"/css/") ||
+                    requestPath.Value.StartsWith(@"/lib/") ||
+                    requestPath.Value.StartsWith(@"/fonts/") ||
+                    requestPath.Value.StartsWith(@"/js/")){
+                    return; }
 
                 this.LoadSourceSystems();
 
@@ -133,13 +138,22 @@ namespace LearningHub.Nhs.Content
             var requestPath = context.HttpContext.Request.Path.Value?.TrimEnd('/');
 
             var startingUrl = context.HttpContext.Request.GetDisplayUrl();
+            context.HttpContext.Request.Headers.TryGetValue("Referer", out var httpRefererer);
+            context.HttpContext.Request.Headers.TryGetValue("X-Original-For", out var ipAddress);
+            
+            var logEvent = new ScormResourceReferenceEventViewModel
+            {
+                Url = startingUrl,
+                HttpRefererer = httpRefererer,
+                IPAddress = ipAddress
+            };
 
             var uriBuilder = new UriBuilder(startingUrl);
             
             var pathSegments = requestPath.Split('/');
             if (pathSegments.Length < sourceSystem.ResourceIdentifierPosition)
             {
-                this.logger.LogWarning($" fullResourceUrl {startingUrl} # Request Path {requestPath} # INVALID PATH SEGMENTS pathSegmentsLength: {pathSegments.Length} # Expected PathSegments: {sourceSystem.ResourceIdentifierPosition}");
+                this.logger.LogWarning($"FullResourceUrl {startingUrl} # Request Path {requestPath} # INVALID PATH SEGMENTS pathSegmentsLength: {pathSegments.Length} # Expected PathSegments: {sourceSystem.ResourceIdentifierPosition}");
                 context.HttpContext.Response.StatusCode = StatusCodes.Status404NotFound;
                 return;
             }
@@ -164,19 +178,51 @@ namespace LearningHub.Nhs.Content
                     break;
                 case SourceType.eLR:
                     var resourceUri = $"{sourceSystem.ResourcePath}{resourceExternalReference}/";
-                    this.logger.LogTrace($"resourceUri '{resourceUri}' Calling Backend Api");
                     scormContentDetail = scormContentRewriteService.GetScormContentDetailsByExternalUrlAsync(resourceUri, cacheKey).Result;
                     break;
-                case SourceType.eWIN:
+                case SourceType.eWIN: 
                 default:
                     this.logger.LogWarning("SourceType : Not Supported");
                     break;
             }
+                      
 
             if (scormContentDetail == null)
             {
                 this.logger.LogWarning($"Original Request Path:{startingUrl} # : resourceExternalReference :{resourceExternalReference}: scormContentDetail NOT FOUND");
+                context.Result = RuleResult.SkipRemainingRules;
+                context.HttpContext.Response.Headers.Add("Cache-Control", "no-cache, no-store");
+                context.HttpContext.Response.Headers.Add("Expires", "-1");
                 context.HttpContext.Response.StatusCode = StatusCodes.Status404NotFound;
+                context.HttpContext.Request.Path = "/NotFound";
+                logEvent.ScormResourceReferenceEventType = Nhs.Models.Enums.ScormResourceReferenceEventTypeEnum.Status404NotFound;
+                await this.scormContentRewriteService.LogScormResourceReferenceEventAsync(logEvent);
+                return;
+            }
+            if (scormContentDetail.EsrLinkType != Nhs.Models.Enums.EsrLinkType.EveryOne)
+            {
+                context.Result = RuleResult.SkipRemainingRules;
+                context.HttpContext.Items.Add("ScormContentDetail", scormContentDetail);               
+                context.HttpContext.Response.StatusCode = StatusCodes.Status403Forbidden;
+                context.HttpContext.Response.Headers.Add("Cache-Control", "no-cache, no-store");
+                context.HttpContext.Response.Headers.Add("Expires", "-1");
+                context.HttpContext.Request.Path = "/Forbidden";
+                logEvent.ResourceReferenceId = scormContentDetail.ResourceReferenceId;
+                logEvent.ScormResourceReferenceEventType = Nhs.Models.Enums.ScormResourceReferenceEventTypeEnum.Status403Forbidden;
+                await this.scormContentRewriteService.LogScormResourceReferenceEventAsync(logEvent);
+                return;
+            }
+            if (!scormContentDetail.IsActive || scormContentDetail.VersionStatus != Nhs.Models.Enums.VersionStatusEnum.Published)
+            {
+                context.Result = RuleResult.SkipRemainingRules;
+                context.HttpContext.Items.Add("ScormContentDetail", scormContentDetail);             
+                context.HttpContext.Response.StatusCode = StatusCodes.Status410Gone;
+                context.HttpContext.Response.Headers.Add("Cache-Control", "no-cache, no-store");
+                context.HttpContext.Response.Headers.Add("Expires", "-1");
+                context.HttpContext.Request.Path = "/NotPublished";
+                logEvent.ResourceReferenceId = scormContentDetail.ResourceReferenceId;
+                logEvent.ScormResourceReferenceEventType = Nhs.Models.Enums.ScormResourceReferenceEventTypeEnum.Status410Gone;
+                await this.scormContentRewriteService.LogScormResourceReferenceEventAsync(logEvent);
                 return;
             }
 
@@ -207,15 +253,23 @@ namespace LearningHub.Nhs.Content
                 .Replace(resourceExternalReference, scormContentDetail.InternalResourceIdentifier);
             context.HttpContext.Request.Path = rewrittenUrlStringBuilder.ToString();
 
-            match = Regex.Match(pathSegments.Last(), @"^(?i:index|default).*\.(htm|html)$");
+            match = Regex.Match(pathSegments.Last(), @"^.*\.(htm|html)$");
 
             if (match.Success)
             {
+                context.HttpContext.Response.Headers.Add("Cache-Control", "no-cache, no-store");
+                context.HttpContext.Response.Headers.Add("Expires", "-1");
+
+                logEvent.ResourceReferenceId = scormContentDetail.ResourceReferenceId;
+                logEvent.ScormResourceReferenceEventType = Nhs.Models.Enums.ScormResourceReferenceEventTypeEnum.Status200OK;
+                await this.scormContentRewriteService.LogScormResourceReferenceEventAsync(logEvent);
+
                 this.logger.LogInformation(
                     $"Source System :{sourceSystem.Description} # Original Request Path:{startingUrl} # Rewritten Path:{rewrittenUrlStringBuilder}");
             }
             else
             {
+                context.HttpContext.Response.Headers.Add("Expires", DateTime.Now.AddHours(1).ToUniversalTime().ToString("r"));               
                 this.logger.LogTrace(
                     $"Source System :{sourceSystem.Description} # Original Request Path:{startingUrl} # Rewritten Path:{rewrittenUrlStringBuilder}");
             }

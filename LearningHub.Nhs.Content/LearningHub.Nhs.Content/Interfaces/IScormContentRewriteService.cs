@@ -5,8 +5,8 @@
 namespace LearningHub.Nhs.Content.Interfaces
 {
     using LearningHub.Nhs.Models.Entities.Migration;
+    using LearningHub.Nhs.Models.Entities.Resource;
     using LearningHub.Nhs.Models.Resource;
-    using System;
     using System.Collections.Generic;
     using System.Threading.Tasks;
 
@@ -26,7 +26,7 @@ namespace LearningHub.Nhs.Content.Interfaces
         /// <summary>
         /// The GetScormContentDetailsByExternalReference.
         /// </summary>
-        /// <param name="resourceExternalReference"></param>
+        /// <param name="resourceExternalReference">.</param>
         /// <param name="cacheKey">The cacheKey.</param>
         /// <returns>The <see cref="ScormContentServerViewModel"/>.</returns>
         Task<ScormContentServerViewModel> GetScormContentDetailsByExternalReferenceAsync(
@@ -38,5 +38,12 @@ namespace LearningHub.Nhs.Content.Interfaces
         /// <param name="cacheKey">The cacheKey.</param>
         /// <returns>The <see cref="Task{List{MigrationSourceViewModel}}"/>.</returns>
         Task<List<MigrationSourceViewModel>> GetMigrationSourcesAsync(string cacheKey);
+
+        /// <summary>
+        /// The LogScormResourceReferenceEventAsync.
+        /// </summary>
+        /// <param name="scormResourceReferenceEvent">The scormResourceReferenceEvent<see cref="ScormResourceReferenceEventViewModel"/>.</param>
+        /// <returns>The <see cref="Task"/>.</returns>
+        Task LogScormResourceReferenceEventAsync(ScormResourceReferenceEventViewModel scormResourceReferenceEvent);
     }
 }

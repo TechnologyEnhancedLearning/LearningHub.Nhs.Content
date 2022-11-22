@@ -67,7 +67,12 @@ namespace LearningHub.Nhs.Content
         {
             if (this.environment.IsDevelopment())
             {
-                app.UseDeveloperExceptionPage();
+                //app.UseDeveloperExceptionPage();
+                app.UseExceptionHandler("/Error");
+            }
+            else
+            {
+                app.UseExceptionHandler("/Error");               
             }
 
             var defaultOptions = new DefaultFilesOptions();
@@ -91,11 +96,15 @@ namespace LearningHub.Nhs.Content
 
             app.UseRouting();
             app.UseCors(AllowOrigins);
+            app.UseStaticFiles();
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapGet("/", async context =>
+                endpoints.MapRazorPages();
+                endpoints.MapPost("/remove-cache/{key}", async context =>
                 {
-                    await context.Response.WriteAsync("Learning Hub Content Server");
+                    var cacheService = context.RequestServices.GetService<ICacheService>();
+                    await cacheService.RemoveAsync(context.Request.RouteValues["key"].ToString());
+                    await context.Response.WriteAsync("Cache removed");
                 });
 
                 endpoints.MapPost("/remove-cache/{key}", async context =>
@@ -114,7 +123,7 @@ namespace LearningHub.Nhs.Content
         public void ConfigureServices(IServiceCollection services)
         {
             services.Configure<Settings>(this.Configuration.GetSection("Settings"));
-
+            services.AddRazorPages();
             // Register an ILearningHubHttpClient.
             if (this.environment.IsDevelopment())
             {
