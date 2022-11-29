@@ -15,15 +15,10 @@ $LHContentServerZippedFileLocation = "$LHContentServerDownloadFolder\$LHContentS
 
 $LHContentServerZippedFileExtactLocation = "$env:SystemDrive\inetpub\wwwroot"
 
-# .NET Core Web Hosting Bundle installer location
-$Dotnet6WebHostingBundleInstallerUrl = "https://learninghubprodstor.blob.core.windows.net/contentserverartifacts/dotnet-hosting-2.2.2-win.exe"
-$Dotnet6WebHostingBundleInstallerFile = "dotnet-hosting-2.2.2-win.exe"
+# .NET Core Web Hosting Bundle installer location    
+$Dotnet6WebHostingBundleInstallerUrl = "https://learninghubprodstor.blob.core.windows.net/contentserverartifacts/dotnet-hosting-6.0.10-win.exe"
+$Dotnet6WebHostingBundleInstallerFile = "dotnet-hosting-6.0.10-win.exe"
 $Dotnet6WebHostingBundleInstallerFileLocation = "$LHContentServerDownloadFolder\$Dotnet6WebHostingBundleInstallerFile"
-    
-# .NET Core 5 Web Hosting Bundle installer location
-$DotnetCore5WebHostingBundleInstallerUrl = "https://learninghubprodstor.blob.core.windows.net/contentserverartifacts/dotnet-hosting-5.0.6-win.exe"
-$DotnetCore5WebHostingBundleInstallerFile = "dotnet-hosting-5.0.6-win.exe"
-$DotnetCore5WebHostingBundleInstallerFileLocation = "$LHContentServerDownloadFolder\$DotnetCore5WebHostingBundleInstallerFile"
 
 #File share network mapped drive
 $Share = 'learninghubprodstor'
