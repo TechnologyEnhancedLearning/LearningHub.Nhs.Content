@@ -16,8 +16,8 @@ $LHContentServerZippedFileLocation = "$LHContentServerDownloadFolder\$LHContentS
 $LHContentServerZippedFileExtactLocation = "$env:SystemDrive\inetpub\wwwroot"
 
 # .NET Core Web Hosting Bundle installer location
-$Dotnet6WebHostingBundleInstallerUrl = "https://ukselfhdevlhcontentstore.blob.core.windows.net/contentserverartifacts/dotnet-hosting-2.2.2-win.exe"
-$Dotnet6WebHostingBundleInstallerFile = "dotnet-hosting-2.2.2-win.exe"
+$Dotnet6WebHostingBundleInstallerUrl = "https://ukselfhdevlhcontentstore.blob.core.windows.net/contentserverartifacts/dotnet-hosting-6.0.10-win.exe"
+$Dotnet6WebHostingBundleInstallerFile = "dotnet-hosting-6.0.10-win.exe"
 $Dotnet6WebHostingBundleInstallerFileLocation = "$LHContentServerDownloadFolder\$Dotnet6WebHostingBundleInstallerFile"
 
 #File share network mapped drive
