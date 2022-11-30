@@ -106,13 +106,6 @@ namespace LearningHub.Nhs.Content
                     await cacheService.RemoveAsync(context.Request.RouteValues["key"].ToString());
                     await context.Response.WriteAsync("Cache removed");
                 });
-
-                endpoints.MapPost("/remove-cache/{key}", async context =>
-                {
-                    var cacheService = context.RequestServices.GetService<ICacheService>();
-                    await cacheService.RemoveAsync(context.Request.RouteValues["key"].ToString());
-                    await context.Response.WriteAsync("Cache removed");
-                });
             });
         }
 
