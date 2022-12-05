@@ -161,32 +161,27 @@ namespace LearningHub.Nhs.Content
             var resourceExternalReference = pathSegments[sourceSystem.ResourceIdentifierPosition - 1];
             var match = Regex.Match(resourceExternalReference, sourceSystem.ResourceRegEx, RegexOptions.IgnoreCase);
 
-            if (!match.Success)
-            {
-                this.logger.LogInformation($"{startingUrl} : resourceExternalReference :{resourceExternalReference}: Resource Identifier Invalid Regex Format");
-                context.HttpContext.Response.StatusCode = StatusCodes.Status404NotFound;
-                return;
-            }
-
             var cacheKey = $"{sourceSystem.Description}_{resourceExternalReference}";
-
             ScormContentServerViewModel scormContentDetail = null;
-            switch (sourceSystem.SourceType())
-            {
-                case SourceType.LearningHub:
-                    scormContentDetail = scormContentRewriteService.GetScormContentDetailsByExternalReferenceAsync(resourceExternalReference, cacheKey).Result;
-                    break;
-                case SourceType.eLR:
-                    var resourceUri = $"{sourceSystem.ResourcePath}{resourceExternalReference}/";
-                    scormContentDetail = scormContentRewriteService.GetScormContentDetailsByExternalUrlAsync(resourceUri, cacheKey).Result;
-                    break;
-                case SourceType.eWIN: 
-                default:
-                    this.logger.LogWarning("SourceType : Not Supported");
-                    break;
-            }
-                      
 
+            if (match.Success)
+            {
+                switch (sourceSystem.SourceType())
+                {
+                    case SourceType.LearningHub:
+                        scormContentDetail = scormContentRewriteService.GetScormContentDetailsByExternalReferenceAsync(resourceExternalReference, cacheKey).Result;
+                        break;
+                    case SourceType.eLR:
+                        var resourceUri = $"{sourceSystem.ResourcePath}{resourceExternalReference}/";
+                        scormContentDetail = scormContentRewriteService.GetScormContentDetailsByExternalUrlAsync(resourceUri, cacheKey).Result;
+                        break;
+                    case SourceType.eWIN:
+                    default:
+                        this.logger.LogWarning("SourceType : Not Supported");
+                        break;
+                }
+            }
+            
             if (scormContentDetail == null)
             {
                 this.logger.LogWarning($"Original Request Path:{startingUrl} # : resourceExternalReference :{resourceExternalReference}: scormContentDetail NOT FOUND");
@@ -199,7 +194,7 @@ namespace LearningHub.Nhs.Content
                 await this.scormContentRewriteService.LogScormResourceReferenceEventAsync(logEvent);
                 return;
             }
-            if (scormContentDetail.EsrLinkType != Nhs.Models.Enums.EsrLinkType.EveryOne)
+            if (scormContentDetail.EsrLinkType == Nhs.Models.Enums.EsrLinkType.NotAvailable)
             {
                 context.Result = RuleResult.SkipRemainingRules;
                 context.HttpContext.Items.Add("ScormContentDetail", scormContentDetail);               
