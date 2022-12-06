@@ -195,7 +195,7 @@ namespace LearningHub.Nhs.Content
                 return;
             }
             
-            if (!scormContentDetail.IsActive || scormContentDetail.VersionStatus != Nhs.Models.Enums.VersionStatusEnum.Published)
+            if (scormContentDetail.VersionStatus != Nhs.Models.Enums.VersionStatusEnum.Published)
             {
                 context.Result = RuleResult.SkipRemainingRules;
                 context.HttpContext.Items.Add("ScormContentDetail", scormContentDetail);             
@@ -209,7 +209,7 @@ namespace LearningHub.Nhs.Content
                 return;
             }
 
-            if (scormContentDetail.EsrLinkType == Nhs.Models.Enums.EsrLinkType.NotAvailable)
+            if (!scormContentDetail.IsActive || scormContentDetail.EsrLinkType == Nhs.Models.Enums.EsrLinkType.NotAvailable)
             {
                 context.Result = RuleResult.SkipRemainingRules;
                 context.HttpContext.Items.Add("ScormContentDetail", scormContentDetail);
