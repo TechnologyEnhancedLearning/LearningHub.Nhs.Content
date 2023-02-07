@@ -1,6 +1,5 @@
 namespace LearningHub.Nhs.Content.Pages
 {
-    using LearningHub.Nhs.Models.Resource;
     using Microsoft.AspNetCore.Mvc.RazorPages;
 
     /// <summary>

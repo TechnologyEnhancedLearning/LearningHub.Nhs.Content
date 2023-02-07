@@ -1,9 +1,6 @@
-﻿using System;
-using System.Linq;
-using Microsoft.AspNetCore.Http;
-
-namespace LearningHub.Nhs.Content.Extensions
+﻿namespace LearningHub.Nhs.Content.Extensions
 {
+    using System;
     using LearningHub.Nhs.Content.Models;
     using LearningHub.Nhs.Models.Entities.Migration;
     using System.Collections.Generic;

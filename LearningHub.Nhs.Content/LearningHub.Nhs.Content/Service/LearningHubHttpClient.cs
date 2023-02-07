@@ -18,14 +18,7 @@ namespace LearningHub.Nhs.Content.Services
     /// </summary>
     public class LearningHubHttpClient : ILearningHubHttpClient
     {
-        /// <summary>
-        /// The http client.
-        /// </summary>
         private readonly HttpClient httpClient;
-
-        /// <summary>
-        /// The settings.
-        /// </summary>
         private readonly Settings settings;
 
         /// <summary>
@@ -52,7 +45,7 @@ namespace LearningHub.Nhs.Content.Services
         /// <returns>
         /// The <see cref="Task"/>.
         /// </returns>
-        public async Task<HttpClient> GetClientAsync()
+        public HttpClient GetClient()
         {
             return this.httpClient;
         }

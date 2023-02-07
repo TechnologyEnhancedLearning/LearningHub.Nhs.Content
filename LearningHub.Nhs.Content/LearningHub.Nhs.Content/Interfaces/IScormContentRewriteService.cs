@@ -5,7 +5,6 @@
 namespace LearningHub.Nhs.Content.Interfaces
 {
     using LearningHub.Nhs.Models.Entities.Migration;
-    using LearningHub.Nhs.Models.Entities.Resource;
     using LearningHub.Nhs.Models.Resource;
     using System.Collections.Generic;
     using System.Threading.Tasks;
@@ -36,7 +35,7 @@ namespace LearningHub.Nhs.Content.Interfaces
         /// The GetMigrationSourcesAsync.
         /// </summary>
         /// <param name="cacheKey">The cacheKey.</param>
-        /// <returns>The <see cref="Task{List{MigrationSourceViewModel}}"/>.</returns>
+        /// <returns>The <see cref="List{MigrationSourceViewModel}"/>.</returns>
         Task<List<MigrationSourceViewModel>> GetMigrationSourcesAsync(string cacheKey);
 
         /// <summary>

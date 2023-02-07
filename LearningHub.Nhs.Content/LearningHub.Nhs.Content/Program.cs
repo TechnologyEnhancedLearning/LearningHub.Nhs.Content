@@ -8,7 +8,6 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using NLog;
 using NLog.Web;
-using LogLevel = Microsoft.Extensions.Logging.LogLevel;
 
 namespace LearningHub.Nhs.Content
 {
@@ -20,7 +19,7 @@ namespace LearningHub.Nhs.Content
         /// <summary>
         ///     The Main.
         /// </summary>
-        /// <param name="args">The args<see cref="string[]" />.</param>
+        /// <param name="args">The args.</param>
         public static void Main(string[] args)
         {
             CreateHostBuilder(args).Build().Run();
@@ -29,7 +28,7 @@ namespace LearningHub.Nhs.Content
         /// <summary>
         ///     The CreateHostBuilder.
         /// </summary>
-        /// <param name="args">The args<see cref="string[]" />.</param>
+        /// <param name="args">The args.</param>
         /// <returns>The <see cref="IHostBuilder" />.</returns>
         public static IHostBuilder CreateHostBuilder(string[] args)
         {

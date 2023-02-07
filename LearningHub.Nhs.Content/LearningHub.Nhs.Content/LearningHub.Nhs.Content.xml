@@ -34,7 +34,7 @@
             The LearningHubHttpClient interface.
             </summary>
         </member>
-        <member name="M:LearningHub.Nhs.Content.Interfaces.ILearningHubHttpClient.GetClientAsync">
+        <member name="M:LearningHub.Nhs.Content.Interfaces.ILearningHubHttpClient.GetClient">
             <summary>
             The get client async.
             </summary>
@@ -157,7 +157,7 @@
             The client.
             </param>
         </member>
-        <member name="M:LearningHub.Nhs.Content.Services.LearningHubHttpClient.GetClientAsync">
+        <member name="M:LearningHub.Nhs.Content.Services.LearningHubHttpClient.GetClient">
             <summary>
             The get client async.
             </summary>

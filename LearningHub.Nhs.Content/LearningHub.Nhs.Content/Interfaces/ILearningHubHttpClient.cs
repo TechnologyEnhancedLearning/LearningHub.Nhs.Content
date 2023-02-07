@@ -18,6 +18,6 @@ namespace LearningHub.Nhs.Content.Interfaces
         /// <returns>
         /// The <see cref="Task"/>.
         /// </returns>
-        Task<HttpClient> GetClientAsync();
+        HttpClient GetClient();
     }
 }

@@ -57,7 +57,7 @@ namespace LearningHub.Nhs.Content.Service
         /// <returns>The <see cref="Task"/>.</returns>
         public async Task LogScormResourceReferenceEventAsync(ScormResourceReferenceEventViewModel scormResourceReferenceEvent)
         {
-            var client = await this.learningHubHttpClient.GetClientAsync();
+            var client = this.learningHubHttpClient.GetClient();
             var content = new System.Net.Http.StringContent(JsonConvert.SerializeObject(scormResourceReferenceEvent), Encoding.UTF8, "application/json");
             var request = $"ScormContentServer/LogScormResourceReferenceEvent";
             var response = await client.PostAsync(request, content).ConfigureAwait(false);
@@ -73,7 +73,7 @@ namespace LearningHub.Nhs.Content.Service
         /// The GetMigrationSourcesAsync.
         /// </summary>
         /// <param name="cacheKey">.</param>
-        /// <returns>The <see cref="Task{List{MigrationSourceViewModel}}"/>.</returns>
+        /// <returns>The <see cref="List{MigrationSourceViewModel}"/>.</returns>
         public async Task<List<MigrationSourceViewModel>> GetMigrationSourcesAsync(string cacheKey)
         {
             var migrationSources = this.cacheService.GetAsync<List<MigrationSourceViewModel>>(cacheKey).Result;
@@ -143,10 +143,10 @@ namespace LearningHub.Nhs.Content.Service
         /// <summary>
         /// The ApiGetMigrationSourceAsync.
         /// </summary>
-        /// <returns>The <see cref="Task{List{MigrationSourceViewModel}}"/>.</returns>
+        /// <returns>The <see cref="List{MigrationSourceViewModel}"/>.</returns>
         private async Task<List<MigrationSourceViewModel>> ApiGetMigrationSourceAsync()
         {
-            var client = await this.learningHubHttpClient.GetClientAsync();
+            var client = this.learningHubHttpClient.GetClient();
             List<MigrationSourceViewModel> migrationSources = null;
             var request = $"migration/get-migration-sources";
             var response = await client.GetAsync(request).ConfigureAwait(false);
@@ -174,7 +174,7 @@ namespace LearningHub.Nhs.Content.Service
         {
             ScormContentServerViewModel viewmodel = null;
 
-            var client = await this.learningHubHttpClient.GetClientAsync();
+            var client = this.learningHubHttpClient.GetClient();
 
             var content = new System.Net.Http.StringContent(JsonConvert.SerializeObject(resourceExternalUrl), Encoding.UTF8, "application/json");
             var request = $"ScormContentServer/GetScormContentDetailsByExternalUrl";
@@ -203,7 +203,7 @@ namespace LearningHub.Nhs.Content.Service
         {
             ScormContentServerViewModel viewmodel = null;
 
-            var client = await this.learningHubHttpClient.GetClientAsync();
+            var client = this.learningHubHttpClient.GetClient();
 
             var request = $"ScormContentServer/GetScormContentDetailsByExternalReference/{externalReference}";
             var response = await client.GetAsync(request).ConfigureAwait(false);

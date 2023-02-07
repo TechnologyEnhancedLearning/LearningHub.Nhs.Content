@@ -21,10 +21,8 @@ namespace LearningHub.Nhs.Content
     using Microsoft.Extensions.Hosting;
     using Microsoft.Extensions.Options;
     using System.Net.Http;
-    using System.IO;
     using Microsoft.Extensions.FileProviders;
     using Microsoft.Extensions.Logging;
-    using System.Text;
     using LearningHub.Nhs.Models.Enums;
     using LearningHub.Nhs.Models.Extensions;
 
@@ -47,7 +45,7 @@ namespace LearningHub.Nhs.Content
         /// Initializes a new instance of the <see cref="Startup"/> class.
         /// </summary>
         /// <param name="configuration">The configuration<see cref="IConfiguration"/>.</param>
-        /// <param name="env">The env<see cref="IWebHostEnvironment"/>.</param>
+        /// <param name="environment">The env<see cref="IWebHostEnvironment"/>.</param>
         public Startup(IConfiguration configuration, IWebHostEnvironment environment)
         {
             this.environment = environment;
