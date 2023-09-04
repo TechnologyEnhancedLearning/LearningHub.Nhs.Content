@@ -25,6 +25,9 @@ namespace LearningHub.Nhs.Content
     using Microsoft.Extensions.Logging;
     using LearningHub.Nhs.Models.Enums;
     using LearningHub.Nhs.Models.Extensions;
+    using Microsoft.AspNetCore.StaticFiles;
+    using System.IO;
+    using System.Linq;
 
     /// <summary>
     /// Defines the <see cref="Startup" />.
@@ -65,8 +68,8 @@ namespace LearningHub.Nhs.Content
         {
             if (this.environment.IsDevelopment())
             {
-                //app.UseDeveloperExceptionPage();
-                app.UseExceptionHandler("/Error");
+                app.UseDeveloperExceptionPage();
+                //app.UseExceptionHandler("/Error");
             }
             else
             {
@@ -89,12 +92,30 @@ namespace LearningHub.Nhs.Content
             {
                 FileProvider = new PhysicalFileProvider(settings.Value.LearningHubContentPhysicalPath),
                 RequestPath = settings.Value.LearningHubContentVirtualPath,
-                EnableDirectoryBrowsing = false
+                EnableDirectoryBrowsing = false,
             });
 
             app.UseRouting();
             app.UseCors(AllowOrigins);
+
+            var provider = new FileExtensionContentTypeProvider();
+            var fileMappings = Configuration.GetSection("Settings:FileTypeMappings")
+                                .GetChildren()
+                                .ToDictionary(x => x.Key, x => x.Value);
+
+            foreach ( var fileMapping in fileMappings )
+            {
+                provider.Mappings[fileMapping.Key] = fileMapping.Value;
+            }
+
             app.UseStaticFiles();
+            app.UseStaticFiles(new StaticFileOptions
+            {
+                FileProvider = new PhysicalFileProvider(settings.Value.LearningHubContentPhysicalPath),
+                RequestPath = settings.Value.LearningHubContentVirtualPath,
+                ContentTypeProvider = provider,
+            });
+
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapRazorPages();
