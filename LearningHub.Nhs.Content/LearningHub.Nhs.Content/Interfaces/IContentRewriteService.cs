@@ -1,4 +1,4 @@
-﻿// <copyright file="IScormContentRewriteService.cs" company="HEE.nhs.uk">
+﻿// <copyright file="IContentRewriteService.cs" company="HEE.nhs.uk">
 // Copyright (c) HEE.nhs.uk.
 // </copyright>
 
@@ -10,25 +10,25 @@ namespace LearningHub.Nhs.Content.Interfaces
     using System.Threading.Tasks;
 
     /// <summary>
-    /// Defines the <see cref="IScormContentRewriteService" />.
+    /// Defines the <see cref="IContentRewriteService" />.
     /// </summary>
-    public interface IScormContentRewriteService
+    public interface IContentRewriteService
     {
         /// <summary>
-        /// Gets the SCORM content details for a particular external url.
+        /// Gets the content details for a particular external url.
         /// </summary>
         /// <param name="resourceExternalUrl">The resourceExternalUrl<see cref="string"/>.</param>
         /// <param name="cacheKey">The cacheKey.</param>
-        /// <returns>The <see cref="ScormContentServerViewModel"/>.</returns>
-        Task<ScormContentServerViewModel> GetScormContentDetailsByExternalUrlAsync(string resourceExternalUrl, string cacheKey);
+        /// <returns>The <see cref="ContentServerViewModel"/>.</returns>
+        Task<ContentServerViewModel> GetContentDetailsByExternalUrlAsync(string resourceExternalUrl, string cacheKey);
 
         /// <summary>
-        /// The GetScormContentDetailsByExternalReference.
+        /// The GetContentDetailsByExternalReference.
         /// </summary>
         /// <param name="resourceExternalReference">.</param>
         /// <param name="cacheKey">The cacheKey.</param>
-        /// <returns>The <see cref="ScormContentServerViewModel"/>.</returns>
-        Task<ScormContentServerViewModel> GetScormContentDetailsByExternalReferenceAsync(
+        /// <returns>The <see cref="ContentServerViewModel"/>.</returns>
+        Task<ContentServerViewModel> GetContentDetailsByExternalReferenceAsync(
             string resourceExternalReference, string cacheKey);
 
         /// <summary>
@@ -39,10 +39,10 @@ namespace LearningHub.Nhs.Content.Interfaces
         Task<List<MigrationSourceViewModel>> GetMigrationSourcesAsync(string cacheKey);
 
         /// <summary>
-        /// The LogScormResourceReferenceEventAsync.
+        /// The LogResourceReferenceEventAsync.
         /// </summary>
-        /// <param name="scormResourceReferenceEvent">The scormResourceReferenceEvent<see cref="ScormResourceReferenceEventViewModel"/>.</param>
+        /// <param name="resourceReferenceEvent">The resourceReferenceEvent<see cref="ResourceReferenceEventViewModel"/>.</param>
         /// <returns>The <see cref="Task"/>.</returns>
-        Task LogScormResourceReferenceEventAsync(ScormResourceReferenceEventViewModel scormResourceReferenceEvent);
+        Task LogResourceReferenceEventAsync(ResourceReferenceEventViewModel resourceReferenceEvent);
     }
 }

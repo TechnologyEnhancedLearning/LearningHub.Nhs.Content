@@ -39,7 +39,7 @@
 
   <ItemGroup>
     <PackageReference Include="LearningHub.Nhs.Caching" Version="1.1.0" />
-    <PackageReference Include="LearningHub.Nhs.Models" Version="2.1.14" />
+    <PackageReference Include="LearningHub.Nhs.Models" Version="3.0.99" />
     <PackageReference Include="Microsoft.Data.OData" Version="5.8.4" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="NLog.Extensions.AzureCosmosTable" Version="2.8.0" />

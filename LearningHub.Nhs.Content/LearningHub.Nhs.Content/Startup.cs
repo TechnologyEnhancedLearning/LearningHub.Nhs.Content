@@ -80,12 +80,12 @@ namespace LearningHub.Nhs.Content
             defaultOptions.DefaultFileNames.Clear();
             app.UseDefaultFiles(defaultOptions);
 
-            var scormContentRequestHandler = app.ApplicationServices.GetService<IScormContentRewriteService>();
+            var contentRequestHandler = app.ApplicationServices.GetService<IContentRewriteService>();
             var settings = app.ApplicationServices.GetService<IOptions<Settings>>();
-            var logger = app.ApplicationServices.GetService<ILogger<ScormContentRewriteRule>>();
+            var logger = app.ApplicationServices.GetService<ILogger<ResourceContentRewriteRule>>();
 
             var rewriteOptions = new RewriteOptions()
-                .Add(new ScormContentRewriteRule(scormContentRequestHandler, settings, logger));
+                .Add(new ResourceContentRewriteRule(contentRequestHandler, settings, logger));
             app.UseRewriter(rewriteOptions);
 
             app.UseFileServer(new FileServerOptions
@@ -174,7 +174,7 @@ namespace LearningHub.Nhs.Content
                 opt.KeyPrefix = $"{envPrefix}_ContentServer";
             });
 
-            services.AddSingleton<IScormContentRewriteService, ScormContentRewriteService>();
+            services.AddSingleton<IContentRewriteService, ContentRewriteService>();
         }
     }
 }

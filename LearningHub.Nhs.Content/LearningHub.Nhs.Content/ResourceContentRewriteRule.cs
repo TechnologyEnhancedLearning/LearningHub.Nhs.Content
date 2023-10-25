@@ -1,4 +1,4 @@
-﻿// <copyright file="ScormContentRewriteRule.cs" company="HEE.nhs.uk">
+﻿// <copyright file="ResourceContentRewriteRule.cs" company="HEE.nhs.uk">
 // Copyright (c) HEE.nhs.uk.
 // </copyright>
 
@@ -24,14 +24,14 @@ namespace LearningHub.Nhs.Content
     using System.Threading.Tasks;
 
     /// <summary>
-    /// Defines the <see cref="ScormContentRewriteRule" />.
+    /// Defines the <see cref="ResourceContentRewriteRule" />.
     /// </summary>
-    public class ScormContentRewriteRule : IRule
+    public class ResourceContentRewriteRule : IRule
     {
         /// <summary>
-        /// Defines the scormContentRewriteService.
+        /// Defines the ContentRewriteService.
         /// </summary>
-        private readonly IScormContentRewriteService scormContentRewriteService;
+        private readonly IContentRewriteService contentRewriteService;
 
         /// <summary>
         /// The settings......
@@ -46,18 +46,18 @@ namespace LearningHub.Nhs.Content
         /// <summary>
         /// Defines the logger.
         /// </summary>
-        private readonly ILogger<ScormContentRewriteRule> logger;
+        private readonly ILogger<ResourceContentRewriteRule> logger;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ScormContentRewriteRule"/> class.
+        /// Initializes a new instance of the <see cref="ResourceContentRewriteRule"/> class.
         /// </summary>
-        /// <param name="scormContentRewriteService">The scormContentRewriteService<see cref="IScormContentRewriteService" />.</param>
+        /// <param name="contentRewriteService">The contentRewriteService<see cref="IContentRewriteService" />.</param>
         /// <param name="settings">The settings.</param>
         /// <param name="logger">logger.</param>
-        public ScormContentRewriteRule(IScormContentRewriteService scormContentRewriteService,
-            IOptions<Configuration.Settings> settings, ILogger<ScormContentRewriteRule> logger)
+        public ResourceContentRewriteRule(IContentRewriteService contentRewriteService,
+            IOptions<Configuration.Settings> settings, ILogger<ResourceContentRewriteRule> logger)
         {
-            this.scormContentRewriteService = scormContentRewriteService;
+            this.contentRewriteService = contentRewriteService;
             this.settings = settings.Value;
             this.logger = logger;
             this.LoadSourceSystems();
@@ -73,7 +73,7 @@ namespace LearningHub.Nhs.Content
                 if (this.sourceSystems != null)
                     return;
 
-                this.sourceSystems = this.scormContentRewriteService
+                this.sourceSystems = this.contentRewriteService
                     .GetMigrationSourcesAsync($"Migration-Sources").Result;
             }
             catch (Exception e)
@@ -139,7 +139,7 @@ namespace LearningHub.Nhs.Content
             context.HttpContext.Request.Headers.TryGetValue("Referer", out var httpRefererer);
             context.HttpContext.Request.Headers.TryGetValue("X-Original-For", out var ipAddress);
             
-            var logEvent = new ScormResourceReferenceEventViewModel
+            var logEvent = new ResourceReferenceEventViewModel
             {
                 Url = startingUrl,
                 HttpRefererer = httpRefererer,
@@ -160,18 +160,18 @@ namespace LearningHub.Nhs.Content
             var match = Regex.Match(resourceExternalReference, sourceSystem.ResourceRegEx, RegexOptions.IgnoreCase);
 
             var cacheKey = $"{sourceSystem.Description}_{resourceExternalReference}";
-            ScormContentServerViewModel scormContentDetail = null;
+            ContentServerViewModel contentDetail = null;
 
             if (match.Success)
             {
                 switch (sourceSystem.SourceType())
                 {
                     case SourceType.LearningHub:
-                        scormContentDetail = scormContentRewriteService.GetScormContentDetailsByExternalReferenceAsync(resourceExternalReference, cacheKey).Result;
+                        contentDetail = contentRewriteService.GetContentDetailsByExternalReferenceAsync(resourceExternalReference, cacheKey).Result;
                         break;
                     case SourceType.eLR:
                         var resourceUri = $"{sourceSystem.ResourcePath}{resourceExternalReference}/";
-                        scormContentDetail = scormContentRewriteService.GetScormContentDetailsByExternalUrlAsync(resourceUri, cacheKey).Result;
+                        contentDetail = contentRewriteService.GetContentDetailsByExternalUrlAsync(resourceUri, cacheKey).Result;
                         break;
                     case SourceType.eWIN:
                     default:
@@ -180,50 +180,50 @@ namespace LearningHub.Nhs.Content
                 }
             }
             
-            if (scormContentDetail == null)
+            if (contentDetail == null)
             {
-                this.logger.LogWarning($"Original Request Path:{startingUrl} # : resourceExternalReference :{resourceExternalReference}: scormContentDetail NOT FOUND");
+                this.logger.LogWarning($"Original Request Path:{startingUrl} # : resourceExternalReference :{resourceExternalReference}: contentDetail NOT FOUND");
                 context.Result = RuleResult.SkipRemainingRules;
                 context.HttpContext.Response.Headers.Add("Cache-Control", "no-cache, no-store");
                 context.HttpContext.Response.Headers.Add("Expires", "-1");
                 context.HttpContext.Response.StatusCode = StatusCodes.Status404NotFound;
                 context.HttpContext.Request.Path = "/NotFound";
-                logEvent.ScormResourceReferenceEventType = Nhs.Models.Enums.ScormResourceReferenceEventTypeEnum.Status404NotFound;
-                await this.scormContentRewriteService.LogScormResourceReferenceEventAsync(logEvent);
+                logEvent.ResourceReferenceEventType = Nhs.Models.Enums.ResourceReferenceEventTypeEnum.Status404NotFound;
+                await this.contentRewriteService.LogResourceReferenceEventAsync(logEvent);
                 return;
             }
             
-            if (scormContentDetail.VersionStatus != Nhs.Models.Enums.VersionStatusEnum.Published)
+            if (contentDetail.VersionStatus != Nhs.Models.Enums.VersionStatusEnum.Published)
             {
                 context.Result = RuleResult.SkipRemainingRules;
-                context.HttpContext.Items.Add("ScormContentDetail", scormContentDetail);             
+                context.HttpContext.Items.Add("ContentDetail", contentDetail);             
                 context.HttpContext.Response.StatusCode = StatusCodes.Status410Gone;
                 context.HttpContext.Response.Headers.Add("Cache-Control", "no-cache, no-store");
                 context.HttpContext.Response.Headers.Add("Expires", "-1");
                 context.HttpContext.Request.Path = "/NotPublished";
-                logEvent.ResourceReferenceId = scormContentDetail.ResourceReferenceId;
-                logEvent.ScormResourceReferenceEventType = Nhs.Models.Enums.ScormResourceReferenceEventTypeEnum.Status410Gone;
-                await this.scormContentRewriteService.LogScormResourceReferenceEventAsync(logEvent);
+                logEvent.ResourceReferenceId = contentDetail.ResourceReferenceId;
+                logEvent.ResourceReferenceEventType = Nhs.Models.Enums.ResourceReferenceEventTypeEnum.Status410Gone;
+                await this.contentRewriteService.LogResourceReferenceEventAsync(logEvent);
                 return;
             }
 
-            if (!scormContentDetail.IsActive || scormContentDetail.EsrLinkType == Nhs.Models.Enums.EsrLinkType.NotAvailable)
+            if (!contentDetail.IsActive || contentDetail.EsrLinkType == Nhs.Models.Enums.EsrLinkType.NotAvailable)
             {
                 context.Result = RuleResult.SkipRemainingRules;
-                context.HttpContext.Items.Add("ScormContentDetail", scormContentDetail);
+                context.HttpContext.Items.Add("ContentDetail", contentDetail);
                 context.HttpContext.Response.StatusCode = StatusCodes.Status403Forbidden;
                 context.HttpContext.Response.Headers.Add("Cache-Control", "no-cache, no-store");
                 context.HttpContext.Response.Headers.Add("Expires", "-1");
                 context.HttpContext.Request.Path = "/Forbidden";
-                logEvent.ResourceReferenceId = scormContentDetail.ResourceReferenceId;
-                logEvent.ScormResourceReferenceEventType = Nhs.Models.Enums.ScormResourceReferenceEventTypeEnum.Status403Forbidden;
-                await this.scormContentRewriteService.LogScormResourceReferenceEventAsync(logEvent);
+                logEvent.ResourceReferenceId = contentDetail.ResourceReferenceId;
+                logEvent.ResourceReferenceEventType = Nhs.Models.Enums.ResourceReferenceEventTypeEnum.Status403Forbidden;
+                await this.contentRewriteService.LogResourceReferenceEventAsync(logEvent);
                 return;
             }
 
             if (pathSegments.Length == sourceSystem.ResourceIdentifierPosition)
             {
-                uriBuilder.Path = uriBuilder.Path.EndsWith("/") ? $"{uriBuilder.Path}{scormContentDetail.ManifestUrl}" : $"{uriBuilder.Path}/{scormContentDetail.ManifestUrl}";
+                uriBuilder.Path = uriBuilder.Path.EndsWith("/") ? $"{uriBuilder.Path}{contentDetail.DefaultUrl}" : $"{uriBuilder.Path}/{contentDetail.DefaultUrl}";
 
                 if (context.HttpContext.Request.Headers.TryGetValue("X-FORWARDED-PROTO", out var uriScheme))
                 {
@@ -236,7 +236,7 @@ namespace LearningHub.Nhs.Content
                 context.HttpContext.Response.StatusCode = StatusCodes.Status302Found;
                 context.HttpContext.Response.Headers[HeaderNames.Location] = rewrittenUrl;
 
-                this.logger.LogInformation($"Original Request Path:{startingUrl} # Manifest file included {rewrittenUrl}");
+                this.logger.LogInformation($"Original Request Path:{startingUrl} # Default file included {rewrittenUrl}");
                 context.Result = RuleResult.EndResponse;
                 return;
             }
@@ -245,19 +245,19 @@ namespace LearningHub.Nhs.Content
             rewrittenUrlStringBuilder
                 .Append(requestPath)
                 .Replace(sourceSystem.ResourcePath, $"{this.settings.LearningHubContentVirtualPath}/")
-                .Replace(resourceExternalReference, scormContentDetail.InternalResourceIdentifier);
+                .Replace(resourceExternalReference, contentDetail.InternalResourceIdentifier);
             context.HttpContext.Request.Path = rewrittenUrlStringBuilder.ToString();
 
             match = Regex.Match(pathSegments.Last(), @"^.*\.(htm|html)$");
 
-            if (match.Success)
+            if (match.Success || contentDetail.DefaultUrl == pathSegments.Last())
             {
                 context.HttpContext.Response.Headers.Add("Cache-Control", "no-cache, no-store");
                 context.HttpContext.Response.Headers.Add("Expires", "-1");
 
-                logEvent.ResourceReferenceId = scormContentDetail.ResourceReferenceId;
-                logEvent.ScormResourceReferenceEventType = Nhs.Models.Enums.ScormResourceReferenceEventTypeEnum.Status200OK;
-                await this.scormContentRewriteService.LogScormResourceReferenceEventAsync(logEvent);
+                logEvent.ResourceReferenceId = contentDetail.ResourceReferenceId;
+                logEvent.ResourceReferenceEventType = Nhs.Models.Enums.ResourceReferenceEventTypeEnum.Status200OK;
+                await this.contentRewriteService.LogResourceReferenceEventAsync(logEvent);
 
                 this.logger.LogInformation(
                     $"Source System :{sourceSystem.Description} # Original Request Path:{startingUrl} # Rewritten Path:{rewrittenUrlStringBuilder}");
