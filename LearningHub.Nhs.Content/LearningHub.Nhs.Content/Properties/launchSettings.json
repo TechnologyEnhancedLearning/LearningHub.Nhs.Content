@@ -20,6 +20,7 @@
     "Local IIS": {
       "commandName": "IIS",
       "launchBrowser": true,
+      "launchUrl": "content.dev.local",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
@@ -29,7 +30,7 @@
     "windowsAuthentication": false,
     "anonymousAuthentication": true,
     "iis": {
-      "applicationUrl": "https://lh-content.dev.local/",
+      "applicationUrl": "content.dev.local",
       "sslPort": 443
     },
     "iisExpress": {

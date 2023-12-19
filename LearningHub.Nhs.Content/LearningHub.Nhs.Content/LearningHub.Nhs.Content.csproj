@@ -47,13 +47,64 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="wwwroot\content\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <None Include="NLog.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Include="wwwroot\content\13ef9b86-fee3-4589-8ead-1978cfdf29fb\adlcp_rootv1p2.xsd" />
+    <None Include="wwwroot\content\13ef9b86-fee3-4589-8ead-1978cfdf29fb\d\ELFH_Session\492\session_menu.js" />
+    <None Include="wwwroot\content\13ef9b86-fee3-4589-8ead-1978cfdf29fb\d\ELFH_Session\492\swfobject_js_gateway.swf" />
+    <None Include="wwwroot\content\13ef9b86-fee3-4589-8ead-1978cfdf29fb\d\ELFH_Session\common\images\tick.png.old" />
+    <None Include="wwwroot\content\13ef9b86-fee3-4589-8ead-1978cfdf29fb\d\ELFH_Session\common\js\advanced-zoom.js" />
+    <None Include="wwwroot\content\13ef9b86-fee3-4589-8ead-1978cfdf29fb\d\ELFH_Session\common\js\amplify.core.min.js" />
+    <None Include="wwwroot\content\13ef9b86-fee3-4589-8ead-1978cfdf29fb\d\ELFH_Session\common\js\amplify.store.min.js" />
+    <None Include="wwwroot\content\13ef9b86-fee3-4589-8ead-1978cfdf29fb\d\ELFH_Session\common\js\fabric.js" />
+    <None Include="wwwroot\content\13ef9b86-fee3-4589-8ead-1978cfdf29fb\d\ELFH_Session\common\js\froogaloop.min.js" />
+    <None Include="wwwroot\content\13ef9b86-fee3-4589-8ead-1978cfdf29fb\d\ELFH_Session\common\js\gallery.js" />
+    <None Include="wwwroot\content\13ef9b86-fee3-4589-8ead-1978cfdf29fb\d\ELFH_Session\common\js\jquery-1.11.0.min.js" />
+    <None Include="wwwroot\content\13ef9b86-fee3-4589-8ead-1978cfdf29fb\d\ELFH_Session\common\js\jquery-ui-1.10.4.custom.min.js" />
+    <None Include="wwwroot\content\13ef9b86-fee3-4589-8ead-1978cfdf29fb\d\ELFH_Session\common\js\jquery.query.js" />
+    <None Include="wwwroot\content\13ef9b86-fee3-4589-8ead-1978cfdf29fb\d\ELFH_Session\common\js\jquery.scrollTo.min.js" />
+    <None Include="wwwroot\content\13ef9b86-fee3-4589-8ead-1978cfdf29fb\d\ELFH_Session\common\js\jquery.ui.touch-punch.min.js" />
+    <None Include="wwwroot\content\13ef9b86-fee3-4589-8ead-1978cfdf29fb\d\ELFH_Session\common\js\knockout-3.3.0.js" />
+    <None Include="wwwroot\content\13ef9b86-fee3-4589-8ead-1978cfdf29fb\d\ELFH_Session\common\js\knockout-create-subtitles.js" />
+    <None Include="wwwroot\content\13ef9b86-fee3-4589-8ead-1978cfdf29fb\d\ELFH_Session\common\js\knockout-drag-drop-pairs.js" />
+    <None Include="wwwroot\content\13ef9b86-fee3-4589-8ead-1978cfdf29fb\d\ELFH_Session\common\js\knockout-drag-drop-pictures.js" />
+    <None Include="wwwroot\content\13ef9b86-fee3-4589-8ead-1978cfdf29fb\d\ELFH_Session\common\js\knockout-hotspot.js" />
+    <None Include="wwwroot\content\13ef9b86-fee3-4589-8ead-1978cfdf29fb\d\ELFH_Session\common\js\knockout-image-stacker.js" />
+    <None Include="wwwroot\content\13ef9b86-fee3-4589-8ead-1978cfdf29fb\d\ELFH_Session\common\js\knockout-simple-models.js" />
+    <None Include="wwwroot\content\13ef9b86-fee3-4589-8ead-1978cfdf29fb\d\ELFH_Session\common\js\knockout-sorting-lists.js" />
+    <None Include="wwwroot\content\13ef9b86-fee3-4589-8ead-1978cfdf29fb\d\ELFH_Session\common\js\knockout-sorting-order.js" />
+    <None Include="wwwroot\content\13ef9b86-fee3-4589-8ead-1978cfdf29fb\d\ELFH_Session\common\js\media-element\bigplay.svg" />
+    <None Include="wwwroot\content\13ef9b86-fee3-4589-8ead-1978cfdf29fb\d\ELFH_Session\common\js\media-element\controls.svg" />
+    <None Include="wwwroot\content\13ef9b86-fee3-4589-8ead-1978cfdf29fb\d\ELFH_Session\common\js\media-element\flashmediaelement-cdn.swf" />
+    <None Include="wwwroot\content\13ef9b86-fee3-4589-8ead-1978cfdf29fb\d\ELFH_Session\common\js\media-element\flashmediaelement.swf" />
+    <None Include="wwwroot\content\13ef9b86-fee3-4589-8ead-1978cfdf29fb\d\ELFH_Session\common\js\media-element\mediaelement-and-player.min.js" />
+    <None Include="wwwroot\content\13ef9b86-fee3-4589-8ead-1978cfdf29fb\d\ELFH_Session\common\js\media-element\mediaelement.min.js" />
+    <None Include="wwwroot\content\13ef9b86-fee3-4589-8ead-1978cfdf29fb\d\ELFH_Session\common\js\media-element\mediaelementplayer.min.js" />
+    <None Include="wwwroot\content\13ef9b86-fee3-4589-8ead-1978cfdf29fb\d\ELFH_Session\common\js\media-element\silverlightmediaelement.xap" />
+    <None Include="wwwroot\content\13ef9b86-fee3-4589-8ead-1978cfdf29fb\d\ELFH_Session\common\js\modernizr-2.7.1.js" />
+    <None Include="wwwroot\content\13ef9b86-fee3-4589-8ead-1978cfdf29fb\d\ELFH_Session\common\js\non-html-5-browser\html5shiv-printshiv.min.js" />
+    <None Include="wwwroot\content\13ef9b86-fee3-4589-8ead-1978cfdf29fb\d\ELFH_Session\common\js\non-html-5-browser\html5shiv.min.js" />
+    <None Include="wwwroot\content\13ef9b86-fee3-4589-8ead-1978cfdf29fb\d\ELFH_Session\common\js\non-html-5-browser\json2-min.js" />
+    <None Include="wwwroot\content\13ef9b86-fee3-4589-8ead-1978cfdf29fb\d\ELFH_Session\common\js\page.js" />
+    <None Include="wwwroot\content\13ef9b86-fee3-4589-8ead-1978cfdf29fb\d\ELFH_Session\common\js\raphael-min.js" />
+    <None Include="wwwroot\content\13ef9b86-fee3-4589-8ead-1978cfdf29fb\d\ELFH_Session\common\js\SCORM_cmi.js" />
+    <None Include="wwwroot\content\13ef9b86-fee3-4589-8ead-1978cfdf29fb\d\ELFH_Session\common\js\session.js" />
+    <None Include="wwwroot\content\13ef9b86-fee3-4589-8ead-1978cfdf29fb\d\ELFH_Session\common\js\swfobject.js" />
+    <None Include="wwwroot\content\13ef9b86-fee3-4589-8ead-1978cfdf29fb\d\ELFH_Session\common\js\swfobject_js_gateway.js" />
+    <None Include="wwwroot\content\13ef9b86-fee3-4589-8ead-1978cfdf29fb\d\ELFH_Session\common\js\swiffy-7.4.0.js" />
+    <None Include="wwwroot\content\13ef9b86-fee3-4589-8ead-1978cfdf29fb\d\ELFH_Session\common\js\timeout_dialog.js" />
+    <None Include="wwwroot\content\13ef9b86-fee3-4589-8ead-1978cfdf29fb\d\ELFH_Session\common\swf\dragdrop_pictures.swf" />
+    <None Include="wwwroot\content\13ef9b86-fee3-4589-8ead-1978cfdf29fb\d\ELFH_Session\common\swf\dragdrop_sort.swf" />
+    <None Include="wwwroot\content\13ef9b86-fee3-4589-8ead-1978cfdf29fb\d\ELFH_Session\common\swf\hotspot.swf" />
+    <None Include="wwwroot\content\13ef9b86-fee3-4589-8ead-1978cfdf29fb\d\ELFH_Session\common\swf\mediaplayer.swf" />
+    <None Include="wwwroot\content\13ef9b86-fee3-4589-8ead-1978cfdf29fb\d\ELFH_Session\common\swf\zoom.swf" />
+    <None Include="wwwroot\content\13ef9b86-fee3-4589-8ead-1978cfdf29fb\d\lo_492.xpl" />
+    <None Include="wwwroot\content\13ef9b86-fee3-4589-8ead-1978cfdf29fb\imscp_rootv1p1p2.xsd" />
+    <None Include="wwwroot\content\13ef9b86-fee3-4589-8ead-1978cfdf29fb\imsmd_rootv1p2p1.xsd" />
+    <None Include="wwwroot\content\13ef9b86-fee3-4589-8ead-1978cfdf29fb\ims_xml.xsd" />
+    <None Include="wwwroot\content\13ef9b86-fee3-4589-8ead-1978cfdf29fb\xp_v1d0.xsd" />
+    <None Include="wwwroot\content\c27b0e4b-927d-4f0a-9f8e-b7feb9f1fe0f\TestBulkUpload 1.csv" />
     <None Include="wwwroot\fonts\FrutigerLTW01-55Roman.woff2" />
     <None Include="wwwroot\fonts\FrutigerLTW01-65Bold.woff2" />
   </ItemGroup>
