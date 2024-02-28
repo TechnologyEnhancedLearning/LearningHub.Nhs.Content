@@ -11,9 +11,9 @@ namespace LearningHub.Nhs.Content.Pages
     public class ForbiddenModel : PageModel
     {
         /// <summary>
-        /// Gets or sets the ScormContentDetail.
+        /// Gets or sets the ContentDetail.
         /// </summary>
-        public ScormContentServerViewModel ScormContentDetail { get; set; }
+        public ContentServerViewModel ContentDetail { get; set; }
 
         /// <summary>
         /// Defines the Settings.
@@ -34,7 +34,7 @@ namespace LearningHub.Nhs.Content.Pages
         /// </summary>
         public void OnGet()
         {
-            this.ScormContentDetail = (ScormContentServerViewModel)HttpContext.Items["ScormContentDetail"];
+            this.ContentDetail = (ContentServerViewModel)HttpContext.Items["ContentDetail"];
         }
     }
 }
