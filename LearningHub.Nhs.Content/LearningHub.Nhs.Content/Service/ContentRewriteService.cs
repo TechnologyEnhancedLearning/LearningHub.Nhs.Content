@@ -87,7 +87,7 @@ namespace LearningHub.Nhs.Content.Service
             {
                 HostName = this.settings.LearningHubContentServerUrl,
                 Description = "LearningHub",
-                ResourcePath = "/content/",
+                ResourcePath = $"{this.settings.LearningHubContentVirtualPath}/",
                 ResourceIdentifierPosition = 3,
                 ResourceRegEx = "[({]?[a-fA-F0-9]{8}[-]?([a-fA-F0-9]{4}[-]?){3}[a-fA-F0-9]{12}[})]?"
             });
