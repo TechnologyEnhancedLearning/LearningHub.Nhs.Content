@@ -49,6 +49,6 @@ namespace LearningHub.Nhs.Content.Configuration
         /// <summary>
         /// Gets or sets the EnableSuccessMessageForLogResourceRefrence 
         /// </summary>
-        public string EnableSuccessMessageForLogResourceRefrence { get; set; }
+        public string EnableSuccessMessageForLogResourceReference { get; set; }
     }
 }

@@ -255,7 +255,7 @@ namespace LearningHub.Nhs.Content
                 context.HttpContext.Response.Headers.Add("Cache-Control", "no-cache, no-store");
                 context.HttpContext.Response.Headers.Add("Expires", "-1");
 
-                if (Convert.ToBoolean(this.settings.EnableSuccessMessageForLogResourceRefrence))
+                if (Convert.ToBoolean(this.settings.EnableSuccessMessageForLogResourceReference))
                 {
                     logEvent.ResourceReferenceId = contentDetail.ResourceReferenceId;
                     logEvent.ResourceReferenceEventType = Nhs.Models.Enums.ResourceReferenceEventTypeEnum.Status200OK;
