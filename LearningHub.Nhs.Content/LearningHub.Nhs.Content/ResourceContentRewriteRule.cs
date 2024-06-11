@@ -255,9 +255,12 @@ namespace LearningHub.Nhs.Content
                 context.HttpContext.Response.Headers.Add("Cache-Control", "no-cache, no-store");
                 context.HttpContext.Response.Headers.Add("Expires", "-1");
 
-                logEvent.ResourceReferenceId = contentDetail.ResourceReferenceId;
-                logEvent.ResourceReferenceEventType = Nhs.Models.Enums.ResourceReferenceEventTypeEnum.Status200OK;
-                await this.contentRewriteService.LogResourceReferenceEventAsync(logEvent);
+                if (Convert.ToBoolean(this.settings.EnableSuccessMessageForLogResourceReference))
+                {
+                    logEvent.ResourceReferenceId = contentDetail.ResourceReferenceId;
+                    logEvent.ResourceReferenceEventType = Nhs.Models.Enums.ResourceReferenceEventTypeEnum.Status200OK;
+                    await this.contentRewriteService.LogResourceReferenceEventAsync(logEvent);
+                }
 
                 this.logger.LogInformation(
                     $"Source System :{sourceSystem.Description} # Original Request Path:{startingUrl} # Rewritten Path:{rewrittenUrlStringBuilder}");
