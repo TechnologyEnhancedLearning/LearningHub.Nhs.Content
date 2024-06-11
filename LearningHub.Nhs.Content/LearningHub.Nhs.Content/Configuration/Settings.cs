@@ -45,5 +45,10 @@ namespace LearningHub.Nhs.Content.Configuration
         /// Gets or sets the ContentServerClientIdentityKey.
         /// </summary>
         public string ContentServerClientIdentityKey { get; set; }
+
+        /// <summary>
+        /// Gets or sets the EnableSuccessMessageForLogResourceRefrence 
+        /// </summary>
+        public string EnableSuccessMessageForLogResourceReference { get; set; }
     }
 }
