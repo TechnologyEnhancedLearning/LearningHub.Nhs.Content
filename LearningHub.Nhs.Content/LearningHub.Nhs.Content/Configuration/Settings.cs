@@ -50,5 +50,13 @@ namespace LearningHub.Nhs.Content.Configuration
         /// Gets or sets the EnableSuccessMessageForLogResourceRefrence 
         /// </summary>
         public string EnableSuccessMessageForLogResourceReference { get; set; }
-    }
+
+        public string EnableAzureFileStorageRESTAPIaccess { get; set; }
+
+        public string AzureFileStorageConnectionString { get; set; }
+
+        public string AzureFileStorageResourceShareName { get; set; }
+
+        public string AzureSourceArchiveStorageConnectionString {  get; set; }
+  }
 }
