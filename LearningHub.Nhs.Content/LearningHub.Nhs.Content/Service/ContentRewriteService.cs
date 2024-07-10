@@ -85,9 +85,9 @@ namespace LearningHub.Nhs.Content.Service
             // Also include learning hub by default as this is not part of a migration
             migrationSources?.Add(new MigrationSourceViewModel
             {
-                HostName = this.settings.LearningHubContentServerUrl,
+                HostName = this.settings.LearningHubContentServerUrlRedis,
                 Description = "LearningHub",
-                ResourcePath = $"{this.settings.LearningHubContentVirtualPath}/",
+                ResourcePath = $"{this.settings.LearningHubContentVirtualPathRedis}/",
                 ResourceIdentifierPosition = 3,
                 ResourceRegEx = "[({]?[a-fA-F0-9]{8}[-]?([a-fA-F0-9]{4}[-]?){3}[a-fA-F0-9]{12}[})]?"
             });

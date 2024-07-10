@@ -58,5 +58,9 @@ namespace LearningHub.Nhs.Content.Configuration
         public string AzureFileStorageResourceShareName { get; set; }
 
         public string AzureSourceArchiveStorageConnectionString {  get; set; }
+
+        public string LearningHubContentServerUrlRedis { get; set; }
+
+        public string LearningHubContentVirtualPathRedis { get; set; }
   }
 }
