@@ -167,11 +167,11 @@ namespace LearningHub.Nhs.Content
                 switch (sourceSystem.SourceType())
                 {
                     case SourceType.LearningHub:
-                        contentDetail = await this.contentRewriteService.GetContentDetailsByExternalReferenceAsync(resourceExternalReference, cacheKey);
+                        contentDetail = contentRewriteService.GetContentDetailsByExternalReferenceAsync(resourceExternalReference, cacheKey).Result;
                         break;
                     case SourceType.eLR:
                         var resourceUri = $"{sourceSystem.ResourcePath}{resourceExternalReference}/";
-                        contentDetail = await this.contentRewriteService.GetContentDetailsByExternalUrlAsync(resourceUri, cacheKey);
+                        contentDetail = contentRewriteService.GetContentDetailsByExternalUrlAsync(resourceUri, cacheKey).Result;
                         break;
                     case SourceType.eWIN:
                     default:
