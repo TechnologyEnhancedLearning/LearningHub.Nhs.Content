@@ -60,21 +60,21 @@ namespace LearningHub.Nhs.Content
             this.contentRewriteService = contentRewriteService;
             this.settings = settings.Value;
             this.logger = logger;
-            this.LoadSourceSystems();
+            Task.Run(() => this.LoadSourceSystems());
         }
 
         /// <summary>
         /// The LoadSourceSystemsAsync.
         /// </summary>
-        private void LoadSourceSystems()
+        private async Task LoadSourceSystems()
         {
             try
             {
                 if (this.sourceSystems != null)
                     return;
 
-                this.sourceSystems = this.contentRewriteService
-                    .GetMigrationSourcesAsync($"Migration-Sources").Result;
+                this.sourceSystems = await this.contentRewriteService
+                    .GetMigrationSourcesAsync($"Migration-Sources");
             }
             catch (Exception e)
             {
@@ -102,7 +102,7 @@ namespace LearningHub.Nhs.Content
                     requestPath.Value.StartsWith(@"/js/")){
                     return; }
 
-                this.LoadSourceSystems();
+                Task.Run(()=> this.LoadSourceSystems());
 
                 if (sourceSystems == null)
                 {
@@ -167,11 +167,11 @@ namespace LearningHub.Nhs.Content
                 switch (sourceSystem.SourceType())
                 {
                     case SourceType.LearningHub:
-                        contentDetail = contentRewriteService.GetContentDetailsByExternalReferenceAsync(resourceExternalReference, cacheKey).Result;
+                        contentDetail = await this.contentRewriteService.GetContentDetailsByExternalReferenceAsync(resourceExternalReference, cacheKey);
                         break;
                     case SourceType.eLR:
                         var resourceUri = $"{sourceSystem.ResourcePath}{resourceExternalReference}/";
-                        contentDetail = contentRewriteService.GetContentDetailsByExternalUrlAsync(resourceUri, cacheKey).Result;
+                        contentDetail = await this.contentRewriteService.GetContentDetailsByExternalUrlAsync(resourceUri, cacheKey);
                         break;
                     case SourceType.eWIN:
                     default:
