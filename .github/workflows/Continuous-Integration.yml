@@ -1,6 +1,6 @@
 #Error (line 30): the step 'PublishSymbols@2' does not have a conversion path yet
 
-name: ${{ env.date:yyyyMMdd }}${{ env.rev:.r }}
+name: Continuous-Integration
 on: [push]
 env:
   BuildParameters.solution: '**\*.sln'
