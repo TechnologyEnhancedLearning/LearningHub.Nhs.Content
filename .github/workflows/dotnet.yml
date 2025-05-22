@@ -1,0 +1,50 @@
+#Error (line 30): the step 'PublishSymbols@2' does not have a conversion path yet
+
+name: ${{ env.date:yyyyMMdd }}${{ env.rev:.r }}
+on: [push]
+env:
+  BuildParameters.solution: '**\*.sln'
+  BuildParameters.ArtifactName: drop
+jobs:
+  Job_1:
+    name: Agent job 1
+    runs-on: Azure Pipelines
+    steps:
+    - uses: actions/checkout@v2
+    - uses: microsoft/setup-msbuild@v1.0.2
+    - name: Use NuGet 5.8.0
+      uses: nuget/setup-nuget@v1
+    - name: NuGet restore
+      run: nuget restore
+    - name: Build solution **\*.sln
+      run: msbuild 'LearningHub.Nhs.Content.sln' /p:configuration='${{ env.BuildConfiguration }}' /p:platform='${{ env.BuildPlatform }}' /p:OutDir="${{ github.workspace }}"
+    - name: Test Assemblies
+      run: |
+        $vsTestConsoleExe = "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\Common7\IDE\Extensions\TestPlatform\vstest.console.exe"
+        $targetTestDll = "**\${{ env.BuildConfiguration }}\*test*.dll
+        !**\obj\**"
+        $testRunSettings = "/Settings:`"`" "
+        #Note that the `" is an escape character to quote strings, and the `& is needed to start the command
+        $command = "`& `"$vsTestConsoleExe`" `"$targetTestDll`" $testRunSettings $parameters "
+        Write-Host "$command"
+        Invoke-Expression $command
+      shell: powershell
+    - # "Error: the step 'PublishSymbols@2' does not have a conversion path yet"
+      name: Publish symbols path
+      run: |
+        echo "Error: the step 'PublishSymbols@2' does not have a conversion path yet"
+        #task: PublishSymbols@2
+        #displayName: Publish symbols path
+        #continueOnError: true
+        #inputs:
+        #  searchpattern: '**\bin\**\*.pdb'
+        #  publishsymbols: false
+        #  symbolservertype: TeamServices
+      continue-on-error: true
+    - name: Publish Artifact
+      uses: actions/upload-artifact@v2
+      with:
+        path: ${{ github.workspace }}
+        name: ${{ env.BuildParameters.ArtifactName }}
+      if: (${{ job.status }} != 'cancelled')
+                    
