@@ -1,50 +1,54 @@
-#Error (line 30): the step 'PublishSymbols@2' does not have a conversion path yet
+name: .NET Build CI
 
-name: Continuous-Integration
-on: [push]
-env:
-  BuildParameters.solution: '**\*.sln'
-  BuildParameters.ArtifactName: drop
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
 jobs:
-  Job_1:
-    name: Agent job 1
-    runs-on: Azure Pipelines
+  build:
+    name: Build .NET Solution
+    runs-on: windows-latest  # Needed for MSBuild and Visual Studio
+
+    env:
+      BuildPlatform: 'Any CPU'
+      BuildConfiguration: 'Release'
+      ArtifactName: 'drop'
+
     steps:
-    - uses: actions/checkout@v2
-    - uses: microsoft/setup-msbuild@v1.0.2
-    - name: Use NuGet 5.8.0
-      uses: nuget/setup-nuget@v1
-    - name: NuGet restore
-      run: nuget restore
-    - name: Build solution **\*.sln
-      run: msbuild 'LearningHub.Nhs.Content.sln' /p:configuration='${{ env.BuildConfiguration }}' /p:platform='${{ env.BuildPlatform }}' /p:OutDir="${{ github.workspace }}"
-    - name: Test Assemblies
-      run: |
-        $vsTestConsoleExe = "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\Common7\IDE\Extensions\TestPlatform\vstest.console.exe"
-        $targetTestDll = "**\${{ env.BuildConfiguration }}\*test*.dll
-        !**\obj\**"
-        $testRunSettings = "/Settings:`"`" "
-        #Note that the `" is an escape character to quote strings, and the `& is needed to start the command
-        $command = "`& `"$vsTestConsoleExe`" `"$targetTestDll`" $testRunSettings $parameters "
-        Write-Host "$command"
-        Invoke-Expression $command
-      shell: powershell
-    - # "Error: the step 'PublishSymbols@2' does not have a conversion path yet"
-      name: Publish symbols path
-      run: |
-        echo "Error: the step 'PublishSymbols@2' does not have a conversion path yet"
-        #task: PublishSymbols@2
-        #displayName: Publish symbols path
-        #continueOnError: true
-        #inputs:
-        #  searchpattern: '**\bin\**\*.pdb'
-        #  publishsymbols: false
-        #  symbolservertype: TeamServices
-      continue-on-error: true
-    - name: Publish Artifact
-      uses: actions/upload-artifact@v2
-      with:
-        path: ${{ github.workspace }}
-        name: ${{ env.BuildParameters.ArtifactName }}
-      if: (${{ job.status }} != 'cancelled')
-                    
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup NuGet
+        uses: NuGet/setup-nuget@v1
+        with:
+          nuget-version: '5.8.0'
+
+      - name: Restore NuGet packages
+        run: nuget restore ${{ env.Solution || 'LearningHub.Nhs.Content.sln' }}
+
+      - name: Setup MSBuild
+        uses: microsoft/setup-msbuild@v1.1
+
+      - name: Build solution
+        run: msbuild LearningHub.Nhs.Content.sln /p:Configuration=${{ env.BuildConfiguration }} /p:Platform="${{ env.BuildPlatform }}" /p:OutDir="${{ github.workspace }}\artifact"
+
+      # (Optional) If you want to run tests, uncomment below
+      # - name: Run tests
+      #   run: |
+      #     vstest.console.exe "**\${{ env.BuildConfiguration }}\*test*.dll" /Platform:${{ env.BuildPlatform }} /Logger:trx
+
+      - name: Publish PDBs as build artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pdb-files
+          path: '**\\bin\\**\\*.pdb'
+
+      - name: Publish Build Artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ env.ArtifactName }}
+          path: artifact/
