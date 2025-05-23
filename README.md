@@ -12,14 +12,12 @@ The LH Content Server provides access from the ESR system into the content stora
 - SQL Server 2019
 - [SQL Server Management Studio 18](https://docs.microsoft.com/en-us/sql/ssms/download-sql-server-management-studio-ssms?view=sql-server-ver15)
 - [Git](https://git-scm.com/download)
-- [Node](https://nodejs.org/en/download/) install specific/required version using NVM - see below.
-- [SASS](https://www.sass-lang.com/install) for the command line
     - Specifically, follow the "Install Anywhere (Standalone)" guide. Simply download and extract the files somewhere, and point PATH at the dart-sass folder. This should allow you to use the "sass" command.
     - You don't want to install it via Yarn, as those are JavaScript versions that perform significantly worse.
 - [.Net 6.0 SDK](https://dotnet.microsoft.com/en-us/download/dotnet/6.0)
 - [Azure storage emulator](https://dotnet.microsoft.com/en-us/download/dotnet/6.0)
 - [Azure storage explorer](https://azure.microsoft.com/en-gb/features/storage-explorer/#overview)
-- [Node version manager (nvm)](https://github.com/coreybutler/nvm-windows/releases) - use this to install and use Node version 16.13.0 and NPM version 8.1.0 to work with this repository.
+
 
 # Build and Test
 TODO: Describe and show how to build your code and run the tests. 
