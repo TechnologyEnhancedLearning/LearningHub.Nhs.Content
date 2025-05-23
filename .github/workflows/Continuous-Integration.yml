@@ -1,0 +1,57 @@
+name: LearningHub ContentServer Dev
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build:
+    name: Build .NET Solution
+    runs-on: windows-latest  # Needed for MSBuild and Visual Studio
+
+    env:
+      BuildPlatform: 'Any CPU'
+      BuildConfiguration: 'Release'
+      ArtifactName: 'drop'
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Add Azure artifact
+        run: dotnet nuget add source 'https://pkgs.dev.azure.com/e-LfH/_packaging/LearningHubFeed/nuget/v3/index.json' --name 'LearningHubFeed'  --username 'kevin.whittaker' --password ${{ secrets.AZURE_DEVOPS_PAT }} --store-password-in-clear-text      
+     
+      - name: Setup NuGet
+        uses: NuGet/setup-nuget@v1
+        with:
+          nuget-version: '5.8.0'
+
+      - name: Restore NuGet packages
+        run: nuget restore ${{ env.Solution || 'LearningHub.Nhs.Content.sln' }}
+
+      - name: Setup MSBuild
+        uses: microsoft/setup-msbuild@v1.1
+
+      - name: Build solution
+        run: msbuild LearningHub.Nhs.Content.sln /p:Configuration=${{ env.BuildConfiguration }} /p:Platform="${{ env.BuildPlatform }}" /p:OutDir="${{ github.workspace }}\artifact"
+
+      # (Optional) If you want to run tests, uncomment below
+      # - name: Run tests
+      #   run: |
+      #     vstest.console.exe "**\${{ env.BuildConfiguration }}\*test*.dll" /Platform:${{ env.BuildPlatform }} /Logger:trx
+
+      - name: Publish PDBs as build artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pdb-files
+          path: '**\\bin\\**\\*.pdb'
+
+      - name: Publish Build Artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ env.ArtifactName }}
+          path: artifact/
