@@ -1,4 +1,4 @@
-name: LearningHub ContentServer Dev
+name: LearningHub ContentServer CI
 
 on:
   push:
