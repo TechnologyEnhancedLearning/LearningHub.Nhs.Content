@@ -1,12 +1,24 @@
 # Introduction 
-TODO: Give a short introduction of your project. Let this section explain the objectives or the motivation behind this project. 
+This is the official open source repository for the Learning  Hub Content Server.
+
+The LH Content Server provides access from the ESR system into the content storage of the Learning Hub in order to facilitate remote launching of content. It also provides historic URL launching where an entire URL has been redirected into the LH for rewriting subsequent to a resource migration.
+
 
 # Getting Started
-TODO: Guide users through getting your code up and running on their own system. In this section you can talk about:
-1.	Installation process
-2.	Software dependencies
-3.	Latest releases
-4.	API references
+## Required installs
+- [Visual Studio Professional 2022](https://visualstudio.microsoft.com/downloads/) or other suitable An IDE that supports the Microsoft Tech Stack
+  - Make sure you have the [NPM Task Runner](https://marketplace.visualstudio.com/items?itemName=MadsKristensen.NPMTaskRunner) extension
+- SQL Server 2019
+- [SQL Server Management Studio 18](https://docs.microsoft.com/en-us/sql/ssms/download-sql-server-management-studio-ssms?view=sql-server-ver15)
+- [Git](https://git-scm.com/download)
+- [Node](https://nodejs.org/en/download/) install specific/required version using NVM - see below.
+- [SASS](https://www.sass-lang.com/install) for the command line
+    - Specifically, follow the "Install Anywhere (Standalone)" guide. Simply download and extract the files somewhere, and point PATH at the dart-sass folder. This should allow you to use the "sass" command.
+    - You don't want to install it via Yarn, as those are JavaScript versions that perform significantly worse.
+- [.Net 6.0 SDK](https://dotnet.microsoft.com/en-us/download/dotnet/6.0)
+- [Azure storage emulator](https://dotnet.microsoft.com/en-us/download/dotnet/6.0)
+- [Azure storage explorer](https://azure.microsoft.com/en-gb/features/storage-explorer/#overview)
+- [Node version manager (nvm)](https://github.com/coreybutler/nvm-windows/releases) - use this to install and use Node version 16.13.0 and NPM version 8.1.0 to work with this repository.
 
 # Build and Test
 TODO: Describe and show how to build your code and run the tests. 
