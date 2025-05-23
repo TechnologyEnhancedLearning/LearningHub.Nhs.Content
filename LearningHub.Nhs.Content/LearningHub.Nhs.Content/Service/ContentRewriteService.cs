@@ -23,7 +23,7 @@ namespace LearningHub.Nhs.Content.Service
     public class ContentRewriteService : IContentRewriteService
     {
         /// <summary>
-        /// Defines the learningHubHttpClient.
+        /// Defines the learningHubHttpClient...
         /// </summary>
         private ILearningHubHttpClient learningHubHttpClient;
 
