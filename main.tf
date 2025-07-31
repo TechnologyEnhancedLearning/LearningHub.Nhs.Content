@@ -7,7 +7,7 @@ resource "azurerm_app_service_plan" "ContentServerAppServicePlan" {
   name                = var.AppServicePlanName
   location            = azurerm_resource_group.ContentServerResourceGroup.location
   resource_group_name = azurerm_resource_group.ContentServerResourceGroup.name
-  kind                = var.AppServicePlanKind
+  kind                = "app"
   reserved            = false
   sku {
     tier = var.AppServicePlanSkuTier
