@@ -1,7 +1,3 @@
-provider "azurerm" {
-  features {}
-}
-
 resource "azurerm_resource_group" "ContentServerResourceGroup" {
   name     = "UKS-LearningHub-ContentServer-DEV-RG"
   location = "UK South"
