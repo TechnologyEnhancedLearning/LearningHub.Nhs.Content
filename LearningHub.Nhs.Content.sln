@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.30011.22
+# Visual Studio Version 17
+VisualStudioVersion = 17.14.36301.6 d17.14
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LearningHub.Nhs.Content", "LearningHub.Nhs.Content\LearningHub.Nhs.Content\LearningHub.Nhs.Content.csproj", "{A04F5120-FBE1-4877-8DA3-605532C560E3}"
 EndProject
@@ -39,6 +39,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Uat", "Uat", "{D179127E-E5D
 		Environment Scripts\Uat\uks-lhcontentserver_createenv.ps1 = Environment Scripts\Uat\uks-lhcontentserver_createenv.ps1
 		Environment Scripts\Uat\uks-lhcontentserver_createnetwork.ps1 = Environment Scripts\Uat\uks-lhcontentserver_createnetwork.ps1
 		Environment Scripts\Uat\uks-lhcontentserver_cse.ps1 = Environment Scripts\Uat\uks-lhcontentserver_cse.ps1
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Terraform", "Terraform", "{02EA681E-C7D8-13C7-8484-4AC65E1B71E8}"
+	ProjectSection(SolutionItems) = preProject
+		backend-dev.tfvars = backend-dev.tfvars
+		backend.tf = backend.tf
+		main.tf = main.tf
 	EndProjectSection
 EndProject
 Global

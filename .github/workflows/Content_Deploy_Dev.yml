@@ -1,0 +1,149 @@
+name: Deploy Content to Dev
+on:
+  push:
+    branches:
+      - CI
+  workflow_dispatch:
+  
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  terraform:
+    runs-on: ubuntu-latest
+    environment: dev
+    name: 'Terraform LearningHub Content Server'
+    env:
+      ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+      ARM_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
+      ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+      ARM_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_wrapper: false  # Skip wrapper script installation
+
+      - name: 'Terraform init'
+        id: init
+        run: |
+          cd Terraform
+          terraform init "-backend-config=backend-dev.tfvars"
+
+  deploycontent:
+    runs-on: ubuntu-latest
+    environment: dev
+
+    name: Deploy Content
+    env:
+      ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+      ARM_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
+      ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+      ARM_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+
+    steps:
+      - uses: actions/checkout@v2
+  
+      - name: Az CLI login
+        uses: azure/login@v1
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Setup .NET Core
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Add Nuget source
+        run: dotnet nuget add source 'https://pkgs.dev.azure.com/e-LfH/_packaging/LearningHubFeed/nuget/v3/index.json' --name 'LearningHubFeed'  --username 'colin.beeby' --password ${{ secrets.AZURE_DEVOPS_PAT }} --store-password-in-clear-text      
+
+      - name: Perform variable substitution
+        uses: microsoft/variable-substitution@v1
+        with:
+          files: '**/appsettings.json'
+        env:
+          Environment: 'Development'
+          ConnectionStrings.ElfhHubDbConnection: ${{ secrets.ELFH_HUB_DB_CONNECTION }}
+          ConnectionStrings.LearningCredentialsDbConnection: ${{ secrets.LEARNING_CREDENTIALS_DB_CONNECTION }}
+          ConnectionStrings.NLogDb: ${{ secrets.NLOG_DB }}
+          ConnectionStrings.LearningHubRedis: ${{ secrets.LEARNING_HUB_REDIS }}
+          Settings.AuthenticationServiceUrl: ${{ vars.AUTH_SERVICE_URL }}
+          Swagger.BuildNumber: "1.0"
+
+        {
+  "Environment": "Local",
+  "Logging": {
+    "LogLevel": {
+      "Default": "Trace",
+      "Microsoft": "Warning",
+      "Microsoft.Hosting.Lifetime": "Information"
+    }
+  },
+  "AllowedHosts": "*",
+  "Settings": {
+    "LearningHubUrl": "",
+    "EsrSupportUrl": "http://www.esrsupport.co.uk/access.php",
+    "LearningHubContentServerUrl": "localhost",
+    "LearningHubContentPhysicalPath": "D:\\IIS-Publish\\content",
+    "LearningHubContentVirtualPath": "/lhcontent",
+    "LearningHubContentServerUrlRedis": "",
+    "LearningHubContentVirtualPathRedis": "",
+    "LearningHubApiUrl": "",
+    "ContentServerClientIdentityKey": "",
+    "LearningHubContentLogTable": "UksContentServerDevLog",
+    "FileTypeMappings": {
+      ".m3u8": "application/x-mpegURL"
+    },
+    "EnableSuccessMessageForLogResourceReference": "false",
+    "EnableAzureFileStorageRESTAPIAccess": "false",
+    "AzureFileStorageConnectionString": "",
+    "AzureFileStorageResourceShareName": "",
+    "AzureSourceArchiveStorageConnectionString": ""
+  },
+  "ConnectionStrings": {
+    "Redis": "",
+    "LearningHubContentLogStorage": ""
+  }
+}
+
+    {
+    "Environment": "Development",
+    "Logging": {
+        "LogLevel": {
+            "Default": "Trace",
+            "Microsoft": "Warning",
+            "Microsoft.Hosting.Lifetime": "Information"
+        }
+    },
+    "AllowedHosts": "*",
+    "Settings": {
+        "LearningHubUrl": "",
+        "EsrSupportUrl": "http://www.esrsupport.co.uk/access.php",
+        "LearningHubContentServerUrl": "https://content-dev.test-learninghub.org.uk/content",
+        "LearningHubContentPhysicalPath": "\\\\ukslhcontentstore.file.core.windows.net\\resourcesdev",
+        "LearningHubContentVirtualPath": "/lhcontent",
+        "LearningHubContentServerUrlRedis": "https://content-dev.test-learninghub.org.uk",
+        "LearningHubContentVirtualPathRedis": "/content",
+        "LearningHubApiUrl": "https://api-dev.test-learninghub.org.uk/api/",
+        "ContentServerClientIdentityKey": "4000CDDF-A311-4FA9-98A4-9B46F918DEC1",
+        "LearningHubContentLogTable": "UksContentServerDevLog",
+        "FileTypeMappings": {
+            ".m3u8": "application/x-mpegURL"
+        },
+        "EnableSuccessMessageForLogResourceReference": "false",
+        "EnableAzureFileStorageRESTAPIAccess": "true",
+        "AzureFileStorageConnectionString": "DefaultEndpointsProtocol=https;AccountName=ukslhcontentstore;AccountKey=NqEkFv346yEEE9q3kJeL3leLyHkKOJaTVDJ8VZCBETTP5BfFU1n2uqzLPSLjoZCumhoLaK8OPpa6w2zyYdoDHw==;EndpointSuffix=core.windows.net",
+        "AzureFileStorageResourceShareName": "resourcesdev",
+        "AzureSourceArchiveStorageConnectionString": "DefaultEndpointsProtocol=https;AccountName=ukslhcontentsourcarchive;AccountKey=rYGeQMKShu33sgBgYVf/jvjk4D8x/QHQlgdYUeb8sJKAmrCNIy7x1LYvKva0e3iNrEQ2eHTAUTQ4+ASt2gzlxQ==;EndpointSuffix=core.windows.net"
+    },
+    "ConnectionStrings": {
+        "Redis": "uks-learninghub-redis-dev.redis.cache.windows.net:6380,password=M9x9seAZQnskFm6FJLXE94VxONsLou29S5YdZLi6amc=,ssl=True,abortConnect=False",
+        "LearningHubContentLogStorage": "DefaultEndpointsProtocol=https;AccountName=ukslhcontentstore;AccountKey=NqEkFv346yEEE9q3kJeL3leLyHkKOJaTVDJ8VZCBETTP5BfFU1n2uqzLPSLjoZCumhoLaK8OPpa6w2zyYdoDHw==;EndpointSuffix=core.windows.net"
+    }
+}
