@@ -1,22 +1,22 @@
 resource "azurerm_resource_group" "ContentServerResourceGroup" {
-  name     = "UKS-LearningHub-ContentServer-DEV-RG"
-  location = "UK South"
+  name     = var.ResourceGroupName
+  location = var.ResourceGroupLocation
 }
 
 resource "azurerm_app_service_plan" "ContentServerAppServicePlan" {
-  name                = "learninghub-contnet-dev-plan"
+  name                = var.AppServicePlanName
   location            = azurerm_resource_group.ContentServerResourceGroup.location
   resource_group_name = azurerm_resource_group.ContentServerResourceGroup.name
-  kind                = "Windows"
+  kind                = var.AppServicePlanKind
   reserved            = true
   sku {
-    tier = "Standard"
-    size = "S1"
+    tier = var.AppServicePlanSkuTier
+    size = var.AppServicePlanSkuSize"
   }
 }
 
 resource "azurerm_app_service" "ContentServerAppService" {
-  name                = "learninghub-content-dev"
+  name                = var.AppServiceName
   location            = azurerm_resource_group.ContentServerResourceGroup.location
   resource_group_name = azurerm_resource_group.ContentServerResourceGroup.name
   app_service_plan_id = azurerm_app_service_plan.ContentServerAppServicePlan.id
