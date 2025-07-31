@@ -31,15 +31,12 @@ jobs:
       - name: 'Terraform init'
         id: init
         run: |
-          ls
-          cd Terraform
           terraform init "-backend-config=backend-dev.tfvars"
 
       # One time stuff to do the initial terraform import
 
       - name: 'Terraform import resource group'
         run: |
-          cd Terraform
           terraform import azurerm_resource_group.ContentServerResourceGroup /subscriptions/66516f71-f3d4-4911-b900-c6e4690a5b15/resourceGroups/UKS-LearningHub-ContentServer-DEV-RG
           terraform import azurerm_app_service_plan.ContentServerAppServicePlan /subscriptions/66516f71-f3d4-4911-b900-c6e4690a5b15/resourceGroups/UKS-LearningHub-ContentServer-DEV-RG/providers/Microsoft.Web/serverFarms/learninghub-content-dev-plan
           terraform import azurerm_app_service.ContentServerAppService /subscriptions/66516f71-f3d4-4911-b900-c6e4690a5b15/resourceGroups/UKS-LearningHub-ContentServer-DEV-RG/providers/Microsoft.Web/sites/learninghub-content-dev
