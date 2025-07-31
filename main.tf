@@ -11,7 +11,7 @@ resource "azurerm_app_service_plan" "ContentServerAppServicePlan" {
   reserved            = true
   sku {
     tier = var.AppServicePlanSkuTier
-    size = var.AppServicePlanSkuSize"
+    size = var.AppServicePlanSkuSize
   }
 }
 
