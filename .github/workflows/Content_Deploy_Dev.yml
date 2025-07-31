@@ -31,6 +31,7 @@ jobs:
       - name: 'Terraform init'
         id: init
         run: |
+          ls
           cd Terraform
           terraform init "-backend-config=backend-dev.tfvars"
 
