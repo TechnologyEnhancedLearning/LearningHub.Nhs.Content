@@ -87,13 +87,6 @@ jobs:
       - name: Build project
         run: dotnet build LearningHub.Nhs.Content.sln --configuration Release
 
-
-      # - name: Setup MSBuild
-      #   uses: microsoft/setup-msbuild@v1.1
-
-      # - name: Build solution
-      #   run: msbuild LearningHub.Nhs.Content.sln /p:Configuration=${{ env.BuildConfiguration }} /p:Platform="${{ env.BuildPlatform }}" /p:OutDir="${{ github.workspace }}\artifact"
-  
       - name: 'Az CLI login'
         uses: azure/login@v1
         with:
@@ -101,17 +94,16 @@ jobs:
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
-      # - name: Build project
-      #   run: npm run build
-
-      
- 
-
+      - name: Deploy using Azure CLI
+        run: |
+          az webapp deploy --resource-group ${{ vars.AZURE_RESOURCE_GROUP_NAME}} \
+                           --name ${{ vars.AZURE_APP_SERVICE_NAME }} \
+                           --src-path . \
+                           --type zip
 
       - name: Deploy to Azure Web App
         uses: azure/webapps-deploy@v3
         with:
-          app-name: ${{ secrets.AZURE_WEBAPP_NAME }}
+          app-name: ${{ vars.AZURE_APP_SERVICE_NAME }}
           publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
           package: .
-
