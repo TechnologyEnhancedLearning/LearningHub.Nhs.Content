@@ -84,7 +84,6 @@ jobs:
       - name: Restore NuGet packages
         run: dotnet restore ${{ env.Solution || 'LearningHub.Nhs.Content.sln' }}
 
-        
       - name: Build project
         run: dotnet build LearningHub.Nhs.Content.sln --configuration Release
 
@@ -95,12 +94,12 @@ jobs:
       # - name: Build solution
       #   run: msbuild LearningHub.Nhs.Content.sln /p:Configuration=${{ env.BuildConfiguration }} /p:Platform="${{ env.BuildPlatform }}" /p:OutDir="${{ github.workspace }}\artifact"
   
-      # - name: 'Az CLI login'
-      #   uses: azure/login@v1
-      #   with:
-      #     client-id: ${{ secrets.AZURE_CLIENT_ID }}
-      #     tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-      #     subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+      - name: 'Az CLI login'
+        uses: azure/login@v1
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
       # - name: Build project
       #   run: npm run build
