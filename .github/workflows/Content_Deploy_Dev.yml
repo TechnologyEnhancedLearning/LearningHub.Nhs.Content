@@ -77,7 +77,7 @@ jobs:
           nuget-version: '5.8.0'
 
       - name: Restore NuGet packages
-        run: nuget restore ${{ env.Solution || 'LearningHub.Nhs.Content.sln' }}
+        run: dotnet restore ${{ env.Solution || 'LearningHub.Nhs.Content.sln' }}
 
       # - name: Setup MSBuild
       #   uses: microsoft/setup-msbuild@v1.1
