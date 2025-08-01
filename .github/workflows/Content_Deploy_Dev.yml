@@ -87,6 +87,10 @@ jobs:
       - name: Build project
         run: dotnet build LearningHub.Nhs.Content.sln --configuration Release
 
+      - name: Publish project
+        run: dotnet publish LearningHub.Nhs.Content.sln --configuration Release --output ./publish
+
+
       - name: 'Az CLI login'
         uses: azure/login@v1
         with:
@@ -98,12 +102,5 @@ jobs:
         run: |
           az webapp deploy --resource-group ${{ vars.AZURE_RESOURCE_GROUP_NAME}} \
                            --name ${{ vars.AZURE_APP_SERVICE_NAME }} \
-                           --src-path . \
+                           --src-path publish.zip \
                            --type zip
-
-      - name: Deploy to Azure Web App
-        uses: azure/webapps-deploy@v3
-        with:
-          app-name: ${{ vars.AZURE_APP_SERVICE_NAME }}
-          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
-          package: .
