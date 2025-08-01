@@ -55,6 +55,7 @@ jobs:
             -var="AppServiceName=${{ vars.AZURE_APP_SERVICE_NAME }}"
 
   deploy_content_server:
+    needs: terraform
     runs-on: ubuntu-latest
     environment: dev
     name: 'Deploy content server to app service'
