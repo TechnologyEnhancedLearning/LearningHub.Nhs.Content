@@ -90,6 +90,8 @@ jobs:
       - name: Publish project
         run: dotnet publish LearningHub.Nhs.Content.sln --configuration Release --output ./publish
 
+      - name: Zip published output
+        run: zip -r publish.zip ./publish
 
       - name: 'Az CLI login'
         uses: azure/login@v1
