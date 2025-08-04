@@ -84,9 +84,15 @@ jobs:
       - name: Restore NuGet packages
         run: dotnet restore ${{ env.Solution || 'LearningHub.Nhs.Content.sln' }}
 
+      - name: Build project
+        run: dotnet build LearningHub.Nhs.Content.sln --configuration Release
+
+      - name: Publish project
+        run: dotnet publish LearningHub.Nhs.Content.sln --configuration Release --output ./publish
+
       - name: Replace values in appsettings.json
         run: |
-          cd LearningHub.Nhs.Content
+          cd publish
           ls
           jq '
             .Settings.LearningHubContentServerUrl = "${{ vars.LEARNINGHUB_CONTENT_SERVER_URL }}" | 
@@ -96,12 +102,6 @@ jobs:
             .Settings.LearningHubApiUrl = "${{ vars.LEARNINGHUB_API_URL }}" |
             .Settings.ContentServerClientIdentityKey = "${{ vars.CONTENT_SERVER_CLIENT_IDENTITY_KEY }}"
           ' appsettings.json > tmp.json && mv tmp.json appsettings.json
-
-      - name: Build project
-        run: dotnet build LearningHub.Nhs.Content.sln --configuration Release
-
-      - name: Publish project
-        run: dotnet publish LearningHub.Nhs.Content.sln --configuration Release --output ./publish
 
       - name: Zip published output
         run: |
