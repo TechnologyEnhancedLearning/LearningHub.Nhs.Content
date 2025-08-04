@@ -86,6 +86,7 @@ jobs:
 
       - name: Replace values in appsettings.json
         run: |
+          cd LearningHub.Nhs.Content
           ls
           jq '
             .Settings.LearningHubContentServerUrl = "${{ vars.LEARNINGHUB_CONTENT_SERVER_URL }}" | 
