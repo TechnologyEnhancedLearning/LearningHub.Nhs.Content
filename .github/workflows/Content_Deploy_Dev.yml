@@ -86,6 +86,7 @@ jobs:
 
       - name: Replace values in appsettings.json
         run: |
+          ls
           jq '
             .Settings.LearningHubContentServerUrl = "${{ vars.LEARNINGHUB_CONTENT_SERVER_URL }}" | 
             .Settings.LearningHubContentServerUrlRedis = "${{ vars.LEARNINGHUB_CONTENT_SERVER_URL_REDIS }}" |
@@ -115,7 +116,6 @@ jobs:
 
       - name: Deploy using Azure CLI
         run: |
-          ls
           az webapp deploy --resource-group ${{ vars.AZURE_RESOURCE_GROUP_NAME}} \
                            --name ${{ vars.AZURE_APP_SERVICE_NAME }} \
                            --src-path publish.zip \
