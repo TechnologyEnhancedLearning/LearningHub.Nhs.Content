@@ -93,7 +93,6 @@ jobs:
       - name: Replace values in appsettings.json
         run: |
           cd publish
-          ls
           jq '
             .Settings.LearningHubContentServerUrl = "${{ vars.LEARNINGHUB_CONTENT_SERVER_URL }}" | 
             .Settings.LearningHubContentPhysicalPath = "${{ vars.LEARNINGHUB_CONTENT_PHYSICAL_PATH }}" |
@@ -101,7 +100,7 @@ jobs:
             .Settings.LearningHubContentVirtualPathRedis = "${{ vars.LEARNINGHUB_CONTENT_VIRTUAL_PATH_REDIS }}" |
             .Settings.LearningHubApiUrl = "${{ vars.LEARNINGHUB_API_URL }}" |
             .Settings.ContentServerClientIdentityKey = "${{ secrets.CONTENT_SERVER_CLIENT_IDENTITY_KEY }}" |
-            .Settings.EnableAzureFileStorageRESTAPIAccess = "true"
+            .Settings.EnableAzureFileStorageRESTAPIAccess = "true" |
             .Settings.AzureFileStorageConnectionString = "${{ secrets.AZURE_FILE_STORAGE_CONNECTION_STRING }}" |
             .Settings.AzureFileStorageResourceShareName = "${{ vars.AZURE_FILE_STORAGE_RESOURCE_SHARE_NAME }}" |
             .Settings.AzureSourceArchiveStorageConnectionString = "${{ secrets.AZURE_SOURCE_ARCHIVE_STORAGE_CONNECTION_STRING }}" |
