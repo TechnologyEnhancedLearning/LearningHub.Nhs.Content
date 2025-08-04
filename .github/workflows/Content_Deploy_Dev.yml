@@ -84,6 +84,17 @@ jobs:
       - name: Restore NuGet packages
         run: dotnet restore ${{ env.Solution || 'LearningHub.Nhs.Content.sln' }}
 
+      - name: Replace values in appsettings.json
+        run: |
+          jq '
+            .Settings.LearningHubContentServerUrl = "${{ vars.LEARNINGHUB_CONTENT_SERVER_URL }}" | 
+            .Settings.LearningHubContentServerUrlRedis = "${{ vars.LEARNINGHUB_CONTENT_SERVER_URL_REDIS }}" |
+            .Settings.LearningHubContentServerVirtualPathRedis = "${{ vars.LEARNINGHUB_CONTENT_SERVER_VIRTUAL_PATH_REDIS }}" |
+            .Settings.LearningHubContentVirtualPathRedis = "${{ vars.LEARNINGHUB_CONENT_SERVER_VIRTUAL_PATH_REDIS }}" |
+            .Settings.LearningHubApiUrl = "${{ vars.LEARNINGHUB_API_URL }}" |
+            .Settings.ContentServerClientIdentityKey = "${{ vars.CONTENT_SERVER_CLIENT_IDENTITY_KEY }}"
+          ' appsettings.json > tmp.json && mv tmp.json appsettings.json
+
       - name: Build project
         run: dotnet build LearningHub.Nhs.Content.sln --configuration Release
 
