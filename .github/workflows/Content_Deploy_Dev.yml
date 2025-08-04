@@ -103,9 +103,7 @@ jobs:
       - name: Deploy using Azure CLI
         run: |
           ls
-          cd publish
-          ls
           az webapp deploy --resource-group ${{ vars.AZURE_RESOURCE_GROUP_NAME}} \
                            --name ${{ vars.AZURE_APP_SERVICE_NAME }} \
-                           --src-path ./publish/publish.zip \
+                           --src-path publish.zip \
                            --type zip
