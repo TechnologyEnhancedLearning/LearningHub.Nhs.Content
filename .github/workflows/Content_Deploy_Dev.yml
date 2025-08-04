@@ -100,7 +100,9 @@ jobs:
             .Settings.LearningHubContentServerUrlRedis = "${{ vars.LEARNINGHUB_CONTENT_SERVER_URL_REDIS }}" |
             .Settings.LearningHubContentVirtualPathRedis = "${{ vars.LEARNINGHUB_CONTENT_VIRTUAL_PATH_REDIS }}" |
             .Settings.LearningHubApiUrl = "${{ vars.LEARNINGHUB_API_URL }}" |
-            .Settings.ContentServerClientIdentityKey = "${{ secrets.CONTENT_SERVER_CLIENT_IDENTITY_KEY }}"
+            .Settings.ContentServerClientIdentityKey = "${{ secrets.CONTENT_SERVER_CLIENT_IDENTITY_KEY }}" |
+            .Settings.AzureFileStorageConnectionString = "${{ secrets.AZURE_FILE_STORAGE_CONNECTION_STRING }}" |
+            .Settings.AzureFileStorageResourceShareName = "${{ vars.AZURE_FILE_STORAGE_RESOURCE_SHARE_NAME }}"
           ' appsettings.json > tmp.json && mv tmp.json appsettings.json
 
       - name: Zip published output
