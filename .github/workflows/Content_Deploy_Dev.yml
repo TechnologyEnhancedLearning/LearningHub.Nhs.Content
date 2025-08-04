@@ -104,5 +104,5 @@ jobs:
         run: |
           az webapp deploy --resource-group ${{ vars.AZURE_RESOURCE_GROUP_NAME}} \
                            --name ${{ vars.AZURE_APP_SERVICE_NAME }} \
-                           --src-path publish.zip \
+                           --src-path ./publish/publish.zip \
                            --type zip
