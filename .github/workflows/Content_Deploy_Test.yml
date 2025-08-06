@@ -1,5 +1,8 @@
 name: Deploy Content to Dev
 on:
+  push:
+    branches:
+      - CI
   workflow_dispatch:
   
 permissions:
