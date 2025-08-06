@@ -35,19 +35,19 @@ jobs:
 
       # One time stuff to do the initial terraform import
 
-      - name: 'Terraform import resource group'
-        env:
-          TF_VAR_ResourceGroupName: "${{ vars.AZURE_RESOURCE_GROUP_NAME }}"
-          TF_VAR_ResourceGroupLocation: "${{ vars.AZURE_RESOURCE_GROUP_LOCATION }}"
-          TF_VAR_AppServicePlanKind: "${{ vars.AZURE_APP_SERVICE_PLAN_KIND }}"
-          TF_VAR_AppServicePlanName: "${{ vars.AZURE_APP_SERVICE_PLAN_NAME }}"
-          TF_VAR_AppServicePlanSkuSize: "${{ vars.AZURE_APP_SERVICE_PLAN_SKU_SIZE }}"
-          TF_VAR_AppServicePlanSkuTier: "${{ vars.AZURE_APP_SERVICE_PLAN_SKU_TIER }}"
-          TF_VAR_AppServiceName: "${{ vars.AZURE_APP_SERVICE_NAME }}"
-        run: |
-          terraform import azurerm_resource_group.ContentServerResourceGroup /subscriptions/66516f71-f3d4-4911-b900-c6e4690a5b15/resourceGroups/UKS-LearningHub-ContentServer-TEST-RG
-          terraform import azurerm_app_service_plan.ContentServerAppServicePlan /subscriptions/66516f71-f3d4-4911-b900-c6e4690a5b15/resourceGroups/UKS-LearningHub-ContentServer-TEST-RG/providers/Microsoft.Web/serverFarms/learninghub-content-test-plan
-          terraform import azurerm_app_service.ContentServerAppService /subscriptions/66516f71-f3d4-4911-b900-c6e4690a5b15/resourceGroups/UKS-LearningHub-ContentServer-TEST-RG/providers/Microsoft.Web/sites/learninghub-content-test
+      # - name: 'Terraform import resource group'
+      #   env:
+      #     TF_VAR_ResourceGroupName: "${{ vars.AZURE_RESOURCE_GROUP_NAME }}"
+      #     TF_VAR_ResourceGroupLocation: "${{ vars.AZURE_RESOURCE_GROUP_LOCATION }}"
+      #     TF_VAR_AppServicePlanKind: "${{ vars.AZURE_APP_SERVICE_PLAN_KIND }}"
+      #     TF_VAR_AppServicePlanName: "${{ vars.AZURE_APP_SERVICE_PLAN_NAME }}"
+      #     TF_VAR_AppServicePlanSkuSize: "${{ vars.AZURE_APP_SERVICE_PLAN_SKU_SIZE }}"
+      #     TF_VAR_AppServicePlanSkuTier: "${{ vars.AZURE_APP_SERVICE_PLAN_SKU_TIER }}"
+      #     TF_VAR_AppServiceName: "${{ vars.AZURE_APP_SERVICE_NAME }}"
+      #   run: |
+      #     terraform import azurerm_resource_group.ContentServerResourceGroup /subscriptions/66516f71-f3d4-4911-b900-c6e4690a5b15/resourceGroups/UKS-LearningHub-ContentServer-TEST-RG
+      #     terraform import azurerm_app_service_plan.ContentServerAppServicePlan /subscriptions/66516f71-f3d4-4911-b900-c6e4690a5b15/resourceGroups/UKS-LearningHub-ContentServer-TEST-RG/providers/Microsoft.Web/serverFarms/learninghub-content-test-plan
+      #     terraform import azurerm_app_service.ContentServerAppService /subscriptions/66516f71-f3d4-4911-b900-c6e4690a5b15/resourceGroups/UKS-LearningHub-ContentServer-TEST-RG/providers/Microsoft.Web/sites/learninghub-content-test
  
       # End of one time stuff
 
