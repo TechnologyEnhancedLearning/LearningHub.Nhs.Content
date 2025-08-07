@@ -44,6 +44,8 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Terraform", "Terraform", "{02EA681E-C7D8-13C7-8484-4AC65E1B71E8}"
 	ProjectSection(SolutionItems) = preProject
 		backend-dev.tfvars = backend-dev.tfvars
+		backend-prod.tfvars = backend-prod.tfvars
+		backend-test.tfvars = backend-test.tfvars
 		backend.tf = backend.tf
 		main.tf = main.tf
 		variables.tf = variables.tf
