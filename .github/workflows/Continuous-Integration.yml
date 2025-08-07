@@ -1,10 +1,10 @@
 name: LearningHub ContentServer CI
 
-on:
-  push:
-    branches: [CI]
-  pull_request:
-    branches: [CI]
+# on:
+#   push:
+#     branches: [CI]
+#   pull_request:
+#     branches: [CI]
 
 jobs:
   build:
