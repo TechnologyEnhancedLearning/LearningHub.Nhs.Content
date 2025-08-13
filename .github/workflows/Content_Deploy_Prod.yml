@@ -50,103 +50,104 @@ jobs:
 
       # One time stuff to do the initial terraform import
 
-      - name: 'Terraform import resource group'
-        env:
-          TF_VAR_ResourceGroupName: "${{ vars.AZURE_RESOURCE_GROUP_NAME }}"
-          TF_VAR_ResourceGroupLocation: "${{ vars.AZURE_RESOURCE_GROUP_LOCATION }}"
-          TF_VAR_AppServicePlanKind: "${{ vars.AZURE_APP_SERVICE_PLAN_KIND }}"
-          TF_VAR_AppServicePlanName: "${{ vars.AZURE_APP_SERVICE_PLAN_NAME }}"
-          TF_VAR_AppServicePlanSkuSize: "${{ vars.AZURE_APP_SERVICE_PLAN_SKU_SIZE }}"
-          TF_VAR_AppServicePlanSkuTier: "${{ vars.AZURE_APP_SERVICE_PLAN_SKU_TIER }}"
-          TF_VAR_AppServiceName: "${{ vars.AZURE_APP_SERVICE_NAME }}"
-        run: |
-          terraform import azurerm_resource_group.ContentServerResourceGroup /subscriptions/57c55d5f-78c1-4373-a021-ff8357548f51/resourceGroups/ne-learninghub-contentserver-prod-RG
-          terraform import azurerm_app_service_plan.ContentServerAppServicePlan /subscriptions/57c55d5f-78c1-4373-a021-ff8357548f51/resourceGroups/learninghubprodcontent-rg/providers/Microsoft.Web/serverFarms/learninghub-content-plan
-          terraform import azurerm_app_service.ContentServerAppService /subscriptions/57c55d5f-78c1-4373-a021-ff8357548f51/resourceGroups/ne-learninghub-contentserver-prod-RG/providers/Microsoft.Web/sites/learninghub-content
+      # - name: 'Terraform import resource group'
+      #   env:
+      #     TF_VAR_ResourceGroupName: "${{ vars.AZURE_RESOURCE_GROUP_NAME }}"
+      #     TF_VAR_ResourceGroupLocation: "${{ vars.AZURE_RESOURCE_GROUP_LOCATION }}"
+      #     TF_VAR_AppServicePlanKind: "${{ vars.AZURE_APP_SERVICE_PLAN_KIND }}"
+      #     TF_VAR_AppServicePlanName: "${{ vars.AZURE_APP_SERVICE_PLAN_NAME }}"
+      #     TF_VAR_AppServicePlanSkuSize: "${{ vars.AZURE_APP_SERVICE_PLAN_SKU_SIZE }}"
+      #     TF_VAR_AppServicePlanSkuTier: "${{ vars.AZURE_APP_SERVICE_PLAN_SKU_TIER }}"
+      #     TF_VAR_AppServiceName: "${{ vars.AZURE_APP_SERVICE_NAME }}"
+      #   run: |
+      #     terraform import azurerm_resource_group.ContentServerResourceGroup /subscriptions/57c55d5f-78c1-4373-a021-ff8357548f51/resourceGroups/ne-learninghub-contentserver-prod-RG
+      #     terraform import azurerm_app_service_plan.ContentServerAppServicePlan /subscriptions/57c55d5f-78c1-4373-a021-ff8357548f51/resourceGroups/learninghubprodcontent-rg/providers/Microsoft.Web/serverFarms/learninghub-content-plan
+      #     terraform import azurerm_app_service.ContentServerAppService /subscriptions/57c55d5f-78c1-4373-a021-ff8357548f51/resourceGroups/ne-learninghub-contentserver-prod-RG/providers/Microsoft.Web/sites/learninghub-content
           
  
       # End of one time stuff
 
-  #     - name: 'Terraform apply'
-  #       run: |
-  #         terraform apply -auto-approve \
-  #           -var="ResourceGroupName=${{ vars.AZURE_RESOURCE_GROUP_NAME }}" \
-  #           -var="ResourceGroupLocation=${{ vars.AZURE_RESOURCE_GROUP_LOCATION }}" \
-  #           -var="AppServicePlanName=${{ vars.AZURE_APP_SERVICE_PLAN_NAME }}" \
-  #           -var="AppServicePlanKind=${{ vars.AZURE_APP_SERVICE_PLAN_KIND }}" \
-  #           -var="AppServicePlanSkuTier=${{ vars.AZURE_APP_SERVICE_PLAN_SKU_TIER }}" \
-  #           -var="AppServicePlanSkuSize=${{ vars.AZURE_APP_SERVICE_PLAN_SKU_SIZE }}" \
-  #           -var="AppServiceName=${{ vars.AZURE_APP_SERVICE_NAME }}"
+      - name: 'Terraform apply'
+        run: |
+          terraform apply -auto-approve \
+            -var="ResourceGroupName=${{ vars.AZURE_RESOURCE_GROUP_NAME }}" \
+            -var="ResourceGroupLocation=${{ vars.AZURE_RESOURCE_GROUP_LOCATION }}" \
+            -var="AppServicePlanName=${{ vars.AZURE_APP_SERVICE_PLAN_NAME }}" \
+            -var="AppServicePlanKind=${{ vars.AZURE_APP_SERVICE_PLAN_KIND }}" \
+            -var="AppServicePlanSkuTier=${{ vars.AZURE_APP_SERVICE_PLAN_SKU_TIER }}" \
+            -var="AppServicePlanSkuSize=${{ vars.AZURE_APP_SERVICE_PLAN_SKU_SIZE }}" \
+            -var="AppServiceName=${{ vars.AZURE_APP_SERVICE_NAME }}"
 
-  # deploy_content_server:
-  #   needs: terraform
-  #   runs-on: ubuntu-latest
-  #   environment: prod
-  #   name: 'Deploy content server to app service'
-  #   env:
-  #     AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-  #     AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
-  #     AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
-  #     AZURE_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
+  deploy_content_server:
+    needs: terraform
+    runs-on: ubuntu-latest
+    environment: prod
+    name: 'Deploy content server to app service'
+    env:
+      AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+      AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+      AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+      AZURE_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
 
-  #   steps:
-  #     - uses: actions/checkout@v2
+    steps:
+      - uses: actions/checkout@v2
       
-  #     - name: Add Azure artifact
-  #       run: dotnet nuget add source 'https://pkgs.dev.azure.com/e-LfH/_packaging/LearningHubFeed/nuget/v3/index.json' --name 'LearningHubFeed'  --username 'kevin.whittaker' --password ${{ secrets.AZURE_DEVOPS_PAT }} --store-password-in-clear-text
+      - name: Add Azure artifact
+        run: dotnet nuget add source 'https://pkgs.dev.azure.com/e-LfH/_packaging/LearningHubFeed/nuget/v3/index.json' --name 'LearningHubFeed'  --username 'kevin.whittaker' --password ${{ secrets.AZURE_DEVOPS_PAT }} --store-password-in-clear-text
 
-  #     - name: Setup NuGet
-  #       uses: NuGet/setup-nuget@v1
-  #       with:
-  #         nuget-version: '5.8.0'
+      - name: Setup NuGet
+        uses: NuGet/setup-nuget@v1
+        with:
+          nuget-version: '5.8.0'
 
-  #     - name: Setup .NET
-  #       uses: actions/setup-dotnet@v3
-  #       with:
-  #         dotnet-version: '8.0.x' # or whatever version your project targets
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '8.0.x' # or whatever version your project targets
 
-  #     - name: Restore NuGet packages
-  #       run: dotnet restore ${{ env.Solution || 'LearningHub.Nhs.Content.sln' }}
+      - name: Restore NuGet packages
+        run: dotnet restore ${{ env.Solution || 'LearningHub.Nhs.Content.sln' }}
 
-  #     - name: Build project
-  #       run: dotnet build LearningHub.Nhs.Content.sln --configuration Release
+      - name: Build project
+        run: dotnet build LearningHub.Nhs.Content.sln --configuration Release
 
-  #     - name: Publish project
-  #       run: dotnet publish LearningHub.Nhs.Content.sln --configuration Release --output ./publish
+      - name: Publish project
+        run: dotnet publish LearningHub.Nhs.Content.sln --configuration Release --output ./publish
 
-  #     - name: Replace values in appsettings.json
-  #       run: |
-  #         cd publish
-  #         jq '
-  #           .Settings.LearningHubContentServerUrl = "${{ vars.LEARNINGHUB_CONTENT_SERVER_URL }}" | 
-  #           .Settings.LearningHubContentPhysicalPath = "${{ vars.LEARNINGHUB_CONTENT_PHYSICAL_PATH }}" |
-  #           .Settings.LearningHubContentServerUrlRedis = "${{ vars.LEARNINGHUB_CONTENT_SERVER_URL_REDIS }}" |
-  #           .Settings.LearningHubContentVirtualPathRedis = "${{ vars.LEARNINGHUB_CONTENT_VIRTUAL_PATH_REDIS }}" |
-  #           .Settings.LearningHubApiUrl = "${{ vars.LEARNINGHUB_API_URL }}" |
-  #           .Settings.ContentServerClientIdentityKey = "${{ secrets.CONTENT_SERVER_CLIENT_IDENTITY_KEY }}" |
-  #           .Settings.EnableAzureFileStorageRESTAPIAccess = "true" |
-  #           .Settings.AzureFileStorageConnectionString = "${{ secrets.AZURE_FILE_STORAGE_CONNECTION_STRING }}" |
-  #           .Settings.AzureFileStorageResourceShareName = "${{ vars.AZURE_FILE_STORAGE_RESOURCE_SHARE_NAME }}" |
-  #           .Settings.AzureSourceArchiveStorageConnectionString = "${{ secrets.AZURE_SOURCE_ARCHIVE_STORAGE_CONNECTION_STRING }}" |
-  #           .ConnectionStrings.Redis = "${{ secrets.AZURE_REDIS_CONNECTION_STRING }}" |
-  #           .ConnectionStrings.LearningHubContentLogStorage = "${{ secrets.AZURE_LEARNINGHUB_CONTENT_LOG_STORE }}"
-  #         ' appsettings.json > tmp.json && mv tmp.json appsettings.json
+      - name: Replace values in appsettings.json
+        run: |
+          cd publish
+          jq '
+            .Settings.LearningHubContentServerUrl = "${{ vars.LEARNINGHUB_CONTENT_SERVER_URL }}" | 
+            .Settings.LearningHubContentPhysicalPath = "${{ vars.LEARNINGHUB_CONTENT_PHYSICAL_PATH }}" |
+            .Settings.LearningHubContentServerUrlRedis = "${{ vars.LEARNINGHUB_CONTENT_SERVER_URL_REDIS }}" |
+            .Settings.LearningHubContentVirtualPathRedis = "${{ vars.LEARNINGHUB_CONTENT_VIRTUAL_PATH_REDIS }}" |
+            .Settings.LearningHubApiUrl = "${{ vars.LEARNINGHUB_API_URL }}" |
+            .Settings.ContentServerClientIdentityKey = "${{ secrets.CONTENT_SERVER_CLIENT_IDENTITY_KEY }}" |
+            .Settings.EnableAzureFileStorageRESTAPIAccess = "true" |
+            .Settings.AzureFileStorageConnectionString = "${{ secrets.AZURE_FILE_STORAGE_CONNECTION_STRING }}" |
+            .Settings.AzureFileStorageResourceShareName = "${{ vars.AZURE_FILE_STORAGE_RESOURCE_SHARE_NAME }}" |
+            .Settings.AzureSourceArchiveStorageConnectionString = "${{ secrets.AZURE_SOURCE_ARCHIVE_STORAGE_CONNECTION_STRING }}" |
+            .ConnectionStrings.Redis = "${{ secrets.AZURE_REDIS_CONNECTION_STRING }}" |
+            .ConnectionStrings.LearningHubContentLogStorage = "${{ secrets.AZURE_LEARNINGHUB_CONTENT_LOG_STORE }}"
+          ' appsettings.json > tmp.json && mv tmp.json appsettings.json
 
-  #     - name: Zip published output
-  #       run: |
-  #         cd publish
-  #         zip -r ../publish.zip .
+      - name: Zip published output
+        run: |
+          cd publish
+          unzip JSAdapter12_aspnet.zip
+          zip -r ../publish.zip .
 
-  #     - name: 'Az CLI login'
-  #       uses: azure/login@v1
-  #       with:
-  #         client-id: ${{ secrets.AZURE_CLIENT_ID }}
-  #         tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-  #         subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+      - name: 'Az CLI login'
+        uses: azure/login@v1
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
-  #     - name: Deploy using Azure CLI
-  #       run: |
-  #         az webapp deploy --resource-group ${{ vars.AZURE_RESOURCE_GROUP_NAME}} \
-  #                          --name ${{ vars.AZURE_APP_SERVICE_NAME }} \
-  #                          --src-path publish.zip \
-  #                          --type zip
+      - name: Deploy using Azure CLI
+        run: |
+          az webapp deploy --resource-group ${{ vars.AZURE_RESOURCE_GROUP_NAME}} \
+                           --name ${{ vars.AZURE_APP_SERVICE_NAME }} \
+                           --src-path publish.zip \
+                           --type zip

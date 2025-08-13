@@ -120,7 +120,6 @@ jobs:
         run: | 
           cd publish
           unzip JSAdapter12_aspnet.zip
-          ls
           zip -r ../publish.zip .
 
       - name: 'Az CLI login'
