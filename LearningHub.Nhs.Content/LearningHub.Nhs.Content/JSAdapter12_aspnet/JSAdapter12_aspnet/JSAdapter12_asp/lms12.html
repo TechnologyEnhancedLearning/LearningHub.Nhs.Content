@@ -1,0 +1,51 @@
+<!-- $Header: lms12.html 120.0.12010000.7 2021/10/26 10:11:19 smahanka noship $ -->
+<html>
+<head>
+
+<script type="text/javascript" src="adapter_lms.js"></script>
+<script type="text/javascript" src="LMSUtil.js"></script>
+<script type="text/javascript" src="LMSElement.js"></script>
+<script type="text/javascript" src="LMSTime.js"></script>
+<script type="text/javascript">
+var API;
+var ua = window.navigator.userAgent;
+if(ua.indexOf("Trident/7.0")>-1) // IE11
+{
+   var lmsApp = document.createElement('script');
+   lmsApp.type = "text/javascript";
+   lmsApp.src = "LMSApplet.js";
+   lmsApp.addEventListener("load", addScorm12JS, false);
+   document.head.appendChild(lmsApp);
+}else
+{
+   var lmsAsynApp = document.createElement('script');
+   lmsAsynApp.type = "text/javascript";
+   lmsAsynApp.src = "LMSApplet_asun.js";
+   lmsAsynApp.addEventListener("load", addScorm12JS, false);
+   document.head.appendChild(lmsAsynApp);
+   var reqQApp = document.createElement('script');
+   reqQApp.type = "text/javascript";
+   reqQApp.src = "adapter_request_queue.js";
+   document.head.appendChild(reqQApp);
+}
+
+function addScorm12JS()
+{
+   var scorm12App = document.createElement('script');
+   scorm12App.type = "text/javascript";
+   scorm12App.src = "Scorm12Applet.js";
+   scorm12App.addEventListener("load", addAPIJS, false);
+   document.head.appendChild(scorm12App);
+}
+
+function addAPIJS()
+{
+   var execScrpt = document.createElement('script');
+   execScrpt.type = "text/javascript";
+   execScrpt.text = "API=new Scorm12Applet('WebForm1.aspx?lmsUrl='+parent.getLMSUrl()+'&logDebug='+parent.shouldLogDebug(),getSessionId(),parent.getKey1(),parent.getKey2(),parent.getKey3(),parent.shouldDebug());";
+   document.head.appendChild(execScrpt);
+}
+</script>
+</head>
+<body onLoad="doOnLoad()"></body>
+</html>
