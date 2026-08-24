@@ -63,6 +63,9 @@ jobs:
             -var="ResourceGroupName=${{ vars.AZURE_RESOURCE_GROUP_NAME }}" \
             -var="ResourceGroupLocation=${{ vars.AZURE_RESOURCE_GROUP_LOCATION }}" \
             -var="AppServicePlanName=${{ vars.AZURE_APP_SERVICE_PLAN_NAME }}" \
+            -var="AppServicePlanKind=${{ vars.AZURE_APP_SERVICE_PLAN_KIND }}" \
+            -var="AppServicePlanSkuTier=${{ vars.AZURE_APP_SERVICE_PLAN_SKU_TIER }}" \
+            -var="AppServicePlanSkuSize=${{ vars.AZURE_APP_SERVICE_PLAN_SKU_SIZE }}" \
             -var="AppServiceName=${{ vars.AZURE_APP_SERVICE_NAME }}"
 
   deploy_content_server:
