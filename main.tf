@@ -20,7 +20,7 @@ resource "azurerm_windows_web_app" "ContentServerAppService" {
 
   site_config {
     application_stack {
-      dotnet_version = "10"
+      dotnet_version = "v10.0"
     }
   }
 }
