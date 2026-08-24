@@ -51,12 +51,6 @@ jobs:
  
       # End of one time stuff
 
-      - name: 'Remove old resources'
-        run: |
-          terraform state rm azurerm_app_service_plan.ContentServerAppServicePlan
-          terraform state rm azurerm_app_service.ContentServerAppService
-
-
       - name: 'Terraform apply'
         run: |
           terraform apply -auto-approve \
