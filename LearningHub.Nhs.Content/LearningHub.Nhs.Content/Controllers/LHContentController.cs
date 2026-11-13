@@ -1,17 +1,18 @@
 ﻿namespace LearningHub.Nhs.Content.Controllers
 {
+    using LearningHub.Nhs.Content.Configuration;
+    using LearningHub.Nhs.Content.Interfaces;
+    using LearningHub.Nhs.WebUI.EventSource;
+    using Microsoft.AspNetCore.Authorization;
+    using Microsoft.AspNetCore.Http;
+    using Microsoft.AspNetCore.Mvc;
+    using Microsoft.AspNetCore.StaticFiles;
+    using Microsoft.Extensions.Options;
     using System;
     using System.Diagnostics;
     using System.IO;
     using System.Net;
     using System.Threading.Tasks;
-    using LearningHub.Nhs.Content.Configuration;
-    using LearningHub.Nhs.WebUI.EventSource;
-    using LearningHub.Nhs.Content.Interfaces;
-    using Microsoft.AspNetCore.Authorization;
-    using Microsoft.AspNetCore.Mvc;
-    using Microsoft.AspNetCore.StaticFiles;
-    using Microsoft.Extensions.Options;
 
     /// <summary>
     /// Defines the <see cref="LearningSessionsController" />.
@@ -98,20 +99,39 @@
             {
                 result = this.NotFound();
             }
+            //catch (UnauthorizedAccessException ex)
+            //{
+            //    this.ViewBag.FilePath = filePath;
+            //    this.ViewBag.ErrorMessage = "Unauthorised";
+            //    this.ViewBag.ErrorDetail = ex.Message;
+            //    result = this.View();
+            //}
+            //catch (Exception ex)
+            //{
+            //    this.ViewBag.FilePath = filePath;
+            //    this.ViewBag.ErrorMessage = "Unable to find content.";
+            //    this.ViewBag.ErrorDetail = ex.Message;
+            //    result = this.View();
+            //}
             catch (UnauthorizedAccessException ex)
             {
-                this.ViewBag.FilePath = filePath;
-                this.ViewBag.ErrorMessage = "Unauthorised";
-                this.ViewBag.ErrorDetail = ex.Message;
-                result = this.View();
+                result = this.StatusCode(StatusCodes.Status401Unauthorized, new
+                {
+                    FilePath = filePath,
+                    ErrorMessage = "Unauthorised",
+                    ErrorDetail = ex.Message
+                });
             }
             catch (Exception ex)
             {
-                this.ViewBag.FilePath = filePath;
-                this.ViewBag.ErrorMessage = "Unable to find content.";
-                this.ViewBag.ErrorDetail = ex.Message;
-                result = this.View();
+                result = this.StatusCode(StatusCodes.Status500InternalServerError, new
+                {
+                    FilePath = filePath,
+                    ErrorMessage = "Unable to find content.",
+                    ErrorDetail = ex.ToString() // Temporarily use ex.ToString() to see the full stack trace
+                });
             }
+
 
             ScormContentEventSource.Instance.AddRequestProcessMetadata(sw.ElapsedMilliseconds, bytesServed, Path.GetExtension(fileName));
             return result;

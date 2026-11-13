@@ -34,5 +34,7 @@ resource "azurerm_windows_web_app" "ContentServerAppService" {
     application_stack {
       dotnet_version = "v10.0"
     }
+    
+    use_32_bit_worker = false # Set to false for 64-bit
   }
 }
