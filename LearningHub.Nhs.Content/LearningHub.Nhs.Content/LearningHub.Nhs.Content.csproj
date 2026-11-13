@@ -9,10 +9,6 @@
     <DocumentationFile>C:\HEE\Repos\LearningHub.Nhs.Content\LearningHub.Nhs.Content\LearningHub.Nhs.Content\LearningHub.Nhs.Content.xml</DocumentationFile>
   </PropertyGroup>
 
-  <PropertyGroup>
-    <IsTransformWebConfigDisabled>true</IsTransformWebConfigDisabled>
-  </PropertyGroup>
-
 	<ItemGroup>
     <Compile Remove="JSAdapter12_aspnet\**" />
     <Compile Remove="wwwroot\content\2fbb83a8-06ae-4429-a120-defa929fc2f1\**" />
