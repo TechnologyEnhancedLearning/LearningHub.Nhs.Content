@@ -97,7 +97,7 @@ jobs:
 
       - name: Publish project
         # run: dotnet publish LearningHub.Nhs.Content.sln --configuration Release --output ./publish
-        run: dotnet publish LearningHub.Nhs.Content/LearningHub.Nhs.Content.csproj --configuration Release --runtime win-x64 --self-contained false --output ./publish
+        run: dotnet publish LearningHub.Nhs.Content.csproj --configuration Release --runtime win-x64 --self-contained false --output ./publish
 
       - name: Replace values in appsettings.json
         run: |
