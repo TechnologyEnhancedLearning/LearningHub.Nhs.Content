@@ -19,6 +19,18 @@ resource "azurerm_windows_web_app" "ContentServerAppService" {
   service_plan_id     = azurerm_service_plan.ContentServerAppServicePlan.id
 
   site_config {
+    virtual_application {
+      virtual_path  = "/"
+      physical_path = "site\\wwwroot"
+      preload       = false
+    }
+
+    virtual_application {
+      virtual_path  = "/JSAdapter12_aspnet"
+      physical_path = "site\\wwwroot\\JSAdapter12_aspnet"
+      preload       = false
+    }
+
     application_stack {
       dotnet_version = "v10.0"
     }
